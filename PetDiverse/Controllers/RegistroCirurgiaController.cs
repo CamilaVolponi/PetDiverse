@@ -1,0 +1,169 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using PetDiverse.Data;
+
+namespace PetDiverse.Controllers
+{
+    public class RegistroCirurgiaController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+
+        public RegistroCirurgiaController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // GET: RegistroCirurgia
+        public async Task<IActionResult> Index()
+        {
+            var applicationDbContext = _context.RegistroCirurgia.Include(r => r.Animal).Include(r => r.TiposCirurgia);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+        // GET: RegistroCirurgia/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var registroCirurgia = await _context.RegistroCirurgia
+                .Include(r => r.Animal)
+                .Include(r => r.TiposCirurgia)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (registroCirurgia == null)
+            {
+                return NotFound();
+            }
+
+            return View(registroCirurgia);
+        }
+
+        // GET: RegistroCirurgia/Create
+        public IActionResult Create()
+        {
+            ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto");
+            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "DescricaoCirurgia");
+            return View();
+        }
+
+        // POST: RegistroCirurgia/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("Id,DataCirurgia,IdAnimal,IdTipoCirurgia")] RegistroCirurgia registroCirurgia)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(registroCirurgia);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroCirurgia.IdAnimal);
+            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "DescricaoCirurgia", registroCirurgia.IdTipoCirurgia);
+            return View(registroCirurgia);
+        }
+
+        // GET: RegistroCirurgia/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var registroCirurgia = await _context.RegistroCirurgia.FindAsync(id);
+            if (registroCirurgia == null)
+            {
+                return NotFound();
+            }
+            ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroCirurgia.IdAnimal);
+            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "DescricaoCirurgia", registroCirurgia.IdTipoCirurgia);
+            return View(registroCirurgia);
+        }
+
+        // POST: RegistroCirurgia/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DataCirurgia,IdAnimal,IdTipoCirurgia")] RegistroCirurgia registroCirurgia)
+        {
+            if (id != registroCirurgia.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(registroCirurgia);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!RegistroCirurgiaExists(registroCirurgia.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroCirurgia.IdAnimal);
+            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "DescricaoCirurgia", registroCirurgia.IdTipoCirurgia);
+            return View(registroCirurgia);
+        }
+
+        // GET: RegistroCirurgia/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var registroCirurgia = await _context.RegistroCirurgia
+                .Include(r => r.Animal)
+                .Include(r => r.TiposCirurgia)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (registroCirurgia == null)
+            {
+                return NotFound();
+            }
+
+            return View(registroCirurgia);
+        }
+
+        // POST: RegistroCirurgia/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var registroCirurgia = await _context.RegistroCirurgia.FindAsync(id);
+            if (registroCirurgia != null)
+            {
+                _context.RegistroCirurgia.Remove(registroCirurgia);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool RegistroCirurgiaExists(int id)
+        {
+            return _context.RegistroCirurgia.Any(e => e.Id == id);
+        }
+    }
+}

@@ -18,14 +18,14 @@ namespace PetDiverse.Controllers
             _context = context;
         }
 
-        // GET: RegistroVacinas
+        // GET: RegistroVacina
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.RegistroVacina.Include(r => r.Animal).Include(r => r.TiposVacina);
+            var applicationDbContext = _context.RegistroVacina.Include(r => r.Animal).Include(r => r.TipoVacina);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: RegistroVacinas/Details/5
+        // GET: RegistroVacina/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,7 +35,7 @@ namespace PetDiverse.Controllers
 
             var registroVacina = await _context.RegistroVacina
                 .Include(r => r.Animal)
-                .Include(r => r.TiposVacina)
+                .Include(r => r.TipoVacina)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (registroVacina == null)
             {
@@ -45,7 +45,7 @@ namespace PetDiverse.Controllers
             return View(registroVacina);
         }
 
-        // GET: RegistroVacinas/Create
+        // GET: RegistroVacina/Create
         public IActionResult Create()
         {
             ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto");
@@ -53,7 +53,7 @@ namespace PetDiverse.Controllers
             return View();
         }
 
-        // POST: RegistroVacinas/Create
+        // POST: RegistroVacina/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -71,7 +71,7 @@ namespace PetDiverse.Controllers
             return View(registroVacina);
         }
 
-        // GET: RegistroVacinas/Edit/5
+        // GET: RegistroVacina/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -89,7 +89,7 @@ namespace PetDiverse.Controllers
             return View(registroVacina);
         }
 
-        // POST: RegistroVacinas/Edit/5
+        // POST: RegistroVacina/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -126,7 +126,7 @@ namespace PetDiverse.Controllers
             return View(registroVacina);
         }
 
-        // GET: RegistroVacinas/Delete/5
+        // GET: RegistroVacina/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,7 +136,7 @@ namespace PetDiverse.Controllers
 
             var registroVacina = await _context.RegistroVacina
                 .Include(r => r.Animal)
-                .Include(r => r.TiposVacina)
+                .Include(r => r.TipoVacina)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (registroVacina == null)
             {
@@ -146,7 +146,7 @@ namespace PetDiverse.Controllers
             return View(registroVacina);
         }
 
-        // POST: RegistroVacinas/Delete/5
+        // POST: RegistroVacina/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

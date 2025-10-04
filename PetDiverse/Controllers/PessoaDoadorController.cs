@@ -18,14 +18,14 @@ namespace PetDiverse.Controllers
             _context = context;
         }
 
-        // GET: PessoaDoadoras
+        // GET: PessoaDoadora
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.PessoaDoadora.Include(p => p.Bairro);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: PessoaDoadoras/Details/5
+        // GET: PessoaDoadora/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,14 +44,14 @@ namespace PetDiverse.Controllers
             return View(pessoaDoadora);
         }
 
-        // GET: PessoaDoadoras/Create
+        // GET: PessoaDoadora/Create
         public IActionResult Create()
         {
             ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "NomeBairro");
             return View();
         }
 
-        // POST: PessoaDoadoras/Create
+        // POST: PessoaDoadora/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -68,7 +68,7 @@ namespace PetDiverse.Controllers
             return View(pessoaDoadora);
         }
 
-        // GET: PessoaDoadoras/Edit/5
+        // GET: PessoaDoadora/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,7 +85,7 @@ namespace PetDiverse.Controllers
             return View(pessoaDoadora);
         }
 
-        // POST: PessoaDoadoras/Edit/5
+        // POST: PessoaDoadora/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -121,7 +121,7 @@ namespace PetDiverse.Controllers
             return View(pessoaDoadora);
         }
 
-        // GET: PessoaDoadoras/Delete/5
+        // GET: PessoaDoadora/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,7 +140,7 @@ namespace PetDiverse.Controllers
             return View(pessoaDoadora);
         }
 
-        // POST: PessoaDoadoras/Delete/5
+        // POST: PessoaDoadora/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

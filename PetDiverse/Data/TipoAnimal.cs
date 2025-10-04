@@ -7,13 +7,15 @@ namespace PetDiverse.Data
         public TipoAnimal()
         {
             Animais = new HashSet<Animal>(); //definindo navegação, TipoAnimal -> Animal
-            TiposVacina = new HashSet<TipoVacina>(); //definindo navegação, TipoAnimal -> TipoVacina
-            TiposCirurgia = new HashSet<TipoCirurgia>(); //definindo navegação, TipoAnimal -> TipoCirurgia
+            TipoVacinas = new HashSet<TipoVacina>(); //definindo navegação, TipoAnimal -> TipoVacina
+            TipoCirurgias = new HashSet<TipoCirurgia>(); //definindo navegação, TipoAnimal -> TipoCirurgia
+            Racas = new HashSet<Raca>();
         }
         public int Id { get; set; }
         public string NomeTipoAnimal { get; set; } = string.Empty;
         public virtual IEnumerable<Animal> Animais { get; set; } // 1 TipoAnimal -> N Animais
-        public virtual IEnumerable<TipoVacina> TiposVacina { get; set; } // 1 TipoAnimal -> N Tipos de vacina
-        public virtual IEnumerable<TipoCirurgia> TiposCirurgia { get; set; } // 1 TipoAnimal -> N Tipos de cirurgia
+        public virtual IEnumerable<TipoVacina> TipoVacinas { get; set; } // 1 TipoAnimal -> N Tipos de vacina
+        public virtual IEnumerable<TipoCirurgia> TipoCirurgias { get; set; } // 1 TipoAnimal -> N Tipos de cirurgia
+        public virtual IEnumerable<Raca> Racas { get; set; }
     }
 }

@@ -18,14 +18,14 @@ namespace PetDiverse.Controllers
             _context = context;
         }
 
-        // GET: Animals
+        // GET: Animal
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Animal.Include(a => a.Doador).Include(a => a.TipoAnimal);
+            var applicationDbContext = _context.Animal.Include(a => a.PessoaDoadora).Include(a => a.TipoAnimal);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Animals/Details/5
+        // GET: Animal/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,7 +34,7 @@ namespace PetDiverse.Controllers
             }
 
             var animal = await _context.Animal
-                .Include(a => a.Doador)
+                .Include(a => a.PessoaDoadora)
                 .Include(a => a.TipoAnimal)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (animal == null)
@@ -45,7 +45,7 @@ namespace PetDiverse.Controllers
             return View(animal);
         }
 
-        // GET: Animals/Create
+        // GET: Animal/Create
         public IActionResult Create()
         {
             ViewData["IdDoador"] = new SelectList(_context.PessoaDoadora, "Id", "Nome");
@@ -53,7 +53,7 @@ namespace PetDiverse.Controllers
             return View();
         }
 
-        // POST: Animals/Create
+        // POST: Animal/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -66,12 +66,12 @@ namespace PetDiverse.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdDoador"] = new SelectList(_context.PessoaDoadora, "Id", "Nome", animal.IdDoador);
+            ViewData["IdDoador"] = new SelectList(_context.PessoaDoadora, "Id", "Nome", animal.IdPessoaDoadora);
             ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "NomeTipoAnimal", animal.IdTipoAnimal);
             return View(animal);
         }
 
-        // GET: Animals/Edit/5
+        // GET: Animal/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,12 +84,12 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdDoador"] = new SelectList(_context.PessoaDoadora, "Id", "Nome", animal.IdDoador);
+            ViewData["IdDoador"] = new SelectList(_context.PessoaDoadora, "Id", "Nome", animal.IdPessoaDoadora);
             ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "NomeTipoAnimal", animal.IdTipoAnimal);
             return View(animal);
         }
 
-        // POST: Animals/Edit/5
+        // POST: Animal/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -121,12 +121,12 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdDoador"] = new SelectList(_context.PessoaDoadora, "Id", "Nome", animal.IdDoador);
+            ViewData["IdDoador"] = new SelectList(_context.PessoaDoadora, "Id", "Nome", animal.IdPessoaDoadora);
             ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "NomeTipoAnimal", animal.IdTipoAnimal);
             return View(animal);
         }
 
-        // GET: Animals/Delete/5
+        // GET: Animal/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,7 +135,7 @@ namespace PetDiverse.Controllers
             }
 
             var animal = await _context.Animal
-                .Include(a => a.Doador)
+                .Include(a => a.PessoaDoadora)
                 .Include(a => a.TipoAnimal)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (animal == null)
@@ -146,7 +146,7 @@ namespace PetDiverse.Controllers
             return View(animal);
         }
 
-        // POST: Animals/Delete/5
+        // POST: Animal/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -8,9 +8,10 @@ namespace PetDiverse.Data
         public Animal()
         {
             TipoAnimal = new TipoAnimal();
-            Doador = new PessoaDoadora();
+            PessoaDoadora = new PessoaDoadora();
             RegistrosVacina = new HashSet<RegistroVacina>();
             RegistrosCirurgia = new HashSet<RegistroCirurgia>();
+            Raca = new Raca();
         }
         public int Id { get; set; }
         public string Nome { get; set; } = string.Empty; // string.Empty = vai ter um valor, mais vazio = " "
@@ -23,7 +24,9 @@ namespace PetDiverse.Data
         public virtual TipoAnimal TipoAnimal { get; set; } // 1 Animal -> 1 TipoAnimal, virtual = faz o join implicitamente
         public virtual IEnumerable<RegistroVacina>? RegistrosVacina { get; set; } // 1 Animal -> N Registros de vacina
         public virtual IEnumerable<RegistroCirurgia>? RegistrosCirurgia { get; set; } // 1 Animal -> N Registros de cirurgia
-        public int IdDoador { get; set; } // campo FK - TipoAnimal
-        public virtual PessoaDoadora Doador { get; set; } // N Animal -> 1 Doador
+        public int IdPessoaDoadora { get; set; } // campo FK - TipoAnimal
+        public virtual PessoaDoadora PessoaDoadora { get; set; } // N Animal -> 1 PessoaDoadora
+        public int IdRaca { get; set; }
+        public virtual Raca Raca { get; set; } 
     }
 }

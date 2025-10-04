@@ -21,7 +21,7 @@ namespace PetDiverse.Controllers
         // GET: Cidade
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Cidade.Include(c => c.Estados);
+            var applicationDbContext = _context.Cidade.Include(c => c.Estado);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,7 +34,7 @@ namespace PetDiverse.Controllers
             }
 
             var cidade = await _context.Cidade
-                .Include(c => c.Estados)
+                .Include(c => c.Estado)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (cidade == null)
             {
@@ -130,7 +130,7 @@ namespace PetDiverse.Controllers
             }
 
             var cidade = await _context.Cidade
-                .Include(c => c.Estados)
+                .Include(c => c.Estado)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (cidade == null)
             {

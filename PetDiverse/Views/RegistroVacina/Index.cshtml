@@ -19,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.Animal)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TiposVacina)
+                @Html.DisplayNameFor(model => model.TipoVacina)
             </th>
             <th></th>
         </tr>
@@ -34,7 +34,7 @@
                 @Html.DisplayFor(modelItem => item.Animal.CaminhoFoto)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TiposVacina.DescricaoVacina)
+                @Html.DisplayFor(modelItem => item.TipoVacina.DescricaoVacina)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

@@ -11,7 +11,7 @@ namespace PetDiverse.Data.Configurations
             builder.Property(x => x.NomeCidade).IsRequired();
 
             // FK
-            builder.HasMany(x => x.Bairros).WithOne(x => x.Cidades).HasForeignKey(x => x.IdCidade);
+            builder.HasOne(o => o.Estado).WithMany(u => u.Cidades).HasForeignKey(o => o.IdEstado);
         }
     }
 }

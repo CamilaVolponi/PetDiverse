@@ -18,14 +18,14 @@ namespace PetDiverse.Controllers
             _context = context;
         }
 
-        // GET: Bairroes
+        // GET: Bairro
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Bairro.Include(b => b.Cidades);
+            var applicationDbContext = _context.Bairro.Include(b => b.Cidade);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Bairroes/Details/5
+        // GET: Bairro/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,7 +34,7 @@ namespace PetDiverse.Controllers
             }
 
             var bairro = await _context.Bairro
-                .Include(b => b.Cidades)
+                .Include(b => b.Cidade)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (bairro == null)
             {
@@ -44,14 +44,14 @@ namespace PetDiverse.Controllers
             return View(bairro);
         }
 
-        // GET: Bairroes/Create
+        // GET: Bairro/Create
         public IActionResult Create()
         {
             ViewData["IdCidade"] = new SelectList(_context.Cidade, "Id", "NomeCidade");
             return View();
         }
 
-        // POST: Bairroes/Create
+        // POST: Bairro/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -68,7 +68,7 @@ namespace PetDiverse.Controllers
             return View(bairro);
         }
 
-        // GET: Bairroes/Edit/5
+        // GET: Bairro/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,7 +85,7 @@ namespace PetDiverse.Controllers
             return View(bairro);
         }
 
-        // POST: Bairroes/Edit/5
+        // POST: Bairro/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -121,7 +121,7 @@ namespace PetDiverse.Controllers
             return View(bairro);
         }
 
-        // GET: Bairroes/Delete/5
+        // GET: Bairro/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,7 +130,7 @@ namespace PetDiverse.Controllers
             }
 
             var bairro = await _context.Bairro
-                .Include(b => b.Cidades)
+                .Include(b => b.Cidade)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (bairro == null)
             {
@@ -140,7 +140,7 @@ namespace PetDiverse.Controllers
             return View(bairro);
         }
 
-        // POST: Bairroes/Delete/5
+        // POST: Bairro/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

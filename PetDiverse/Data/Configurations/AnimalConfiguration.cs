@@ -18,12 +18,12 @@ namespace PetDiverse.Data.Configurations
             builder.Property(x => x.CaminhoFoto).IsRequired();
 
             // FK
-            builder.HasOne(o => o.Doador).WithMany(u => u.Animais).HasForeignKey(o => o.IdDoador); // deixar assim
+            builder.HasOne(o => o.PessoaDoadora).WithMany(u => u.Animais).HasForeignKey(o => o.IdPessoaDoadora);
+            //HasOne = tem um //WithMany = para muitos //HasForeignKey = TemChaveEstrangeira
+            
+            builder.HasOne(o => o.TipoAnimal).WithMany(u => u.Animais).HasForeignKey(o => o.IdTipoAnimal);
 
-            builder.HasMany(x => x.RegistrosVacina).WithOne(x => x.Animal).HasForeignKey(x => x.IdAnimal); // apagar assim e colocar o de cima na outra classe
-
-            builder.HasMany(x => x.RegistrosCirurgia).WithOne(x => x.Animal).HasForeignKey(x => x.IdAnimal);
-            //HasMany = tem muitos //WithOne = com um //HasForeignKey = TemChaveEstrangeira
+            builder.HasOne(o => o.Raca).WithMany(u => u.Animais).HasForeignKey(o => o.IdRaca);
         }
     }
 }

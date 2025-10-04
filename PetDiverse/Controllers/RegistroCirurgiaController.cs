@@ -21,7 +21,7 @@ namespace PetDiverse.Controllers
         // GET: RegistroCirurgia
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.RegistroCirurgia.Include(r => r.Animal).Include(r => r.TiposCirurgia);
+            var applicationDbContext = _context.RegistroCirurgia.Include(r => r.Animal).Include(r => r.TipoCirurgia);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -35,7 +35,7 @@ namespace PetDiverse.Controllers
 
             var registroCirurgia = await _context.RegistroCirurgia
                 .Include(r => r.Animal)
-                .Include(r => r.TiposCirurgia)
+                .Include(r => r.TipoCirurgia)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (registroCirurgia == null)
             {
@@ -136,7 +136,7 @@ namespace PetDiverse.Controllers
 
             var registroCirurgia = await _context.RegistroCirurgia
                 .Include(r => r.Animal)
-                .Include(r => r.TiposCirurgia)
+                .Include(r => r.TipoCirurgia)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (registroCirurgia == null)
             {

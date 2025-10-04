@@ -18,14 +18,14 @@ namespace PetDiverse.Controllers
             _context = context;
         }
 
-        // GET: TipoVacinas
+        // GET: TipoVacina
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.TipoVacina.Include(t => t.TipoAnimal);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: TipoVacinas/Details/5
+        // GET: TipoVacina/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,14 +44,14 @@ namespace PetDiverse.Controllers
             return View(tipoVacina);
         }
 
-        // GET: TipoVacinas/Create
+        // GET: TipoVacina/Create
         public IActionResult Create()
         {
             ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "NomeTipoAnimal");
             return View();
         }
 
-        // POST: TipoVacinas/Create
+        // POST: TipoVacina/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -68,7 +68,7 @@ namespace PetDiverse.Controllers
             return View(tipoVacina);
         }
 
-        // GET: TipoVacinas/Edit/5
+        // GET: TipoVacina/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,7 +85,7 @@ namespace PetDiverse.Controllers
             return View(tipoVacina);
         }
 
-        // POST: TipoVacinas/Edit/5
+        // POST: TipoVacina/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -121,7 +121,7 @@ namespace PetDiverse.Controllers
             return View(tipoVacina);
         }
 
-        // GET: TipoVacinas/Delete/5
+        // GET: TipoVacina/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,7 +140,7 @@ namespace PetDiverse.Controllers
             return View(tipoVacina);
         }
 
-        // POST: TipoVacinas/Delete/5
+        // POST: TipoVacina/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -8,7 +8,10 @@ namespace PetDiverse.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<RegistroVacina> builder)
         {
-            
+            // FK
+            builder.HasOne(o => o.Animal).WithMany(u => u.RegistrosVacina).HasForeignKey(o => o.IdAnimal);
+
+            builder.HasOne(o => o.TipoVacina).WithMany(u => u.RegistrosVacina).HasForeignKey(o => o.IdTipoVacina);
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetDiverse.Data;
 
@@ -11,9 +12,11 @@ using PetDiverse.Data;
 namespace PetDiverse.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251004005731_Acertar")]
+    partial class Acertar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,9 +258,6 @@ namespace PetDiverse.Data.Migrations
                     b.Property<int>("IdPessoaDoadora")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdRaca")
-                        .HasColumnType("int");
-
                     b.Property<int>("IdTipoAnimal")
                         .HasColumnType("int");
 
@@ -274,8 +274,6 @@ namespace PetDiverse.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("IdPessoaDoadora");
-
-                    b.HasIndex("IdRaca");
 
                     b.HasIndex("IdTipoAnimal");
 
@@ -375,28 +373,6 @@ namespace PetDiverse.Data.Migrations
                     b.ToTable("PessoaDoadora", (string)null);
 
                     b.UseTptMappingStrategy();
-                });
-
-            modelBuilder.Entity("PetDiverse.Data.Raca", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DescricaoRaca")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("IdTipoAnimal")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdTipoAnimal");
-
-                    b.ToTable("Raca");
                 });
 
             modelBuilder.Entity("PetDiverse.Data.RegistroCirurgia", b =>
@@ -609,15 +585,9 @@ namespace PetDiverse.Data.Migrations
 
             modelBuilder.Entity("PetDiverse.Data.Animal", b =>
                 {
-                    b.HasOne("PetDiverse.Data.PessoaDoadora", "PessoaDoadora")
+                    b.HasOne("PetDiverse.Data.PessoaDoadora", "Doador")
                         .WithMany("Animais")
                         .HasForeignKey("IdPessoaDoadora")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("PetDiverse.Data.Raca", "Raca")
-                        .WithMany("Animais")
-                        .HasForeignKey("IdRaca")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -627,9 +597,7 @@ namespace PetDiverse.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("PessoaDoadora");
-
-                    b.Navigation("Raca");
+                    b.Navigation("Doador");
 
                     b.Navigation("TipoAnimal");
                 });
@@ -673,17 +641,6 @@ namespace PetDiverse.Data.Migrations
                     b.Navigation("Bairro");
 
                     b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("PetDiverse.Data.Raca", b =>
-                {
-                    b.HasOne("PetDiverse.Data.TipoAnimal", "TipoAnimal")
-                        .WithMany("Racas")
-                        .HasForeignKey("IdTipoAnimal")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("TipoAnimal");
                 });
 
             modelBuilder.Entity("PetDiverse.Data.RegistroCirurgia", b =>
@@ -791,16 +748,9 @@ namespace PetDiverse.Data.Migrations
                     b.Navigation("Animais");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.Raca", b =>
-                {
-                    b.Navigation("Animais");
-                });
-
             modelBuilder.Entity("PetDiverse.Data.TipoAnimal", b =>
                 {
                     b.Navigation("Animais");
-
-                    b.Navigation("Racas");
 
                     b.Navigation("TipoCirurgias");
 

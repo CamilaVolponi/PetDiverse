@@ -18,14 +18,14 @@ namespace PetDiverse.Controllers
             _context = context;
         }
 
-        // GET: PessoaJuridicas
+        // GET: PessoaJuridica
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.PessoaJuridica.Include(p => p.Bairro);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: PessoaJuridicas/Details/5
+        // GET: PessoaJuridica/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,14 +44,14 @@ namespace PetDiverse.Controllers
             return View(pessoaJuridica);
         }
 
-        // GET: PessoaJuridicas/Create
+        // GET: PessoaJuridica/Create
         public IActionResult Create()
         {
             ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "NomeBairro");
             return View();
         }
 
-        // POST: PessoaJuridicas/Create
+        // POST: PessoaJuridica/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -68,7 +68,7 @@ namespace PetDiverse.Controllers
             return View(pessoaJuridica);
         }
 
-        // GET: PessoaJuridicas/Edit/5
+        // GET: PessoaJuridica/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -85,7 +85,7 @@ namespace PetDiverse.Controllers
             return View(pessoaJuridica);
         }
 
-        // POST: PessoaJuridicas/Edit/5
+        // POST: PessoaJuridica/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -121,7 +121,7 @@ namespace PetDiverse.Controllers
             return View(pessoaJuridica);
         }
 
-        // GET: PessoaJuridicas/Delete/5
+        // GET: PessoaJuridica/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,7 +140,7 @@ namespace PetDiverse.Controllers
             return View(pessoaJuridica);
         }
 
-        // POST: PessoaJuridicas/Delete/5
+        // POST: PessoaJuridica/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

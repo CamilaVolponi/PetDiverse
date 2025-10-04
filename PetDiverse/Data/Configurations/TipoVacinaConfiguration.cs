@@ -11,7 +11,7 @@ namespace PetDiverse.Data.Configurations
             builder.Property(x => x.DescricaoVacina).IsRequired();
 
             // FK
-            builder.HasMany(x => x.RegistrosVacina).WithOne(x => x.TiposVacina).HasForeignKey(x => x.IdTipoVacina);
+            builder.HasOne(o => o.TipoAnimal).WithMany(u => u.TipoVacinas).HasForeignKey(o => o.IdTipoAnimal);
         }
     }
 }

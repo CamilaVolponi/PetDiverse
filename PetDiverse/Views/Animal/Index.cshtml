@@ -34,7 +34,7 @@
                 @Html.DisplayNameFor(model => model.TipoAnimal)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Doador)
+                @Html.DisplayNameFor(model => model.PessoaDoadora)
             </th>
             <th></th>
         </tr>
@@ -64,7 +64,7 @@
                 @Html.DisplayFor(modelItem => item.TipoAnimal.NomeTipoAnimal)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Doador.Nome)
+                    @Html.DisplayFor(modelItem => item.PessoaDoadora.Nome)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

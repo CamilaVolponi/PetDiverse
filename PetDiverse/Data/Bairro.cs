@@ -6,13 +6,13 @@ namespace PetDiverse.Data
     {
         public Bairro()
         {
-            Doadores = new HashSet<PessoaDoadora>();
-            Cidades = new Cidade();
+            PessoasDoadoras = new HashSet<PessoaDoadora>();
+            Cidade = new Cidade();
         }
         public int Id { get; set; }
         public string NomeBairro { get; set; } = string.Empty;
-        public virtual IEnumerable<PessoaDoadora>? Doadores { get; set; }
+        public virtual IEnumerable<PessoaDoadora>? PessoasDoadoras { get; set; }
         public int IdCidade { get; set; }
-        public virtual Cidade Cidades { get; set; }
+        public virtual Cidade Cidade { get; set; }
     }
 }

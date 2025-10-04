@@ -13,7 +13,7 @@ namespace PetDiverse.Data.Configurations
             // Required = string é obrigatórias
             builder.Property(x => x.Nome).IsRequired(); 
 
-            builder.Property(x => x.Descricao).IsRequired();
+            builder.Property(x => x.DescricaoAnimal).IsRequired();
 
             builder.Property(x => x.CaminhoFoto).IsRequired();
 

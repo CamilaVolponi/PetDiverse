@@ -20,3 +20,31 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.bg-roxo {
+    background-color: #EDE9FE;
+}
+
+.navbar-roxo .navbar-brand {
+    color: #8B5CF6;
+}
+
+.btn-roxo {
+    background-color: #8B5CF6;
+    color: #FFFFFF;
+}
+
+    .btn-roxo:hover {
+        background-color: #6610f2;
+        color: #FFFFFF;
+    }
+
+.text-roxo, .text-roxo:link, .text-roxo:visited {
+    color: #8B5CF6;
+    text-decoration:none;
+}
+
+    .text-roxo:hover {
+        color: #6610f2;
+    }
+

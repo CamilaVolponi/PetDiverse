@@ -9,7 +9,7 @@ namespace PetDiverse.Controllers
         public void Configure(EntityTypeBuilder<Raca> builder)
         {
             // Required = string é obrigatórias
-            builder.Property(x => x.DescricaoRaca).IsRequired();
+            builder.Property(x => x.Descricao).IsRequired();
 
             //FK
             builder.HasOne(o => o.TipoAnimal).WithMany(u => u.Racas).HasForeignKey(o => o.IdTipoAnimal);

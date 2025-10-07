@@ -11,7 +11,7 @@ namespace PetDiverse.Data
         }
         public int Id { get; set; }
         [Display(Name ="Descrição da vacina")]
-        public string DescricaoVacina { get; set; } = string.Empty;
+        public string Descricao { get; set; } = string.Empty;
         public int IdTipoAnimal { get; set; } // campo FK
         [Display(Name = "Descrição do tipo de animal")]
         public virtual TipoAnimal TipoAnimal { get; set; } // 1 TipoVacina -> 1 TipoAnimal

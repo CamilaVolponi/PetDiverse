@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
+using PetDiverse.Uteis.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
+
+//app.UseMiddleware<FinalizarCadastroUsuarioMiddleware>();
 
 app.UseAuthorization();
 

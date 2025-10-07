@@ -13,7 +13,7 @@ namespace PetDiverse.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "NomeTipoAnimal",
                 table: "TipoAnimal",
-                newName: "DescricaoTipoAnimal");
+                newName: "Descricao");
 
             migrationBuilder.RenameColumn(
                 name: "Descricao",
@@ -25,7 +25,7 @@ namespace PetDiverse.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "DescricaoTipoAnimal",
+                name: "Descricao",
                 table: "TipoAnimal",
                 newName: "NomeTipoAnimal");
 

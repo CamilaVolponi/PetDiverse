@@ -47,7 +47,7 @@ namespace PetDiverse.Controllers
         // GET: PessoaFisica/Create
         public IActionResult Create()
         {
-            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "NomeBairro");
+            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "Nome");
             return View();
         }
 
@@ -64,7 +64,7 @@ namespace PetDiverse.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "NomeBairro", pessoaFisica.IdBairro);
+            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "Nome", pessoaFisica.IdBairro);
             return View(pessoaFisica);
         }
 
@@ -81,7 +81,7 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "NomeBairro", pessoaFisica.IdBairro);
+            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "Nome", pessoaFisica.IdBairro);
             return View(pessoaFisica);
         }
 
@@ -117,7 +117,7 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "NomeBairro", pessoaFisica.IdBairro);
+            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "Nome", pessoaFisica.IdBairro);
             return View(pessoaFisica);
         }
 

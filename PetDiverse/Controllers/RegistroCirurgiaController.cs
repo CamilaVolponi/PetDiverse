@@ -49,7 +49,7 @@ namespace PetDiverse.Controllers
         public IActionResult Create()
         {
             ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto");
-            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "DescricaoCirurgia");
+            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "Descricao");
             return View();
         }
 
@@ -67,7 +67,7 @@ namespace PetDiverse.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroCirurgia.IdAnimal);
-            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "DescricaoCirurgia", registroCirurgia.IdTipoCirurgia);
+            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "Descricao", registroCirurgia.IdTipoCirurgia);
             return View(registroCirurgia);
         }
 
@@ -85,7 +85,7 @@ namespace PetDiverse.Controllers
                 return NotFound();
             }
             ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroCirurgia.IdAnimal);
-            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "DescricaoCirurgia", registroCirurgia.IdTipoCirurgia);
+            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "Descricao", registroCirurgia.IdTipoCirurgia);
             return View(registroCirurgia);
         }
 
@@ -122,7 +122,7 @@ namespace PetDiverse.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroCirurgia.IdAnimal);
-            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "DescricaoCirurgia", registroCirurgia.IdTipoCirurgia);
+            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "Descricao", registroCirurgia.IdTipoCirurgia);
             return View(registroCirurgia);
         }
 

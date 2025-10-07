@@ -56,7 +56,7 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DescricaoCirurgia,IdTipoAnimal")] TipoCirurgia tipoCirurgia)
+        public async Task<IActionResult> Create([Bind("Id,Descricao,IdTipoAnimal")] TipoCirurgia tipoCirurgia)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +90,7 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DescricaoCirurgia,IdTipoAnimal")] TipoCirurgia tipoCirurgia)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Descricao,IdTipoAnimal")] TipoCirurgia tipoCirurgia)
         {
             if (id != tipoCirurgia.Id)
             {

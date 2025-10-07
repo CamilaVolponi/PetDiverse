@@ -9,8 +9,6 @@ namespace PetDiverse.Data.Configurations
         {
             // Required = string é obrigatórias
             builder.Property(x => x.CPF).IsRequired();
-
-            builder.Property(x => x.Sobrenome).IsRequired();
         }
     }
 }

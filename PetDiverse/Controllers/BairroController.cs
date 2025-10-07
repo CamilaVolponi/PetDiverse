@@ -47,7 +47,7 @@ namespace PetDiverse.Controllers
         // GET: Bairro/Create
         public IActionResult Create()
         {
-            ViewData["IdCidade"] = new SelectList(_context.Cidade, "Id", "NomeCidade");
+            ViewData["IdCidade"] = new SelectList(_context.Cidade, "Id", "Nome");
             return View();
         }
 
@@ -56,7 +56,7 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NomeBairro,IdCidade")] Bairro bairro)
+        public async Task<IActionResult> Create([Bind("Id,Nome,IdCidade")] Bairro bairro)
         {
             if (ModelState.IsValid)
             {
@@ -64,7 +64,7 @@ namespace PetDiverse.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCidade"] = new SelectList(_context.Cidade, "Id", "NomeCidade", bairro.IdCidade);
+            ViewData["IdCidade"] = new SelectList(_context.Cidade, "Id", "Nome", bairro.IdCidade);
             return View(bairro);
         }
 
@@ -81,7 +81,7 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdCidade"] = new SelectList(_context.Cidade, "Id", "NomeCidade", bairro.IdCidade);
+            ViewData["IdCidade"] = new SelectList(_context.Cidade, "Id", "Nome", bairro.IdCidade);
             return View(bairro);
         }
 
@@ -90,7 +90,7 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NomeBairro,IdCidade")] Bairro bairro)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,IdCidade")] Bairro bairro)
         {
             if (id != bairro.Id)
             {
@@ -117,7 +117,7 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCidade"] = new SelectList(_context.Cidade, "Id", "NomeCidade", bairro.IdCidade);
+            ViewData["IdCidade"] = new SelectList(_context.Cidade, "Id", "Nome", bairro.IdCidade);
             return View(bairro);
         }
 

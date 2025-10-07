@@ -8,7 +8,7 @@ namespace PetDiverse.Data.Configurations
         public void Configure(EntityTypeBuilder<TipoVacina> builder)
         {
             // Required = string é obrigatórias
-            builder.Property(x => x.DescricaoVacina).IsRequired();
+            builder.Property(x => x.Descricao).IsRequired();
 
             // FK
             builder.HasOne(o => o.TipoAnimal).WithMany(u => u.TipoVacinas).HasForeignKey(o => o.IdTipoAnimal);

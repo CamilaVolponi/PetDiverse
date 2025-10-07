@@ -296,7 +296,7 @@ namespace PetDiverse.Data.Migrations
                     b.Property<int>("IdCidade")
                         .HasColumnType("int");
 
-                    b.Property<string>("NomeBairro")
+                    b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -318,7 +318,7 @@ namespace PetDiverse.Data.Migrations
                     b.Property<int>("IdEstado")
                         .HasColumnType("int");
 
-                    b.Property<string>("NomeCidade")
+                    b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -337,7 +337,7 @@ namespace PetDiverse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("NomeEstado")
+                    b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -388,7 +388,7 @@ namespace PetDiverse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DescricaoRaca")
+                    b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -479,7 +479,7 @@ namespace PetDiverse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DescricaoCirurgia")
+                    b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -501,7 +501,7 @@ namespace PetDiverse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DescricaoVacina")
+                    b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

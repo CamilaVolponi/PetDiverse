@@ -32,7 +32,7 @@
                                 <a class="nav-link text-roxo" asp-area="" asp-controller="Home" asp-action="">Meus animais</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-roxo" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Olá @User.Identity?.Name!</a>
+                                <a class="nav-link dropdown-toggle text-roxo" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Olá, @User.Identity?.Name!</a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                     <li>
                                         <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Minha conta</a>

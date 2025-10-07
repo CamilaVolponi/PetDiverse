@@ -293,7 +293,7 @@ namespace PetDiverse.Data.Migrations
                     b.Property<int>("IdCidade")
                         .HasColumnType("int");
 
-                    b.Property<string>("NomeBairro")
+                    b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -315,7 +315,7 @@ namespace PetDiverse.Data.Migrations
                     b.Property<int>("IdEstado")
                         .HasColumnType("int");
 
-                    b.Property<string>("NomeCidade")
+                    b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -334,13 +334,34 @@ namespace PetDiverse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("NomeEstado")
+                    b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Estado");
+                });
+
+            modelBuilder.Entity("PetDiverse.Data.FormaContato", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("IdPesssoaDoadora")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TipoFormaContato")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IdPesssoaDoadora");
+
+                    b.ToTable("FormaContato");
                 });
 
             modelBuilder.Entity("PetDiverse.Data.PessoaDoadora", b =>
@@ -385,7 +406,7 @@ namespace PetDiverse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DescricaoRaca")
+                    b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -459,7 +480,7 @@ namespace PetDiverse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DescricaoTipoAnimal")
+                    b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -476,7 +497,7 @@ namespace PetDiverse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DescricaoCirurgia")
+                    b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -498,7 +519,7 @@ namespace PetDiverse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("DescricaoVacina")
+                    b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -656,6 +677,17 @@ namespace PetDiverse.Data.Migrations
                     b.Navigation("Estado");
                 });
 
+            modelBuilder.Entity("PetDiverse.Data.FormaContato", b =>
+                {
+                    b.HasOne("PetDiverse.Data.PessoaDoadora", "PessoaDoadora")
+                        .WithMany("FormasContato")
+                        .HasForeignKey("IdPesssoaDoadora")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("PessoaDoadora");
+                });
+
             modelBuilder.Entity("PetDiverse.Data.PessoaDoadora", b =>
                 {
                     b.HasOne("PetDiverse.Data.Bairro", "Bairro")
@@ -789,6 +821,8 @@ namespace PetDiverse.Data.Migrations
             modelBuilder.Entity("PetDiverse.Data.PessoaDoadora", b =>
                 {
                     b.Navigation("Animais");
+
+                    b.Navigation("FormasContato");
                 });
 
             modelBuilder.Entity("PetDiverse.Data.Raca", b =>

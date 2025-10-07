@@ -15,7 +15,7 @@ namespace PetDiverse.Data
         }
         public int Id { get; set; }
         public string Nome { get; set; } = string.Empty; // string.Empty = vai ter um valor, mais vazio = " "
-        public string DescricaoAnimal { get; set; } = string.Empty;
+        public string Descricao { get; set; } = string.Empty;
         public int Idade { get; set; }
         public bool Adotado { get; set; }
         public string? CaminhoFoto { get; set; } // "?" é pq pode ser nulo

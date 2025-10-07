@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
+using PetDiverse.Data.Enums;
+using PetDiverse.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace PetDiverse.Controllers
 {
@@ -47,7 +50,10 @@ namespace PetDiverse.Controllers
         // GET: PessoaDoadora/Create
         public IActionResult Create()
         {
-            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "NomeBairro");
+            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
+            ViewData["IdCidade"] = new SelectList(new List<Cidade>());
+            ViewData["IdBairro"] = new SelectList(new List<Bairro>());
+           //ViewData["TiposFormaContato"] = new SelectList(TipoFormaContato);
             return View();
         }
 
@@ -56,16 +62,37 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Telefone,IdBairro")] PessoaDoadora pessoaDoadora)
+        public async Task<IActionResult> Create(PessoaDoadoraCadastroViewModel pessoaDoadoraCadastroViewModel)
         {
             if (ModelState.IsValid)
             {
+                var pessoaDoadora = new PessoaDoadora();
+                pessoaDoadora.Nome = pessoaDoadoraCadastroViewModel.Nome;
+                pessoaDoadora.FormasContato = pessoaDoadoraCadastroViewModel.TipoFormaContato.Select(t => new FormaContato { TipoFormaContato = t });
+                pessoaDoadora.Telefone = pessoaDoadoraCadastroViewModel.Telefone;
+                pessoaDoadora.IdBairro = pessoaDoadoraCadastroViewModel.IdBairro;
+                pessoaDoadora.IdUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if(pessoaDoadoraCadastroViewModel.TipoPessoaCadastro == TipoPessoaCadastro.Fisica)
+                {
+                    var pessoaDoadoraFisica = (pessoaDoadora as PessoaFisica);
+                    pessoaDoadoraFisica.CPF = pessoaDoadoraCadastroViewModel.CPF;
+                    pessoaDoadoraFisica.DataNascimento = pessoaDoadoraCadastroViewModel.DataNascimento;
+                }
+                else
+                {
+                    var pessoaDoadoraJuridica = (pessoaDoadora as PessoaJuridica);
+                    pessoaDoadoraJuridica.CNPJ = pessoaDoadoraCadastroViewModel.CNPJ;
+                    pessoaDoadoraJuridica.Site = pessoaDoadoraCadastroViewModel.Site;
+                }
                 _context.Add(pessoaDoadora);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "NomeBairro", pessoaDoadora.IdBairro);
-            return View(pessoaDoadora);
+            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
+            ViewData["IdCidade"] = new SelectList(new List<Cidade>());
+            ViewData["IdBairro"] = new SelectList(new List<Bairro>());
+            return View(pessoaDoadoraCadastroViewModel);
         }
 
         // GET: PessoaDoadora/Edit/5
@@ -81,7 +108,8 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "NomeBairro", pessoaDoadora.IdBairro);
+
+            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "Nome", pessoaDoadora.IdBairro);
             return View(pessoaDoadora);
         }
 
@@ -117,7 +145,7 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "NomeBairro", pessoaDoadora.IdBairro);
+            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "Nome", pessoaDoadora.IdBairro);
             return View(pessoaDoadora);
         }
 
@@ -153,6 +181,16 @@ namespace PetDiverse.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> RecuperarCidades(int? id)
+        {
+            return Json(new SelectList(await _context.Cidade.Where(c=>c.IdEstado==id).ToListAsync(), "Id", "Nome")); 
+        }
+
+        public async Task<IActionResult> RecuperarBairros(int? id)
+        {
+            return Json(new SelectList(await _context.Bairro.Where(c => c.IdCidade == id).ToListAsync(), "Id", "Nome"));
         }
 
         private bool PessoaDoadoraExists(int id)

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace PetDiverse.Data
 {
@@ -10,8 +11,9 @@ namespace PetDiverse.Data
             Estado = new Estado();
         }
         public int Id { get; set; }
-        public string NomeCidade { get; set; } = string.Empty;
+        public string Nome { get; set; } = string.Empty;
         public virtual IEnumerable<Bairro> Bairros { get; set; }
+        [DisplayName("Estado")]
         public int IdEstado { get; set; }
         public virtual Estado Estado { get; set; }
     }

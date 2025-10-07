@@ -9,7 +9,7 @@ namespace PetDiverse.Data
             Cidades = new HashSet<Cidade>();
         }
         public int Id { get; set; }
-        public string NomeEstado { get; set; } = string.Empty;
+        public string Nome { get; set; } = string.Empty;
         public virtual IEnumerable<Cidade> Cidades { get; set; }
     }
 }

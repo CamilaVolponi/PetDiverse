@@ -8,7 +8,7 @@ namespace PetDiverse.Data.Configurations
         public void Configure(EntityTypeBuilder<Estado> builder)
         {
             // Required = string é obrigatórias
-            builder.Property(x => x.NomeEstado).IsRequired();            
+            builder.Property(x => x.Nome).IsRequired();            
         }
     }
 }

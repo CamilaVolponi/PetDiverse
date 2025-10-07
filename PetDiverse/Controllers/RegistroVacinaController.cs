@@ -49,7 +49,7 @@ namespace PetDiverse.Controllers
         public IActionResult Create()
         {
             ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto");
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "DescricaoVacina");
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao");
             return View();
         }
 
@@ -67,7 +67,7 @@ namespace PetDiverse.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroVacina.IdAnimal);
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "DescricaoVacina", registroVacina.IdTipoVacina);
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao", registroVacina.IdTipoVacina);
             return View(registroVacina);
         }
 
@@ -85,7 +85,7 @@ namespace PetDiverse.Controllers
                 return NotFound();
             }
             ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroVacina.IdAnimal);
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "DescricaoVacina", registroVacina.IdTipoVacina);
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao", registroVacina.IdTipoVacina);
             return View(registroVacina);
         }
 
@@ -122,7 +122,7 @@ namespace PetDiverse.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroVacina.IdAnimal);
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "DescricaoVacina", registroVacina.IdTipoVacina);
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao", registroVacina.IdTipoVacina);
             return View(registroVacina);
         }
 

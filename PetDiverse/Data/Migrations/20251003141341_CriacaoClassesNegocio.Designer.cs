@@ -227,7 +227,7 @@ namespace PetDiverse.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.Animal", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.Animal", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -271,7 +271,7 @@ namespace PetDiverse.Data.Migrations
                     b.ToTable("Animal");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.Bairro", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.Bairro", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -288,7 +288,7 @@ namespace PetDiverse.Data.Migrations
                     b.ToTable("Bairro");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.Cidade", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.Cidade", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -305,7 +305,7 @@ namespace PetDiverse.Data.Migrations
                     b.ToTable("Cidade");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.Estado", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.Estado", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -322,7 +322,7 @@ namespace PetDiverse.Data.Migrations
                     b.ToTable("Estado");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.PessoaDoadora", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.PessoaDoadora", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -367,7 +367,7 @@ namespace PetDiverse.Data.Migrations
                     b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.RegistroCirurgia", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.RegistroCirurgia", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -375,7 +375,7 @@ namespace PetDiverse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DataCirurgia")
+                    b.Property<DateTime>("DataRegistro")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdAnimal")
@@ -393,7 +393,7 @@ namespace PetDiverse.Data.Migrations
                     b.ToTable("RegistroCirurgia");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.RegistroVacina", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.RegistroVacina", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -401,7 +401,7 @@ namespace PetDiverse.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DataVacina")
+                    b.Property<DateTime>("DataRegistro")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("IdAnimal")
@@ -419,7 +419,7 @@ namespace PetDiverse.Data.Migrations
                     b.ToTable("RegistroVacina");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.TipoAnimal", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.TipoAnimal", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -436,7 +436,7 @@ namespace PetDiverse.Data.Migrations
                     b.ToTable("TipoAnimal");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.TipoCirurgia", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.TipoCirurgia", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -458,7 +458,7 @@ namespace PetDiverse.Data.Migrations
                     b.ToTable("TipoCirurgia");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.TipoVacina", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.TipoVacina", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -480,9 +480,9 @@ namespace PetDiverse.Data.Migrations
                     b.ToTable("TipoVacina");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.PessoaFisica", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.PessoaFisica", b =>
                 {
-                    b.HasBaseType("PetDiverse.Data.PessoaDoadora");
+                    b.HasBaseType("PetDiverse.DataRegistro.PessoaDoadora");
 
                     b.Property<string>("CPF")
                         .IsRequired()
@@ -498,9 +498,9 @@ namespace PetDiverse.Data.Migrations
                     b.HasDiscriminator().HasValue("PessoaFisica");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.PessoaJuridica", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.PessoaJuridica", b =>
                 {
-                    b.HasBaseType("PetDiverse.Data.PessoaDoadora");
+                    b.HasBaseType("PetDiverse.DataRegistro.PessoaDoadora");
 
                     b.Property<string>("CNPJ")
                         .IsRequired()
@@ -568,15 +568,15 @@ namespace PetDiverse.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.Animal", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.Animal", b =>
                 {
-                    b.HasOne("PetDiverse.Data.PessoaDoadora", "Doador")
+                    b.HasOne("PetDiverse.DataRegistro.PessoaDoadora", "Doador")
                         .WithMany("Animais")
                         .HasForeignKey("IdDoador")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PetDiverse.Data.TipoAnimal", "TipoAnimal")
+                    b.HasOne("PetDiverse.DataRegistro.TipoAnimal", "TipoAnimal")
                         .WithMany("Animais")
                         .HasForeignKey("IdTipoAnimal")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -587,21 +587,21 @@ namespace PetDiverse.Data.Migrations
                     b.Navigation("TipoAnimal");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.PessoaDoadora", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.PessoaDoadora", b =>
                 {
-                    b.HasOne("PetDiverse.Data.Bairro", "Bairro")
+                    b.HasOne("PetDiverse.DataRegistro.Bairro", "Bairro")
                         .WithMany("Doadores")
                         .HasForeignKey("IdBairro")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PetDiverse.Data.Cidade", "Cidade")
+                    b.HasOne("PetDiverse.DataRegistro.Cidade", "Cidade")
                         .WithMany("Doadores")
                         .HasForeignKey("IdCidade")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PetDiverse.Data.Estado", "Estado")
+                    b.HasOne("PetDiverse.DataRegistro.Estado", "Estado")
                         .WithMany("Doadores")
                         .HasForeignKey("IdEstado")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -614,15 +614,15 @@ namespace PetDiverse.Data.Migrations
                     b.Navigation("Estado");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.RegistroCirurgia", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.RegistroCirurgia", b =>
                 {
-                    b.HasOne("PetDiverse.Data.Animal", "Animal")
+                    b.HasOne("PetDiverse.DataRegistro.Animal", "Animal")
                         .WithMany("RegistrosCirurgia")
                         .HasForeignKey("IdAnimal")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PetDiverse.Data.TipoCirurgia", "TiposCirurgia")
+                    b.HasOne("PetDiverse.DataRegistro.TipoCirurgia", "TiposCirurgia")
                         .WithMany("RegistrosCirurgia")
                         .HasForeignKey("IdTipoCirurgia")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -633,15 +633,15 @@ namespace PetDiverse.Data.Migrations
                     b.Navigation("TiposCirurgia");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.RegistroVacina", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.RegistroVacina", b =>
                 {
-                    b.HasOne("PetDiverse.Data.Animal", "Animal")
+                    b.HasOne("PetDiverse.DataRegistro.Animal", "Animal")
                         .WithMany("RegistrosVacina")
                         .HasForeignKey("IdAnimal")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("PetDiverse.Data.TipoVacina", "TiposVacina")
+                    b.HasOne("PetDiverse.DataRegistro.TipoVacina", "TiposVacina")
                         .WithMany("RegistrosVacina")
                         .HasForeignKey("IdTipoVacina")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -652,9 +652,9 @@ namespace PetDiverse.Data.Migrations
                     b.Navigation("TiposVacina");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.TipoCirurgia", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.TipoCirurgia", b =>
                 {
-                    b.HasOne("PetDiverse.Data.TipoAnimal", "TipoAnimal")
+                    b.HasOne("PetDiverse.DataRegistro.TipoAnimal", "TipoAnimal")
                         .WithMany("TiposCirurgia")
                         .HasForeignKey("IdTipoAnimal")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -663,9 +663,9 @@ namespace PetDiverse.Data.Migrations
                     b.Navigation("TipoAnimal");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.TipoVacina", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.TipoVacina", b =>
                 {
-                    b.HasOne("PetDiverse.Data.TipoAnimal", "TipoAnimal")
+                    b.HasOne("PetDiverse.DataRegistro.TipoAnimal", "TipoAnimal")
                         .WithMany("TiposVacina")
                         .HasForeignKey("IdTipoAnimal")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -674,34 +674,34 @@ namespace PetDiverse.Data.Migrations
                     b.Navigation("TipoAnimal");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.Animal", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.Animal", b =>
                 {
                     b.Navigation("RegistrosCirurgia");
 
                     b.Navigation("RegistrosVacina");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.Bairro", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.Bairro", b =>
                 {
                     b.Navigation("Doadores");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.Cidade", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.Cidade", b =>
                 {
                     b.Navigation("Doadores");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.Estado", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.Estado", b =>
                 {
                     b.Navigation("Doadores");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.PessoaDoadora", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.PessoaDoadora", b =>
                 {
                     b.Navigation("Animais");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.TipoAnimal", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.TipoAnimal", b =>
                 {
                     b.Navigation("Animais");
 
@@ -710,12 +710,12 @@ namespace PetDiverse.Data.Migrations
                     b.Navigation("TiposVacina");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.TipoCirurgia", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.TipoCirurgia", b =>
                 {
                     b.Navigation("RegistrosCirurgia");
                 });
 
-            modelBuilder.Entity("PetDiverse.Data.TipoVacina", b =>
+            modelBuilder.Entity("PetDiverse.DataRegistro.TipoVacina", b =>
                 {
                     b.Navigation("RegistrosVacina");
                 });

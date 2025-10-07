@@ -58,7 +58,7 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DataVacina,IdAnimal,IdTipoVacina")] RegistroVacina registroVacina)
+        public async Task<IActionResult> Create([Bind("Id,DataRegistro,IdAnimal,IdTipoVacina")] RegistroVacina registroVacina)
         {
             if (ModelState.IsValid)
             {
@@ -94,7 +94,7 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DataVacina,IdAnimal,IdTipoVacina")] RegistroVacina registroVacina)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,DataRegistro,IdAnimal,IdTipoVacina")] RegistroVacina registroVacina)
         {
             if (id != registroVacina.Id)
             {

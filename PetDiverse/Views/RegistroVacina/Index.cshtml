@@ -13,7 +13,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DataVacina)
+                @Html.DisplayNameFor(model => model.DataRegistro)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Animal)
@@ -28,7 +28,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.DataVacina)
+                @Html.DisplayFor(modelItem => item.DataRegistro)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Animal.CaminhoFoto)

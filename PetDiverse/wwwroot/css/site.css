@@ -48,3 +48,29 @@ body {
         color: #6610f2;
     }
 
+/* Botão do Dropdown Customizado */
+.dropdown-roxo {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    /* Adicionamos um padding para que o botão tenha uma área clicável, mesmo sem texto. */
+    padding: 0.375rem 0.75rem !important;
+}
+
+    /* Efeito ao passar o mouse ou focar */
+    .dropdown-roxo:hover,
+    .dropdown-roxo:focus {
+        background-color: rgba(111, 66, 193, 0.1) !important; /* Fundo roxo bem claro */
+        box-shadow: none !important; /* Remove a sombra azul de foco */
+    }
+
+    /* Recriando a seta (caret) do zero */
+    .dropdown-roxo::after {
+        display: inline-block; /* Essencial para que o pseudo-elemento seja visível */
+        vertical-align: 0.255em; /* Alinha a seta no meio do botão */
+        content: ""; /* Conteúdo vazio é obrigatório para pseudo-elementos */
+        /* A mágica do triângulo usando bordas */
+        border-top: 0.3em solid #6f42c1; /* A cor da seta */
+        border-right: 0.3em solid transparent;
+        border-bottom: 0;
+        border-left: 0.3em solid transparent;
+    }

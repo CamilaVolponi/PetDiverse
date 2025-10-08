@@ -29,7 +29,7 @@
                         @if (SignInManager.IsSignedIn(User))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-roxo" asp-area="" asp-controller="Home" asp-action="">Meus animais</a>
+                                <a class="nav-link text-roxo" asp-area="" asp-controller="Animal" asp-action="Index">Meus animais</a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-roxo" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Olá, @User.Identity?.Name!</a>
@@ -39,6 +39,28 @@
                                     </li>
                                     <li>
                                         <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">Quero adotar!</a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Bairro" asp-action="Index">Bairro</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Cidade" asp-action="Index">Cidade</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Estado" asp-action="Index">Estado</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="Raca" asp-action="Index">Raça</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="TipoAnimal" asp-action="Index">Tipo de animal</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="TipoCirurgia" asp-action="Index">Tipo de cirurgia</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="" asp-controller="TipoVacina" asp-action="Index">Tipo de vacina</a>
                                     </li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>

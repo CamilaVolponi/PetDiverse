@@ -10,10 +10,10 @@ namespace PetDiverse.Data
             RegistrosVacina = new HashSet<RegistroVacina>(); //definindo navegação, TipoVacina -> RegistroVacina
         }
         public int Id { get; set; }
-        [Display(Name ="Descrição da vacina")]
+        [Display(Name ="Vacina")]
         public string Descricao { get; set; } = string.Empty;
         public int IdTipoAnimal { get; set; } // campo FK
-        [Display(Name = "Descrição do tipo de animal")]
+        [Display(Name = "Tipo de animal")]
         public virtual TipoAnimal TipoAnimal { get; set; } // 1 TipoVacina -> 1 TipoAnimal
         public virtual IEnumerable<RegistroVacina> RegistrosVacina { get; set; }
     }

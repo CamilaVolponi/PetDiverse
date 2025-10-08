@@ -53,5 +53,6 @@ namespace PetDiverse.Data
         public DbSet<PetDiverse.Data.Animal> Animal { get; set; } = default!;
         public DbSet<PetDiverse.Data.RegistroCirurgia> RegistroCirurgia { get; set; } = default!;
         public DbSet<PetDiverse.Data.RegistroVacina> RegistroVacina { get; set; } = default!;
+        public DbSet<PetDiverse.Data.Raca> Raca { get; set; } = default!;
     }
 }

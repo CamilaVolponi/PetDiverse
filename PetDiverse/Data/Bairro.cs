@@ -11,6 +11,7 @@ namespace PetDiverse.Data
             Cidade = new Cidade();
         }
         public int Id { get; set; }
+        [DisplayName("Bairro")]
         public string Nome { get; set; } = string.Empty;
         public virtual IEnumerable<PessoaDoadora>? PessoasDoadoras { get; set; }
         [DisplayName("Cidade")]

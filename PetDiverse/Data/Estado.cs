@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace PetDiverse.Data
 {
@@ -9,6 +10,7 @@ namespace PetDiverse.Data
             Cidades = new HashSet<Cidade>();
         }
         public int Id { get; set; }
+        [DisplayName("Estado")]
         public string Nome { get; set; } = string.Empty;
         public virtual IEnumerable<Cidade> Cidades { get; set; }
     }

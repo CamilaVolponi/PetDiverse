@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetDiverse.Data;
 
-namespace PetDiverse.Controllers
+namespace PetDiverse.Data.Configurations
 {
     public class RacaConfiguration : IEntityTypeConfiguration<Raca>
     {

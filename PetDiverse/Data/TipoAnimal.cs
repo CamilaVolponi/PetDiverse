@@ -12,6 +12,7 @@ namespace PetDiverse.Data
             Racas = new HashSet<Raca>();
         }
         public int Id { get; set; }
+        [Display(Name = "Tipo de animal")]
         public string Descricao { get; set; } = string.Empty;
         public virtual IEnumerable<Animal> Animais { get; set; } // 1 TipoAnimal -> N Animais
         public virtual IEnumerable<TipoVacina> TipoVacinas { get; set; } // 1 TipoAnimal -> N Tipos de vacina

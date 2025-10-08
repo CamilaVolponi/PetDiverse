@@ -1,2 +1,17 @@
 ﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    $(document).ready(function () {
+      $.validator.addMethod("requiredIf", function(value, element, params) {
+        const valueName = params.valueName;
+        const expectedValue = params.expectedValue;
+        const selectedValue = $(`input[name='${valueName}']:checked`).val();
+        // Se o valor do radio for o esperado, o campo deve estar preenchido
+        if (selectedValue === expectedValue) {
+          return $.trim(value).length > 0;
+        }
+        // Caso contrário, não valida
+        return true;
+      }, "Este campo é obrigatório.");
+    })
+</script>

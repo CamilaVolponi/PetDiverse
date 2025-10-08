@@ -6,6 +6,7 @@ using PetDiverse.Data.Enums;
 using PetDiverse.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -53,7 +54,14 @@ namespace PetDiverse.Controllers
             ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
             ViewData["IdCidade"] = new SelectList(new List<Cidade>());
             ViewData["IdBairro"] = new SelectList(new List<Bairro>());
-           //ViewData["TiposFormaContato"] = new SelectList(TipoFormaContato);
+            var listaTipoContato = Enum.GetValues(typeof(TipoFormaContato)).Cast<TipoFormaContato>().Select(e => new{ Valor = (int)e,
+                Nome = e.ToString()});
+            ViewData["TiposFormaContato"] = new SelectList(listaTipoContato, "Valor","Nome");
+            var listaTipoPessoa = Enum.GetValues(typeof(TipoPessoaCadastro)).Cast<TipoPessoaCadastro>().Select(e => new {
+                Valor = (int)e,
+                Nome = e.ToString()
+            });
+            ViewData["TipoPessoaCadastro"] = new SelectList(listaTipoPessoa, "Valor", "Nome");
             return View();
         }
 
@@ -64,27 +72,30 @@ namespace PetDiverse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PessoaDoadoraCadastroViewModel pessoaDoadoraCadastroViewModel)
         {
+            ObrigatoriedadePessoaDoadora(pessoaDoadoraCadastroViewModel);
             if (ModelState.IsValid)
             {
                 var pessoaDoadora = new PessoaDoadora();
-                pessoaDoadora.Nome = pessoaDoadoraCadastroViewModel.Nome;
-                pessoaDoadora.FormasContato = pessoaDoadoraCadastroViewModel.TipoFormaContato.Select(t => new FormaContato { TipoFormaContato = t });
-                pessoaDoadora.Telefone = pessoaDoadoraCadastroViewModel.Telefone;
-                pessoaDoadora.IdBairro = pessoaDoadoraCadastroViewModel.IdBairro;
-                pessoaDoadora.IdUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
                 if(pessoaDoadoraCadastroViewModel.TipoPessoaCadastro == TipoPessoaCadastro.Fisica)
                 {
-                    var pessoaDoadoraFisica = (pessoaDoadora as PessoaFisica);
+                    var pessoaDoadoraFisica = new PessoaFisica();
                     pessoaDoadoraFisica.CPF = pessoaDoadoraCadastroViewModel.CPF;
                     pessoaDoadoraFisica.DataNascimento = pessoaDoadoraCadastroViewModel.DataNascimento;
+                    pessoaDoadora = pessoaDoadoraFisica;
                 }
                 else
                 {
-                    var pessoaDoadoraJuridica = (pessoaDoadora as PessoaJuridica);
+                    var pessoaDoadoraJuridica = new PessoaJuridica();
                     pessoaDoadoraJuridica.CNPJ = pessoaDoadoraCadastroViewModel.CNPJ;
                     pessoaDoadoraJuridica.Site = pessoaDoadoraCadastroViewModel.Site;
+                    pessoaDoadoraJuridica.RedeSocial = pessoaDoadoraCadastroViewModel.Site;
+                    pessoaDoadora = pessoaDoadoraJuridica;
                 }
+                pessoaDoadora.Nome = pessoaDoadoraCadastroViewModel.Nome;
+                pessoaDoadora.FormasContato = pessoaDoadoraCadastroViewModel.TipoFormaContato.Select(t => new FormaContato { TipoFormaContato = t }).ToList();
+                pessoaDoadora.Telefone = pessoaDoadoraCadastroViewModel.Telefone;
+                pessoaDoadora.IdBairro = pessoaDoadoraCadastroViewModel.IdBairro;
+                pessoaDoadora.IdUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 _context.Add(pessoaDoadora);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -92,6 +103,16 @@ namespace PetDiverse.Controllers
             ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
             ViewData["IdCidade"] = new SelectList(new List<Cidade>());
             ViewData["IdBairro"] = new SelectList(new List<Bairro>());
+            var listaTipoContato = Enum.GetValues(typeof(TipoFormaContato)).Cast<TipoFormaContato>().Select(e => new {
+                Valor = (int)e,
+                Nome = e.ToString()
+            });
+            ViewData["TiposFormaContato"] = new SelectList(listaTipoContato, "Valor", "Nome");
+            var listaTipoPessoa = Enum.GetValues(typeof(TipoPessoaCadastro)).Cast<TipoPessoaCadastro>().Select(e => new {
+                Valor = (int)e,
+                Nome = e.ToString()
+            });
+            ViewData["TipoPessoaCadastro"] = new SelectList(listaTipoPessoa, "Valor", "Nome");
             return View(pessoaDoadoraCadastroViewModel);
         }
 
@@ -191,6 +212,21 @@ namespace PetDiverse.Controllers
         public async Task<IActionResult> RecuperarBairros(int? id)
         {
             return Json(new SelectList(await _context.Bairro.Where(c => c.IdCidade == id).ToListAsync(), "Id", "Nome"));
+        }
+
+        private void ObrigatoriedadePessoaDoadora(PessoaDoadoraCadastroViewModel pessoaDoadora)
+        {
+            if(pessoaDoadora.TipoPessoaCadastro == TipoPessoaCadastro.Fisica)
+            {
+                ModelState.Remove(nameof(PessoaDoadoraCadastroViewModel.Site));
+                ModelState.Remove(nameof(PessoaDoadoraCadastroViewModel.CNPJ));
+                ModelState.Remove(nameof(PessoaDoadoraCadastroViewModel.RedeSocial));
+            }
+            else
+            {
+                ModelState.Remove(nameof(PessoaDoadoraCadastroViewModel.CPF));
+                ModelState.Remove(nameof(PessoaDoadoraCadastroViewModel.DataNascimento));
+            }
         }
 
         private bool PessoaDoadoraExists(int id)

@@ -45,7 +45,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 
-//app.UseMiddleware<FinalizarCadastroUsuarioMiddleware>();
+app.UseMiddleware<FinalizarCadastroUsuarioMiddleware>();
 
 app.UseAuthorization();
 

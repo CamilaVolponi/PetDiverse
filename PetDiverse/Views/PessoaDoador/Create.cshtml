@@ -10,13 +10,51 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" id="CreatePessoaDoadora">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="IdBairro" class="control-label"></label>
+                @foreach (var opcao in ViewBag.TipoPessoaCadastro)
+                {
+                    <input name="TipoPessoaCadastro" type="radio" value="@opcao.Value" class="form-check-input" />
+                    <label class="form-check-label">@opcao.Text</label>
+                }
+            </div>
             <div class="form-group">
                 <label asp-for="Nome" class="control-label"></label>
                 <input asp-for="Nome" class="form-control" />
                 <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
+
+            @* Pessoa fisica *@
+            <div class="form-group pessoa-fisica">
+                <label asp-for="CPF" class="control-label"></label>
+                <input asp-for="CPF" class="form-control" />
+                <span asp-validation-for="CPF" class="text-danger"></span>
+            </div>
+            <div class="form-group pessoa-fisica">
+                <label asp-for="DataNascimento" class="control-label"></label>
+                <input asp-for="DataNascimento" type="date" class="form-control" />
+                <span asp-validation-for="DataNascimento" class="text-danger"></span>
+            </div>
+
+            @* Pessoa juridica *@
+            <div class="form-group pessoa-juridica">
+                <label asp-for="CNPJ" class="control-label"></label>
+                <input asp-for="CNPJ" class="form-control" />
+                <span asp-validation-for="CNPJ" class="text-danger"></span>
+            </div>
+            <div class="form-group pessoa-juridica">
+                <label asp-for="RedeSocial" class="control-label"></label>
+                <input asp-for="RedeSocial" class="form-control" />
+                <span asp-validation-for="RedeSocial" class="text-danger"></span>
+            </div>
+            <div class="form-group pessoa-juridica">
+                <label asp-for="Site" class="control-label"></label>
+                <input asp-for="Site" class="form-control" />
+                <span asp-validation-for="Site" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <label asp-for="Telefone" class="control-label"></label>
                 <input asp-for="Telefone" class="form-control" />
@@ -33,6 +71,14 @@
             <div class="form-group">
                 <label asp-for="IdBairro" class="control-label"></label>
                 <select asp-for="IdBairro" class="form-control" asp-items="ViewBag.IdBairro"><option>Selecione um bairro</option></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdBairro" class="control-label"></label>
+                @foreach (var opcao in ViewBag.TiposFormaContato)
+                {
+                    <input name="TipoFormaContato" type="checkbox" value="@opcao.Value" class="form-check-input"/>
+                    <label class="form-check-label">@opcao.Text</label>
+                }
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-roxo" />
@@ -52,6 +98,7 @@
 
     <script>
         $(document).ready(function(){
+            $(".pessoa-fisica,.pessoa-juridica").hide();
             $("#IdEstado").change(function(){
                 var cidadeSelect = $('#IdCidade');
 
@@ -96,8 +143,54 @@
                     bairroSelect.append('<option>Selecione uma bairro</option>');
                 }
             })
+            $("input[name='TipoPessoaCadastro']").change(function(){
+                if($(this).val() == "1"){
+                    $(".pessoa-fisica").show();
+                    $(".pessoa-juridica").hide();
+                }else{
+                    $(".pessoa-juridica").show();
+                    $(".pessoa-fisica").hide();
+                }
+                var validator = $("#CreatePessoaDoadora").validate();
+                validator.resetForm(); // limpa tudo
+            })
+            $("#CreatePessoaDoadora").validate({
+                rules: {
+                DataNascimento: {
+                    requiredIf: {
+                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
+                    expectedValue: "1"       // Valor que ativa a obrigatoriedade
+                    }
+                },
+                CPF: {
+                    requiredIf: {
+                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
+                    expectedValue: "1"       // Valor que ativa a obrigatoriedade
+                    }
+                },
+                CNPJ: {
+                    requiredIf: {
+                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
+                    expectedValue: "2"       // Valor que ativa a obrigatoriedade
+                    }
+                },
+                Site: {
+                    requiredIf: {
+                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
+                    expectedValue: "2"       // Valor que ativa a obrigatoriedade
+                    }
+                },
+                RedeSocial: {
+                    requiredIf: {
+                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
+                    expectedValue: "2"       // Valor que ativa a obrigatoriedade
+                    }
+                }
+                }
+            });
         })
-        
+
     </script>
+
 }
 

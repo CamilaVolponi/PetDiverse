@@ -3,10 +3,6 @@ namespace PetDiverse.Data
 {
     public class RegistroCirurgia
     {
-        public RegistroCirurgia()
-        {
-            TipoCirurgia = new TipoCirurgia();
-        }
         public int Id { get; set; }
         public DateTime DataRegistro { get; set; }
         public int IdAnimal { get; set; } // campo FK - Animail

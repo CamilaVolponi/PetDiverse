@@ -130,8 +130,42 @@ namespace PetDiverse.Controllers
                 return NotFound();
             }
 
-            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "Nome", pessoaDoadora.IdBairro);
-            return View(pessoaDoadora);
+            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
+            ViewData["IdCidade"] = new SelectList(new List<Cidade>());
+            ViewData["IdBairro"] = new SelectList(new List<Bairro>());
+            var listaTipoContato = Enum.GetValues(typeof(TipoFormaContato)).Cast<TipoFormaContato>().Select(e => new {
+                Valor = (int)e,
+                Nome = e.ToString()
+            });
+            ViewData["TiposFormaContato"] = new SelectList(listaTipoContato, "Valor", "Nome");
+            var listaTipoPessoa = Enum.GetValues(typeof(TipoPessoaCadastro)).Cast<TipoPessoaCadastro>().Select(e => new {
+                Valor = (int)e,
+                Nome = e.ToString()
+            });
+            ViewData["TipoPessoaCadastro"] = new SelectList(listaTipoPessoa, "Valor", "Nome");
+
+            var pessoaDoadoraCadastroViewModel = new PessoaDoadoraCadastroViewModel();
+
+
+            if (pessoaDoadora is PessoaFisica)
+            {
+                var pessoaDoadoraFisica = (pessoaDoadora as PessoaFisica);
+                pessoaDoadoraCadastroViewModel.CPF = pessoaDoadoraFisica.CPF;
+                pessoaDoadoraCadastroViewModel.DataNascimento = pessoaDoadoraFisica.DataNascimento;
+            }
+            else
+            {
+                var pessoaDoadoraJuridica = (pessoaDoadora as PessoaJuridica);
+                pessoaDoadoraCadastroViewModel.CNPJ = pessoaDoadoraJuridica.CNPJ;
+                pessoaDoadoraCadastroViewModel.Site = pessoaDoadoraJuridica.Site;
+                pessoaDoadoraCadastroViewModel.RedeSocial = pessoaDoadoraJuridica.Site;
+            }
+            pessoaDoadoraCadastroViewModel.Nome =  pessoaDoadora.Nome;
+            pessoaDoadoraCadastroViewModel.TipoFormaContato = pessoaDoadora.FormasContato.Select(t =>t.TipoFormaContato).ToList();
+            pessoaDoadoraCadastroViewModel.Telefone = pessoaDoadora.Telefone;
+            pessoaDoadoraCadastroViewModel.IdBairro = pessoaDoadora.IdBairro;
+
+            return View(pessoaDoadoraCadastroViewModel);
         }
 
         // POST: PessoaDoadora/Edit/5
@@ -139,23 +173,44 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Telefone,IdBairro")] PessoaDoadora pessoaDoadora)
+        public async Task<IActionResult> Edit(int id, PessoaDoadoraCadastroViewModel pessoaDoadoraCadastroViewModel)
         {
-            if (id != pessoaDoadora.Id)
+            if (id != pessoaDoadoraCadastroViewModel.Id)
             {
                 return NotFound();
             }
 
+            ObrigatoriedadePessoaDoadora(pessoaDoadoraCadastroViewModel);
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var pessoaDoadora = new PessoaDoadora();
+                    if (pessoaDoadoraCadastroViewModel.TipoPessoaCadastro == TipoPessoaCadastro.Fisica)
+                    {
+                        var pessoaDoadoraFisica = new PessoaFisica();
+                        pessoaDoadoraFisica.CPF = pessoaDoadoraCadastroViewModel.CPF;
+                        pessoaDoadoraFisica.DataNascimento = pessoaDoadoraCadastroViewModel.DataNascimento;
+                        pessoaDoadora = pessoaDoadoraFisica;
+                    }
+                    else
+                    {
+                        var pessoaDoadoraJuridica = new PessoaJuridica();
+                        pessoaDoadoraJuridica.CNPJ = pessoaDoadoraCadastroViewModel.CNPJ;
+                        pessoaDoadoraJuridica.Site = pessoaDoadoraCadastroViewModel.Site;
+                        pessoaDoadoraJuridica.RedeSocial = pessoaDoadoraCadastroViewModel.Site;
+                        pessoaDoadora = pessoaDoadoraJuridica;
+                    }
+                    pessoaDoadora.Nome = pessoaDoadoraCadastroViewModel.Nome;
+                    pessoaDoadora.FormasContato = pessoaDoadoraCadastroViewModel.TipoFormaContato.Select(t => new FormaContato { TipoFormaContato = t }).ToList();
+                    pessoaDoadora.Telefone = pessoaDoadoraCadastroViewModel.Telefone;
+                    pessoaDoadora.IdBairro = pessoaDoadoraCadastroViewModel.IdBairro;
                     _context.Update(pessoaDoadora);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PessoaDoadoraExists(pessoaDoadora.Id))
+                    if (!PessoaDoadoraExists(pessoaDoadoraCadastroViewModel.Id))
                     {
                         return NotFound();
                     }
@@ -166,8 +221,20 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdBairro"] = new SelectList(_context.Bairro, "Id", "Nome", pessoaDoadora.IdBairro);
-            return View(pessoaDoadora);
+            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
+            ViewData["IdCidade"] = new SelectList(new List<Cidade>());
+            ViewData["IdBairro"] = new SelectList(new List<Bairro>());
+            var listaTipoContato = Enum.GetValues(typeof(TipoFormaContato)).Cast<TipoFormaContato>().Select(e => new {
+                Valor = (int)e,
+                Nome = e.ToString()
+            });
+            ViewData["TiposFormaContato"] = new SelectList(listaTipoContato, "Valor", "Nome");
+            var listaTipoPessoa = Enum.GetValues(typeof(TipoPessoaCadastro)).Cast<TipoPessoaCadastro>().Select(e => new {
+                Valor = (int)e,
+                Nome = e.ToString()
+            });
+            ViewData["TipoPessoaCadastro"] = new SelectList(listaTipoPessoa, "Valor", "Nome");
+            return View(pessoaDoadoraCadastroViewModel);
         }
 
         // GET: PessoaDoadora/Delete/5

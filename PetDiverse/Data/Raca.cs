@@ -6,8 +6,7 @@ namespace PetDiverse.Data
     {
         public Raca()
         {
-            Animais = new HashSet<Animal>();
-            TipoAnimal = new TipoAnimal();
+            Animais = new HashSet<Animal>();            
         }
         public int Id { get; set; }
         [DisplayName("Raça")]

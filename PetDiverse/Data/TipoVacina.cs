@@ -6,7 +6,6 @@ namespace PetDiverse.Data
     {
         public TipoVacina()
         {
-            TipoAnimal = new TipoAnimal();
             RegistrosVacina = new HashSet<RegistroVacina>(); //definindo navegação, TipoVacina -> RegistroVacina
         }
         public int Id { get; set; }

@@ -6,7 +6,6 @@ namespace PetDiverse.Data
     {
         public TipoCirurgia()
         {
-            TipoAnimal = new TipoAnimal();
             RegistrosCirurgia = new HashSet<RegistroCirurgia>(); //definindo navegação, TipoCirurgia -> RegistroCirurgia
         }
         public int Id { get; set; }

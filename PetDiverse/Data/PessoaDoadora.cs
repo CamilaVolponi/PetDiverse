@@ -9,8 +9,6 @@ namespace PetDiverse.Data
         public PessoaDoadora()
         {
             Animais = new HashSet<Animal>();
-            Bairro = new Bairro();
-            Usuario = new Usuario();
             FormasContato = new HashSet<FormaContato>();
         }
         public int Id { get; set; }

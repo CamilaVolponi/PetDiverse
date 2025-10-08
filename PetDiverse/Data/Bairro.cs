@@ -8,7 +8,6 @@ namespace PetDiverse.Data
         public Bairro()
         {
             PessoasDoadoras = new HashSet<PessoaDoadora>();
-            Cidade = new Cidade();
         }
         public int Id { get; set; }
         [DisplayName("Bairro")]

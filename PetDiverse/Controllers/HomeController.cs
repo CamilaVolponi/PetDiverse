@@ -1,6 +1,7 @@
-using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetDiverse.Models;
+using System.Diagnostics;
 
 namespace PetDiverse.Controllers
 {
@@ -13,6 +14,7 @@ namespace PetDiverse.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();

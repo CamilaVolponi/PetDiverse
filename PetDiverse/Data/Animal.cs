@@ -11,7 +11,6 @@ namespace PetDiverse.Data
             PessoaDoadora = new PessoaDoadora();
             RegistrosVacina = new HashSet<RegistroVacina>();
             RegistrosCirurgia = new HashSet<RegistroCirurgia>();
-            Raca = new Raca();
         }
         public int Id { get; set; }
         public string Nome { get; set; } = string.Empty; // string.Empty = vai ter um valor, mais vazio = " "

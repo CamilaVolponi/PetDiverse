@@ -14,6 +14,6 @@ namespace PetDiverse.Data
         public int IdTipoAnimal { get; set; } // campo FK
         [Display(Name = "Tipo de animal")]
         public virtual TipoAnimal TipoAnimal { get; set; } // 1 TipoVacina -> 1 TipoAnimal
-        public virtual IEnumerable<RegistroVacina> RegistrosVacina { get; set; }
+        public virtual ICollection<RegistroVacina> RegistrosVacina { get; set; }
     }
 }

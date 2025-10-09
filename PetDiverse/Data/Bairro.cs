@@ -12,7 +12,7 @@ namespace PetDiverse.Data
         public int Id { get; set; }
         [DisplayName("Bairro")]
         public string Nome { get; set; } = string.Empty;
-        public virtual IEnumerable<PessoaDoadora>? PessoasDoadoras { get; set; }
+        public virtual ICollection<PessoaDoadora>? PessoasDoadoras { get; set; }
         [DisplayName("Cidade")]
         public int IdCidade { get; set; }
         public virtual Cidade Cidade { get; set; }

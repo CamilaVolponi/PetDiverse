@@ -144,7 +144,7 @@
                 }
             })
             $("input[name='TipoPessoaCadastro']").change(function(){
-                if($(this).val() == "1"){
+                if($(this).val() == "Fisica"){
                     $(".pessoa-fisica").show();
                     $(".pessoa-juridica").hide();
                 }else{
@@ -159,31 +159,31 @@
                 DataNascimento: {
                     requiredIf: {
                     valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "1"       // Valor que ativa a obrigatoriedade
+                    expectedValue: "Fisica"       // Valor que ativa a obrigatoriedade
                     }
                 },
                 CPF: {
                     requiredIf: {
                     valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "1"       // Valor que ativa a obrigatoriedade
+                    expectedValue: "Fisica"       // Valor que ativa a obrigatoriedade
                     }
                 },
                 CNPJ: {
                     requiredIf: {
                     valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "2"       // Valor que ativa a obrigatoriedade
+                    expectedValue: "Juridica"       // Valor que ativa a obrigatoriedade
                     }
                 },
                 Site: {
                     requiredIf: {
                     valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "2"       // Valor que ativa a obrigatoriedade
+                    expectedValue: "Juridica"       // Valor que ativa a obrigatoriedade
                     }
                 },
                 RedeSocial: {
                     requiredIf: {
                     valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "2"       // Valor que ativa a obrigatoriedade
+                    expectedValue: "Juridica"       // Valor que ativa a obrigatoriedade
                     }
                 }
                 }

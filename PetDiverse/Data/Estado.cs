@@ -12,6 +12,6 @@ namespace PetDiverse.Data
         public int Id { get; set; }
         [DisplayName("Estado")]
         public string Nome { get; set; } = string.Empty;
-        public virtual IEnumerable<Cidade> Cidades { get; set; }
+        public virtual ICollection<Cidade> Cidades { get; set; }
     }
 }

@@ -1,35 +1,82 @@
-﻿@model PetDiverse.Data.PessoaDoadora
+﻿@using PetDiverse.Data.Enums
+@model PetDiverse.Models.PessoaDoadoraCadastroViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Cadastro";
 }
 
-<h1>Edit</h1>
+<h1>Edite seu cadastro</h1>
 
-<h4>PessoaDoadora</h4>
+@* <h4>PessoaDoadora</h4> *@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <form asp-action="Edit" id="CreatePessoaDoadora">
             <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="TipoPessoaCadastro" />
             <div class="form-group">
                 <label asp-for="Nome" class="control-label"></label>
                 <input asp-for="Nome" class="form-control" />
                 <span asp-validation-for="Nome" class="text-danger"></span>
             </div>
+
+            @* Pessoa fisica *@
+            <div class="form-group pessoa-fisica">
+                <label asp-for="CPF" class="control-label"></label>
+                <input asp-for="CPF" class="form-control" />
+                <span asp-validation-for="CPF" class="text-danger"></span>
+            </div>
+            <div class="form-group pessoa-fisica">
+                <label asp-for="DataNascimento" class="control-label"></label>
+                <input asp-for="DataNascimento" type="date" class="form-control" />
+                <span asp-validation-for="DataNascimento" class="text-danger"></span>
+            </div>
+
+            @* Pessoa juridica *@
+            <div class="form-group pessoa-juridica">
+                <label asp-for="CNPJ" class="control-label"></label>
+                <input asp-for="CNPJ" class="form-control" />
+                <span asp-validation-for="CNPJ" class="text-danger"></span>
+            </div>
+            <div class="form-group pessoa-juridica">
+                <label asp-for="RedeSocial" class="control-label"></label>
+                <input asp-for="RedeSocial" class="form-control" />
+                <span asp-validation-for="RedeSocial" class="text-danger"></span>
+            </div>
+            <div class="form-group pessoa-juridica">
+                <label asp-for="Site" class="control-label"></label>
+                <input asp-for="Site" class="form-control" />
+                <span asp-validation-for="Site" class="text-danger"></span>
+            </div>
+
             <div class="form-group">
                 <label asp-for="Telefone" class="control-label"></label>
                 <input asp-for="Telefone" class="form-control" />
                 <span asp-validation-for="Telefone" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="IdBairro" class="control-label"></label>
-                <select asp-for="IdBairro" class="form-control" asp-items="ViewBag.IdBairro"></select>
-                <span asp-validation-for="IdBairro" class="text-danger"></span>
+                <label asp-for="IdEstado" class="control-label"></label>
+                <select asp-for="IdEstado" class="form-control" asp-items="ViewBag.IdEstado"><option>Selecione um estado</option></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <label asp-for="IdCidade" class="control-label"></label>
+                <select asp-for="IdCidade" class="form-control" asp-items="ViewBag.IdCidade"><option>Selecione uma cidade</option></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdBairro" class="control-label"></label>
+                <select asp-for="IdBairro" class="form-control" asp-items="ViewBag.IdBairro"><option>Selecione um bairro</option></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdBairro" class="control-label"></label>
+                @foreach (var opcao in ViewBag.TiposFormaContato)
+                {
+                    <input name="TipoFormaContato" type="checkbox" value="@opcao.Value" class="form-check-input" @(Model.TipoFormaContato.Contains(Enum.Parse(typeof(TipoFormaContato), opcao.Value)) ? "checked" : "") />
+                    <label class="form-check-label">@opcao.Text</label>
+                }
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-roxo" />
             </div>
         </form>
     </div>
@@ -40,5 +87,105 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function(){
+            $("#IdEstado").change(function(){
+                var cidadeSelect = $('#IdCidade');
+
+                cidadeSelect.empty(); // limpa as opções anteriores
+                cidadeSelect.append('<option value="">Carregando...</option>');
+                if ($(this).val()) {
+                    $.get('/PessoaDoador/RecuperarCidades', { id: $(this).val() }, function (data) {
+                        cidadeSelect.empty(); // limpa novamente
+                        cidadeSelect.append('<option>Selecione uma cidade</option>');
+                        $.each(data, function (index, item) {
+                            cidadeSelect.append($('<option>', {
+                                value: item.value,
+                                text: item.text
+                            }));
+                        });
+                    });
+                } else {
+                    cidadeSelect.empty();
+                    cidadeSelect.append('<option>Selecione uma cidade</option>');
+                }
+            })
+
+            $("#IdCidade").change(function(){
+                var bairroSelect = $('#IdBairro');
+
+                bairroSelect.empty(); // limpa as opções anteriores
+                bairroSelect.append('<option value="">Carregando...</option>');
+
+                if ($(this).val()) {
+                    $.get('/PessoaDoador/RecuperarBairros', { id: $(this).val() }, function (data) {
+                        bairroSelect.empty(); // limpa novamente
+                        bairroSelect.append('<option>Selecione uma bairro</option>');
+                        $.each(data, function (index, item) {
+                            bairroSelect.append($('<option>', {
+                                value: item.value,
+                                text: item.text
+                            }));
+                        });
+                    });
+                } else {
+                    bairroSelect.empty();
+                    bairroSelect.append('<option>Selecione uma bairro</option>');
+                }
+            })
+            $("input[name='TipoPessoaCadastro']").change(function(){
+                if($(this).val() == "Fisica"){
+                    $(".pessoa-fisica").show();
+                    $(".pessoa-juridica").hide();
+                }else{
+                    $(".pessoa-juridica").show();
+                    $(".pessoa-fisica").hide();
+                }
+                var validator = $("#CreatePessoaDoadora").validate();
+                validator.resetForm(); // limpa tudo
+            })
+            $("input[name='TipoPessoaCadastro']").trigger("change");
+            $("#CreatePessoaDoadora").validate({
+                rules: {
+                DataNascimento: {
+                    requiredIf: {
+                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
+                    expectedValue: "Fisica"       // Valor que ativa a obrigatoriedade
+                    }
+                },
+                CPF: {
+                    requiredIf: {
+                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
+                    expectedValue: "Fisica"       // Valor que ativa a obrigatoriedade
+                    }
+                },
+                CNPJ: {
+                    requiredIf: {
+                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
+                    expectedValue: "Juridica"       // Valor que ativa a obrigatoriedade
+                    }
+                },
+                Site: {
+                    requiredIf: {
+                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
+                    expectedValue: "Juridica"       // Valor que ativa a obrigatoriedade
+                    }
+                },
+                RedeSocial: {
+                    requiredIf: {
+                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
+                    expectedValue: "Juridica"       // Valor que ativa a obrigatoriedade
+                    }
+                }
+                }
+            });
+        })
+
+    </script>
+
 }
+

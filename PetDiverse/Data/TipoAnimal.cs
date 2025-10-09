@@ -14,9 +14,9 @@ namespace PetDiverse.Data
         public int Id { get; set; }
         [Display(Name = "Tipo de animal")]
         public string Descricao { get; set; } = string.Empty;
-        public virtual IEnumerable<Animal> Animais { get; set; } // 1 TipoAnimal -> N Animais
-        public virtual IEnumerable<TipoVacina> TipoVacinas { get; set; } // 1 TipoAnimal -> N Tipos de vacina
-        public virtual IEnumerable<TipoCirurgia> TipoCirurgias { get; set; } // 1 TipoAnimal -> N Tipos de cirurgia
-        public virtual IEnumerable<Raca> Racas { get; set; }
+        public virtual ICollection<Animal> Animais { get; set; } // 1 TipoAnimal -> N Animais
+        public virtual ICollection<TipoVacina> TipoVacinas { get; set; } // 1 TipoAnimal -> N Tipos de vacina
+        public virtual ICollection<TipoCirurgia> TipoCirurgias { get; set; } // 1 TipoAnimal -> N Tipos de cirurgia
+        public virtual ICollection<Raca> Racas { get; set; }
     }
 }

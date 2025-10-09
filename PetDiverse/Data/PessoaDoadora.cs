@@ -14,12 +14,12 @@ namespace PetDiverse.Data
         public int Id { get; set; }
         public string Nome { get; set; } = string.Empty;
         public string Telefone { get; set; } = string.Empty;
-        public virtual IEnumerable<Animal>? Animais { get; set; } // 1 Doador -> N Animal
+        public virtual ICollection<Animal>? Animais { get; set; } // 1 Doador -> N Animal
         [DisplayName("Bairro")]
         public int IdBairro { get; set; } 
         public virtual Bairro Bairro { get; set; }
         public string IdUsuario { get; set; } = string.Empty;
         public virtual Usuario Usuario { get; set; }
-        public virtual IEnumerable<FormaContato>? FormasContato { get; set; } 
+        public virtual ICollection<FormaContato> FormasContato { get; set; } 
     }
 }

@@ -21,8 +21,8 @@ namespace PetDiverse.Data
         public PorteAnimal? Porte { get; set; }
         public int IdTipoAnimal { get; set; } // campo FK - TipoAnimal
         public virtual TipoAnimal TipoAnimal { get; set; } // 1 Animal -> 1 TipoAnimal, virtual = faz o join implicitamente
-        public virtual IEnumerable<RegistroVacina>? RegistrosVacina { get; set; } // 1 Animal -> N Registros de vacina
-        public virtual IEnumerable<RegistroCirurgia>? RegistrosCirurgia { get; set; } // 1 Animal -> N Registros de cirurgia
+        public virtual ICollection<RegistroVacina>? RegistrosVacina { get; set; } // 1 Animal -> N Registros de vacina
+        public virtual ICollection<RegistroCirurgia>? RegistrosCirurgia { get; set; } // 1 Animal -> N Registros de cirurgia
         public int IdPessoaDoadora { get; set; } // campo FK - TipoAnimal
         public virtual PessoaDoadora PessoaDoadora { get; set; } // N Animal -> 1 PessoaDoadora
         public int IdRaca { get; set; }

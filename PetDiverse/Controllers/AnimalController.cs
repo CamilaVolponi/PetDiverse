@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
+using PetDiverse.Data.Enums;
+using PetDiverse.Data.Enuns;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace PetDiverse.Controllers
 {
@@ -48,8 +51,18 @@ namespace PetDiverse.Controllers
         // GET: Animal/Create
         public IActionResult Create()
         {
-            ViewData["IdDoador"] = new SelectList(_context.PessoaDoadora, "Id", "Nome");
+            
             ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "NomeTipoAnimal");
+            var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
+                Valor = e,
+                Nome = e.ToString()
+            });
+            ViewData["ContagemIdade"] = new SelectList(listaContagemIdade, "Valor", "Nome");
+            var listaPorte = Enum.GetValues(typeof(PorteAnimal)).Cast<PorteAnimal>().Select(e => new {
+                Valor = e,
+                Nome = e.ToString()
+            });
+            ViewData["PorteAnimal"] = new SelectList(listaPorte, "Valor", "Nome");
             return View();
         }
 
@@ -58,16 +71,28 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Idade,Adotado,CaminhoFoto,Porte,IdTipoAnimal,IdDoador")] Animal animal)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Idade,ContagemIdade,Adotado,CaminhoFoto,Porte,IdTipoAnimal")] Animal animal)
         {
+            var pessoaDoadora = await _context.PessoaDoadora.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            animal.IdPessoaDoadora = pessoaDoadora.Id;
             if (ModelState.IsValid)
             {
                 _context.Add(animal);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdDoador"] = new SelectList(_context.PessoaDoadora, "Id", "Nome", animal.IdPessoaDoadora);
+            
             ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "NomeTipoAnimal", animal.IdTipoAnimal);
+            var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
+                Valor = e,
+                Nome = e.ToString()
+            });
+            ViewData["ContagemIdade"] = new SelectList(listaContagemIdade, "Valor", "Nome");
+            var listaPorte = Enum.GetValues(typeof(PorteAnimal)).Cast<PorteAnimal>().Select(e => new {
+                Valor = e,
+                Nome = e.ToString()
+            });
+            ViewData["PorteAnimal"] = new SelectList(listaPorte, "Valor", "Nome");
             return View(animal);
         }
 
@@ -84,8 +109,18 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdDoador"] = new SelectList(_context.PessoaDoadora, "Id", "Nome", animal.IdPessoaDoadora);
+            
             ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "NomeTipoAnimal", animal.IdTipoAnimal);
+            var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
+                Valor = e,
+                Nome = e.ToString()
+            });
+            ViewData["ContagemIdade"] = new SelectList(listaContagemIdade, "Valor", "Nome");
+            var listaPorte = Enum.GetValues(typeof(PorteAnimal)).Cast<PorteAnimal>().Select(e => new {
+                Valor = e,
+                Nome = e.ToString()
+            });
+            ViewData["PorteAnimal"] = new SelectList(listaPorte, "Valor", "Nome");
             return View(animal);
         }
 
@@ -94,13 +129,15 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,Idade,Adotado,CaminhoFoto,Porte,IdTipoAnimal,IdDoador")] Animal animal)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,Idade,ContagemIdade,Adotado,CaminhoFoto,Porte,IdTipoAnimal")] Animal animal)
         {
             if (id != animal.Id)
             {
                 return NotFound();
             }
 
+            var pessoaDoadora = await _context.PessoaDoadora.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            animal.IdPessoaDoadora = pessoaDoadora.Id;
             if (ModelState.IsValid)
             {
                 try
@@ -121,8 +158,17 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdDoador"] = new SelectList(_context.PessoaDoadora, "Id", "Nome", animal.IdPessoaDoadora);
             ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "NomeTipoAnimal", animal.IdTipoAnimal);
+            var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
+                Valor = e,
+                Nome = e.ToString()
+            });
+            ViewData["ContagemIdade"] = new SelectList(listaContagemIdade, "Valor", "Nome");
+            var listaPorte = Enum.GetValues(typeof(PorteAnimal)).Cast<PorteAnimal>().Select(e => new {
+                Valor = e,
+                Nome = e.ToString()
+            });
+            ViewData["PorteAnimal"] = new SelectList(listaPorte, "Valor", "Nome");
             return View(animal);
         }
 

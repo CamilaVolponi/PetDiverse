@@ -53,7 +53,7 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome")] Estado estado)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Sigla")] Estado estado)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] Estado estado)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Sigla")] Estado estado)
         {
             if (id != estado.Id)
             {

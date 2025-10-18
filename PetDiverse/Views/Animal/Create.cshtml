@@ -1,4 +1,4 @@
-﻿@model PetDiverse.Data.Animal
+﻿@model PetDiverse.Models.AnimalViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Nome" class="control-label"></label>
@@ -29,16 +29,20 @@
                 <select asp-for="ContagemIdade" class="form-control" asp-items="ViewBag.ContagemIdade"><option>Selecione uma contagem de idade</option></select>
             </div>
             <div class="form-group">
-                <label asp-for="CaminhoFoto" class="control-label"></label>
-                <input asp-for="CaminhoFoto" class="form-control" type="file" accept="image/jpg,image/jpeg,image/png"/>
-                <span asp-validation-for="CaminhoFoto" class="text-danger"></span>
+                <label asp-for="Foto" class="control-label"></label>
+                <input asp-for="Foto" class="form-control" type="file" accept="image/jpg,image/jpeg,image/png" />
+                <span asp-validation-for="Foto" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <select asp-for="Porte" class="form-control" asp-items="ViewBag.PorteAnimal"><option>Selecione um porte</option></select>
             </div>
             <div class="form-group">
                 <label asp-for="IdTipoAnimal" class="control-label"></label>
-                <select asp-for="IdTipoAnimal" class ="form-control" asp-items="ViewBag.IdTipoAnimal"></select>
+                <select asp-for="IdTipoAnimal" class="form-control" asp-items="ViewBag.IdTipoAnimal"><option>Selecione uma tipo de animal</option></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="IdRaca" class="control-label"></label>
+                <select asp-for="IdRaca" class="form-control" asp-items="ViewBag.IdRaca"><option>Selecione uma raça</option></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -53,4 +57,32 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+            $(document).ready(function(){
+                $("#IdTipoAnimal").change(function(){
+                var racaSelect = $('#IdRaca');
+
+                racaSelect.empty(); // limpa as opções anteriores
+                racaSelect.append('<option value="">Carregando...</option>');
+                    if ($(this).val()) {
+                        $.get('/Animal/RecuperarRaca', { id: $(this).val() }, function (data) {
+                            racaSelect.empty(); // limpa novamente
+                            racaSelect.append('<option>Selecione uma raça</option>');
+                            $.each(data, function (index, item) {
+                                racaSelect.append($('<option>', {
+                                    value: item.value,
+                                    text: item.text
+                                }));
+                            });
+                        });
+                    } else {
+                        racaSelect.empty();
+                        racaSelect.append('<option>Selecione uma raça</option>');
+                    }
+                })
+
+             })
+
+    </script>
 }

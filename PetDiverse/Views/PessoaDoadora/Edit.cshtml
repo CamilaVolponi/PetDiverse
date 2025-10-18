@@ -99,7 +99,7 @@
                 cidadeSelect.empty(); // limpa as opções anteriores
                 cidadeSelect.append('<option value="">Carregando...</option>');
                 if ($(this).val()) {
-                    $.get('/PessoaDoador/RecuperarCidades', { id: $(this).val() }, function (data) {
+                    $.get('/PessoaDoadora/RecuperarCidades', { id: $(this).val() }, function (data) {
                         cidadeSelect.empty(); // limpa novamente
                         cidadeSelect.append('<option>Selecione uma cidade</option>');
                         $.each(data, function (index, item) {
@@ -122,7 +122,7 @@
                 bairroSelect.append('<option value="">Carregando...</option>');
 
                 if ($(this).val()) {
-                    $.get('/PessoaDoador/RecuperarBairros', { id: $(this).val() }, function (data) {
+                    $.get('/PessoaDoadora/RecuperarBairros', { id: $(this).val() }, function (data) {
                         bairroSelect.empty(); // limpa novamente
                         bairroSelect.append('<option>Selecione uma bairro</option>');
                         $.each(data, function (index, item) {

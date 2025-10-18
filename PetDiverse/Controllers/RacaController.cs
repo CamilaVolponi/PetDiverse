@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
+using PetDiverse.Models;
 
 namespace PetDiverse.Controllers
 {
@@ -56,16 +57,20 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Descricao,IdTipoAnimal")] Raca raca)
+        public async Task<IActionResult> Create(RacaViewModel racaViewModel)
         {
             if (ModelState.IsValid)
             {
+                var raca = new Raca();
+                raca.Id = racaViewModel.Id;
+                raca.IdTipoAnimal = racaViewModel.IdTipoAnimal;
+                raca.Descricao = racaViewModel.Descricao;
                 _context.Add(raca);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", raca.IdTipoAnimal);
-            return View(raca);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", racaViewModel.IdTipoAnimal);
+            return View(racaViewModel);
         }
 
         // GET: Racas/Edit/5
@@ -81,8 +86,12 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
+            var racaViewModel = new RacaViewModel();
+            racaViewModel.Id = raca.Id;
+            racaViewModel.IdTipoAnimal = raca.IdTipoAnimal;
+            racaViewModel.Descricao = raca.Descricao;
             ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", raca.IdTipoAnimal);
-            return View(raca);
+            return View(racaViewModel);
         }
 
         // POST: Racas/Edit/5
@@ -90,9 +99,9 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Descricao,IdTipoAnimal")] Raca raca)
+        public async Task<IActionResult> Edit(int id, RacaViewModel racaViewModel)
         {
-            if (id != raca.Id)
+            if (id != racaViewModel.Id)
             {
                 return NotFound();
             }
@@ -101,12 +110,16 @@ namespace PetDiverse.Controllers
             {
                 try
                 {
+                    var raca = new Raca();
+                    raca.Id = racaViewModel.Id;
+                    raca.IdTipoAnimal = racaViewModel.IdTipoAnimal;
+                    raca.Descricao = racaViewModel.Descricao;
                     _context.Update(raca);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RacaExists(raca.Id))
+                    if (!RacaExists(racaViewModel.Id))
                     {
                         return NotFound();
                     }
@@ -117,8 +130,8 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", raca.IdTipoAnimal);
-            return View(raca);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", racaViewModel.IdTipoAnimal);
+            return View(racaViewModel);
         }
 
         // GET: Racas/Delete/5

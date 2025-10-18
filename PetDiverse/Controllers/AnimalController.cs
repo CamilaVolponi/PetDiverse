@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
 using PetDiverse.Data.Enums;
 using PetDiverse.Data.Enuns;
+using PetDiverse.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +17,12 @@ namespace PetDiverse.Controllers
     public class AnimalController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public AnimalController(ApplicationDbContext context)
+        public AnimalController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: Animal
@@ -52,7 +56,7 @@ namespace PetDiverse.Controllers
         public IActionResult Create()
         {
             
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "NomeTipoAnimal");
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao");
             var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
                 Valor = e,
                 Nome = e.ToString()
@@ -63,6 +67,7 @@ namespace PetDiverse.Controllers
                 Nome = e.ToString()
             });
             ViewData["PorteAnimal"] = new SelectList(listaPorte, "Valor", "Nome");
+            ViewData["IdRaca"] = new SelectList(new List<Raca>());
             return View();
         }
 
@@ -71,18 +76,27 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Descricao,Idade,ContagemIdade,Adotado,CaminhoFoto,Porte,IdTipoAnimal")] Animal animal)
+        public async Task<IActionResult> Create(AnimalViewModel animalViewModel)
         {
-            var pessoaDoadora = await _context.PessoaDoadora.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var pessoaDoadora = await _context.PessoaDoadora.FirstAsync(p => p.IdUsuario == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var animal = _mapper.Map<AnimalViewModel,Animal>(animalViewModel);
             animal.IdPessoaDoadora = pessoaDoadora.Id;
             if (ModelState.IsValid)
             {
+                if (animalViewModel.Foto != null && animalViewModel.Foto.Length > 0)
+                {
+                    var filePath = Path.Combine("wwwroot/fotoPet", Guid.NewGuid().ToString()+Path.GetExtension(animalViewModel.Foto.FileName));
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await animalViewModel.Foto.CopyToAsync(stream);
+                    }
+                }
                 _context.Add(animal);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "NomeTipoAnimal", animal.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", animal.IdTipoAnimal);
             var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
                 Valor = e,
                 Nome = e.ToString()
@@ -93,6 +107,7 @@ namespace PetDiverse.Controllers
                 Nome = e.ToString()
             });
             ViewData["PorteAnimal"] = new SelectList(listaPorte, "Valor", "Nome");
+            ViewData["IdRaca"] = new SelectList(new List<Raca>());
             return View(animal);
         }
 
@@ -110,7 +125,7 @@ namespace PetDiverse.Controllers
                 return NotFound();
             }
             
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "NomeTipoAnimal", animal.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", animal.IdTipoAnimal);
             var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
                 Valor = e,
                 Nome = e.ToString()
@@ -121,6 +136,7 @@ namespace PetDiverse.Controllers
                 Nome = e.ToString()
             });
             ViewData["PorteAnimal"] = new SelectList(listaPorte, "Valor", "Nome");
+            ViewData["IdRaca"] = new SelectList(new List<Raca>());
             return View(animal);
         }
 
@@ -136,7 +152,7 @@ namespace PetDiverse.Controllers
                 return NotFound();
             }
 
-            var pessoaDoadora = await _context.PessoaDoadora.FindAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var pessoaDoadora = await _context.PessoaDoadora.FirstAsync(p => p.IdUsuario==User.FindFirstValue(ClaimTypes.NameIdentifier));
             animal.IdPessoaDoadora = pessoaDoadora.Id;
             if (ModelState.IsValid)
             {
@@ -158,7 +174,7 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "NomeTipoAnimal", animal.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", animal.IdTipoAnimal);
             var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
                 Valor = e,
                 Nome = e.ToString()
@@ -169,6 +185,7 @@ namespace PetDiverse.Controllers
                 Nome = e.ToString()
             });
             ViewData["PorteAnimal"] = new SelectList(listaPorte, "Valor", "Nome");
+            ViewData["IdRaca"] = new SelectList(new List<Raca>());
             return View(animal);
         }
 
@@ -205,6 +222,11 @@ namespace PetDiverse.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> RecuperarRaca(int? id)
+        {
+            return Json(new SelectList(await _context.Raca.Where(c => c.IdTipoAnimal == id).ToListAsync(), "Id", "Descricao"));
         }
 
         private bool AnimalExists(int id)

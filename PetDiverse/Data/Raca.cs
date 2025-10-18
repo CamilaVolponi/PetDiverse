@@ -12,8 +12,8 @@ namespace PetDiverse.Data
         [DisplayName("Raça")]
         public string Descricao { get; set; } = string.Empty;
         public virtual ICollection<Animal> Animais { get; set; }
-        public int IdTipoAnimal { get; set; }
         [DisplayName("Tipo de animal")]
+        public int IdTipoAnimal { get; set; }
         public virtual TipoAnimal TipoAnimal { get; set; }
     }
 }

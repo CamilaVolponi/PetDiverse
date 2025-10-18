@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using PetDiverse.Data;
+using PetDiverse.Models;
 using PetDiverse.Uteis.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +24,8 @@ builder.Services.AddControllersWithViews(options =>
         .Build();
     options.Filters.Add(new AuthorizeFilter(policy)); // Aplica para todas as controllers
 });
+
+builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfile));
 
 var app = builder.Build();
 

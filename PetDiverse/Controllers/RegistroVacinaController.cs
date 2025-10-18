@@ -1,27 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
+using PetDiverse.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PetDiverse.Controllers
 {
     public class RegistroVacinaController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public RegistroVacinaController(ApplicationDbContext context)
+        public RegistroVacinaController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: RegistroVacina
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int idAnimal)
         {
-            var applicationDbContext = _context.RegistroVacina.Include(r => r.Animal).Include(r => r.TipoVacina);
+            var applicationDbContext = _context.RegistroVacina.Where(r => r.IdAnimal == idAnimal);
+            ViewData["IdAnimal"] = idAnimal;
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -46,11 +51,12 @@ namespace PetDiverse.Controllers
         }
 
         // GET: RegistroVacina/Create
-        public IActionResult Create()
+        public IActionResult Create(int idAnimal)
         {
-            ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto");
+            var registroVacinaViewModel = new RegistroVacinaViewModel();
+            registroVacinaViewModel.IdAnimal = idAnimal;
             ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao");
-            return View();
+            return View(registroVacinaViewModel);
         }
 
         // POST: RegistroVacina/Create
@@ -58,17 +64,18 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DataRegistro,IdAnimal,IdTipoVacina")] RegistroVacina registroVacina)
+        public async Task<IActionResult> Create(RegistroVacinaViewModel registroVacinaViewModel)
         {
             if (ModelState.IsValid)
             {
+                var registroVacina = _mapper.Map<RegistroVacina>(registroVacinaViewModel);
                 _context.Add(registroVacina);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroVacina.IdAnimal);
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao", registroVacina.IdTipoVacina);
-            return View(registroVacina);
+            
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao", registroVacinaViewModel.IdTipoVacina);
+            return View(registroVacinaViewModel);
         }
 
         // GET: RegistroVacina/Edit/5
@@ -84,9 +91,9 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroVacina.IdAnimal);
+            var registroVacinaViewModel = _mapper.Map<RegistroVacinaViewModel>(registroVacina);
             ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao", registroVacina.IdTipoVacina);
-            return View(registroVacina);
+            return View(registroVacinaViewModel);
         }
 
         // POST: RegistroVacina/Edit/5
@@ -94,9 +101,9 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DataRegistro,IdAnimal,IdTipoVacina")] RegistroVacina registroVacina)
+        public async Task<IActionResult> Edit(int id, RegistroVacinaViewModel registroVacinaViewModel)
         {
-            if (id != registroVacina.Id)
+            if (id != registroVacinaViewModel.Id)
             {
                 return NotFound();
             }
@@ -105,12 +112,13 @@ namespace PetDiverse.Controllers
             {
                 try
                 {
+                    var registroVacina = _mapper.Map<RegistroVacina>(registroVacinaViewModel);
                     _context.Update(registroVacina);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RegistroVacinaExists(registroVacina.Id))
+                    if (!RegistroVacinaExists(registroVacinaViewModel.Id))
                     {
                         return NotFound();
                     }
@@ -121,9 +129,9 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroVacina.IdAnimal);
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao", registroVacina.IdTipoVacina);
-            return View(registroVacina);
+            
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao", registroVacinaViewModel.IdTipoVacina);
+            return View(registroVacinaViewModel);
         }
 
         // GET: RegistroVacina/Delete/5

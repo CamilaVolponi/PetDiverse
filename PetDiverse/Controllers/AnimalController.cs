@@ -28,7 +28,8 @@ namespace PetDiverse.Controllers
         // GET: Animal
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Animal.Include(a => a.PessoaDoadora).Include(a => a.TipoAnimal);
+            var pessoaDoadora = await _context.PessoaDoadora.FirstAsync(p => p.IdUsuario == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var applicationDbContext = _context.Animal.Where(a => a.IdPessoaDoadora == pessoaDoadora.Id);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -85,11 +86,12 @@ namespace PetDiverse.Controllers
             {
                 if (animalViewModel.Foto != null && animalViewModel.Foto.Length > 0)
                 {
-                    var filePath = Path.Combine("wwwroot/fotoPet", Guid.NewGuid().ToString()+Path.GetExtension(animalViewModel.Foto.FileName));
+                    var filePath = Path.Combine("wwwroot\\fotoPet", Guid.NewGuid().ToString()+Path.GetExtension(animalViewModel.Foto.FileName));
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await animalViewModel.Foto.CopyToAsync(stream);
                     }
+                    animal.CaminhoFoto = filePath;
                 }
                 _context.Add(animal);
                 await _context.SaveChangesAsync();
@@ -145,19 +147,29 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Descricao,Idade,ContagemIdade,Adotado,CaminhoFoto,Porte,IdTipoAnimal")] Animal animal)
+        public async Task<IActionResult> Edit(int id, AnimalViewModel animalViewModel)
         {
-            if (id != animal.Id)
+            if (id != animalViewModel.Id)
             {
                 return NotFound();
             }
 
             var pessoaDoadora = await _context.PessoaDoadora.FirstAsync(p => p.IdUsuario==User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var animal = _mapper.Map<AnimalViewModel, Animal>(animalViewModel);
             animal.IdPessoaDoadora = pessoaDoadora.Id;
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (animalViewModel.Foto != null && animalViewModel.Foto.Length > 0)
+                    {
+                        var filePath = Path.Combine("wwwroot\\fotoPet", Guid.NewGuid().ToString() + Path.GetExtension(animalViewModel.Foto.FileName));
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await animalViewModel.Foto.CopyToAsync(stream);
+                        }
+                        animal.CaminhoFoto = filePath;
+                    }
                     _context.Update(animal);
                     await _context.SaveChangesAsync();
                 }
@@ -174,7 +186,7 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", animal.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", animalViewModel.IdTipoAnimal);
             var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
                 Valor = e,
                 Nome = e.ToString()
@@ -186,7 +198,7 @@ namespace PetDiverse.Controllers
             });
             ViewData["PorteAnimal"] = new SelectList(listaPorte, "Valor", "Nome");
             ViewData["IdRaca"] = new SelectList(new List<Raca>());
-            return View(animal);
+            return View(animalViewModel);
         }
 
         // GET: Animal/Delete/5
@@ -218,6 +230,19 @@ namespace PetDiverse.Controllers
             if (animal != null)
             {
                 _context.Animal.Remove(animal);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Adotado(int id)
+        {
+            var animal = await _context.Animal.FindAsync(id);
+            if (animal != null)
+            {
+                animal.Adotado = true;
+                _context.Animal.Update(animal);
             }
 
             await _context.SaveChangesAsync();

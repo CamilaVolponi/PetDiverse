@@ -1,27 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PetDiverse.Controllers
 {
     public class RegistroCirurgiaController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public RegistroCirurgiaController(ApplicationDbContext context)
+        public RegistroCirurgiaController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: RegistroCirurgia
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int idAnimal)
         {
-            var applicationDbContext = _context.RegistroCirurgia.Include(r => r.Animal).Include(r => r.TipoCirurgia);
+            var applicationDbContext = _context.RegistroCirurgia.Where(r => r.IdAnimal == idAnimal);
             return View(await applicationDbContext.ToListAsync());
         }
 

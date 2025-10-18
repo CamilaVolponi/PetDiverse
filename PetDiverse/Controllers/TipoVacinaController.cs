@@ -1,21 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
+using PetDiverse.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PetDiverse.Controllers
 {
     public class TipoVacinaController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public TipoVacinaController(ApplicationDbContext context)
+        public TipoVacinaController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: TipoVacina
@@ -47,7 +51,7 @@ namespace PetDiverse.Controllers
         // GET: TipoVacina/Create
         public IActionResult Create()
         {
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "NomeTipoAnimal");
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao");
             return View();
         }
 
@@ -56,16 +60,17 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Descricao,IdTipoAnimal")] TipoVacina tipoVacina)
+        public async Task<IActionResult> Create(TipoVacinaViewModel tipoVacinaViewModel)
         {
             if (ModelState.IsValid)
             {
+                var tipoVacina = _mapper.Map<TipoVacina>(tipoVacinaViewModel);
                 _context.Add(tipoVacina);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "NomeTipoAnimal", tipoVacina.IdTipoAnimal);
-            return View(tipoVacina);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoVacinaViewModel.IdTipoAnimal);
+            return View(tipoVacinaViewModel);
         }
 
         // GET: TipoVacina/Edit/5
@@ -81,7 +86,7 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "NomeTipoAnimal", tipoVacina.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoVacina.IdTipoAnimal);
             return View(tipoVacina);
         }
 
@@ -90,9 +95,9 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Descricao,IdTipoAnimal")] TipoVacina tipoVacina)
+        public async Task<IActionResult> Edit(int id, TipoVacinaViewModel tipoVacinaViewModel)
         {
-            if (id != tipoVacina.Id)
+            if (id != tipoVacinaViewModel.Id)
             {
                 return NotFound();
             }
@@ -101,12 +106,13 @@ namespace PetDiverse.Controllers
             {
                 try
                 {
+                    var tipoVacina = _mapper.Map<TipoVacina>(tipoVacinaViewModel);
                     _context.Update(tipoVacina);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TipoVacinaExists(tipoVacina.Id))
+                    if (!TipoVacinaExists(tipoVacinaViewModel.Id))
                     {
                         return NotFound();
                     }
@@ -117,8 +123,8 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "NomeTipoAnimal", tipoVacina.IdTipoAnimal);
-            return View(tipoVacina);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoVacinaViewModel.IdTipoAnimal);
+            return View(tipoVacinaViewModel);
         }
 
         // GET: TipoVacina/Delete/5

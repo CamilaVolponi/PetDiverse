@@ -8,5 +8,17 @@ public class MappingProfile : Profile
     {
         CreateMap<AnimalViewModel, Animal>();
         CreateMap<Animal, AnimalViewModel>();
+
+        CreateMap<RegistroCirurgia, RegistroCirurgiaViewModel>();
+        CreateMap<RegistroCirurgiaViewModel, RegistroCirurgia>();
+
+        CreateMap<RegistroVacina, RegistroVacinaViewModel>();
+        CreateMap<RegistroVacinaViewModel, RegistroVacina>();
+
+        CreateMap<TipoVacina, TipoVacinaViewModel>();
+        CreateMap<TipoVacinaViewModel, TipoVacina>();
+
+        CreateMap<TipoCirurgia, TipoCirurgiaViewModel>();
+        CreateMap<TipoCirurgiaViewModel, TipoCirurgia>();
     }
 }

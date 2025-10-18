@@ -1,21 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
+using PetDiverse.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PetDiverse.Controllers
 {
     public class TipoCirurgiaController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public TipoCirurgiaController(ApplicationDbContext context)
+        public TipoCirurgiaController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: TipoCirurgia
@@ -47,7 +51,7 @@ namespace PetDiverse.Controllers
         // GET: TipoCirurgia/Create
         public IActionResult Create()
         {
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "NomeTipoAnimal");
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao");
             return View();
         }
 
@@ -56,16 +60,17 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Descricao,IdTipoAnimal")] TipoCirurgia tipoCirurgia)
+        public async Task<IActionResult> Create(TipoCirurgiaViewModel tipoCirurgiaViewModel)
         {
             if (ModelState.IsValid)
             {
+                var tipoCirurgia = _mapper.Map<TipoCirurgia>(tipoCirurgiaViewModel);
                 _context.Add(tipoCirurgia);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "NomeTipoAnimal", tipoCirurgia.IdTipoAnimal);
-            return View(tipoCirurgia);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoCirurgiaViewModel.IdTipoAnimal);
+            return View(tipoCirurgiaViewModel);
         }
 
         // GET: TipoCirurgia/Edit/5
@@ -81,7 +86,7 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "NomeTipoAnimal", tipoCirurgia.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoCirurgia.IdTipoAnimal);
             return View(tipoCirurgia);
         }
 
@@ -90,9 +95,9 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Descricao,IdTipoAnimal")] TipoCirurgia tipoCirurgia)
+        public async Task<IActionResult> Edit(int id, TipoCirurgiaViewModel tipoCirurgiaViewModel)
         {
-            if (id != tipoCirurgia.Id)
+            if (id != tipoCirurgiaViewModel.Id)
             {
                 return NotFound();
             }
@@ -101,12 +106,13 @@ namespace PetDiverse.Controllers
             {
                 try
                 {
+                    var tipoCirurgia = _mapper.Map<TipoVacina>(tipoCirurgiaViewModel);
                     _context.Update(tipoCirurgia);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TipoCirurgiaExists(tipoCirurgia.Id))
+                    if (!TipoCirurgiaExists(tipoCirurgiaViewModel.Id))
                     {
                         return NotFound();
                     }
@@ -117,8 +123,8 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "NomeTipoAnimal", tipoCirurgia.IdTipoAnimal);
-            return View(tipoCirurgia);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoCirurgiaViewModel.IdTipoAnimal);
+            return View(tipoCirurgiaViewModel);
         }
 
         // GET: TipoCirurgia/Delete/5

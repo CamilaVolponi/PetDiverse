@@ -13,7 +13,8 @@
                     <h5 class="card-title">@animal.Nome</h5>
                         <p class="card-text mb-0">@animal.Idade</p>
                         <p class="card-text">@(animal.PessoaDoadora.Bairro.Nome + ", " + animal.PessoaDoadora.Bairro.Cidade.Nome + ", " + animal.PessoaDoadora.Bairro.Cidade.Estado.Sigla)</p>
-                    <a href="#" class="btn btn-roxo mt-auto">Mais informações</a>
+                        <a class="btn btn-roxo mt-auto text-center" asp-controller="Animal" asp-action="Details" asp-route-id="@animal.Id">Mais informações</a>
+                        @* <a href="#" class="btn btn-roxo mt-auto">Mais informações</a> *@
                 </div>
             </div>
         </div>

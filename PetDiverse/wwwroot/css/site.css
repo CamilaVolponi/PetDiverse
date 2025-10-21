@@ -35,7 +35,17 @@ body {
 }
 
     .btn-roxo:hover {
-        background-color: #6610f2;
+        background-color: ;
+        color: #FFFFFF;
+    }
+
+.btn-cinza {
+    background-color: #B5B4B8;
+    color: #FFFFFF;
+}
+
+    .btn-cinza:hover {
+        background-color: #A9A7AB;
         color: #FFFFFF;
     }
 

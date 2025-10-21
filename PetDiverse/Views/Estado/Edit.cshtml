@@ -1,32 +1,47 @@
 ﻿@model PetDiverse.Data.Estado
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edição de estado";
 }
 
-<h1>Edit</h1>
+@* <h1>Edit</h1> *@
 
-<h4>Estado</h4>
+<h2>Edição do estado</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="form-group row">
+                        <label asp-for="Nome" class="col-sm-4 col-form-label"></label>
+                        <div class="col-sm-8">
+                            <input asp-for="Nome" class="form-control" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="form-group row">
+                        <label asp-for="Sigla" class="col-sm-4 col-form-label"></label>
+                        <div class="col-sm-8">
+                            <input asp-for="Sigla" class="form-control" />
+                            <span asp-validation-for="Sigla" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="form-group mt-2">
+                <a asp-action="Index" class="btn btn-cinza">Voltar a lista</a>
+                <input type="submit" value="Editar" class="btn btn-roxo" />
+            </div>
+        </form> 
+    </div>
 </div>
 
 @section Scripts {

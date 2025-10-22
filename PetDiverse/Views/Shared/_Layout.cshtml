@@ -1,6 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@inject PetDiverse.Data.ApplicationDbContext _context
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -32,7 +34,25 @@
                                 <a class="nav-link text-roxo" asp-area="" asp-controller="Animal" asp-action="Index">Meus animais</a>
                             </li>
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-roxo" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Olá, @User.Identity?.Name!</a>
+                                @{
+                                    string primeiroNome = "";
+
+                                    if (SignInManager.IsSignedIn(User))
+                                    {
+                                        var usuario = await UserManager.GetUserAsync(User);
+                                        var pessoa = _context.PessoaDoadora.FirstOrDefault(p => p.IdUsuario == usuario.Id);
+
+                                        if (pessoa != null && !string.IsNullOrEmpty(pessoa.Nome))
+                                        {
+                                            primeiroNome = pessoa.Nome.Split(' ')[0];
+                                        }
+                                    }
+                                }
+
+                                <a class="nav-link dropdown-toggle text-roxo" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    @(string.IsNullOrEmpty(primeiroNome) ? "Olá!" : $"Olá, {primeiroNome}!")
+                                </a>
+
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                     <li>
                                         <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Minha conta</a>

@@ -13,6 +13,7 @@ namespace PetDiverse.Data
         }
         public int Id { get; set; }
         [Display(Name = "Tipo de animal")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public string Descricao { get; set; } = string.Empty;
         public virtual ICollection<Animal> Animais { get; set; } // 1 TipoAnimal -> N Animais
         public virtual ICollection<TipoVacina> TipoVacinas { get; set; } // 1 TipoAnimal -> N Tipos de vacina

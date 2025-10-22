@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
@@ -86,8 +87,12 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
+            var tipoVacinaViewModel = new TipoVacinaViewModel();
+            tipoVacinaViewModel.Id = tipoVacina.Id;
+            tipoVacinaViewModel.IdTipoAnimal = tipoVacina.IdTipoAnimal;
+            tipoVacinaViewModel.Descricao = tipoVacina.Descricao;
             ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoVacina.IdTipoAnimal);
-            return View(tipoVacina);
+            return View(tipoVacinaViewModel);
         }
 
         // POST: TipoVacina/Edit/5

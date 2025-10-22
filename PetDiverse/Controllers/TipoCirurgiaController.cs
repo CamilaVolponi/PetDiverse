@@ -86,8 +86,13 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
+
+            var tipoCirurgiaViewModel = new TipoCirurgiaViewModel();
+            tipoCirurgiaViewModel.Id = tipoCirurgia.Id;
+            tipoCirurgiaViewModel.IdTipoAnimal = tipoCirurgia.IdTipoAnimal;
+            tipoCirurgiaViewModel.Descricao = tipoCirurgia.Descricao;
             ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoCirurgia.IdTipoAnimal);
-            return View(tipoCirurgia);
+            return View(tipoCirurgiaViewModel);
         }
 
         // POST: TipoCirurgia/Edit/5
@@ -106,7 +111,7 @@ namespace PetDiverse.Controllers
             {
                 try
                 {
-                    var tipoCirurgia = _mapper.Map<TipoVacina>(tipoCirurgiaViewModel);
+                    var tipoCirurgia = _mapper.Map<TipoCirurgia>(tipoCirurgiaViewModel);
                     _context.Update(tipoCirurgia);
                     await _context.SaveChangesAsync();
                 }

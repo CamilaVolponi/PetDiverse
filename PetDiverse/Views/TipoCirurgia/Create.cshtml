@@ -1,35 +1,45 @@
 ﻿@model PetDiverse.Models.TipoCirurgiaViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Criação tipo cirurgia";
 }
 
-<h1>Create</h1>
+<h1>Criação tipo de cirurgia</h1>
 
-<h4>TipoCirurgia</h4>
+@* <h4>TipoCirurgia</h4> *@
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Descricao" class="control-label"></label>
-                <input asp-for="Descricao" class="form-control" />
-                <span asp-validation-for="Descricao" class="text-danger"></span>
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Descricao" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <input asp-for="Descricao" class="form-control" />
+                            <span asp-validation-for="Descricao" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="IdTipoAnimal" class="control-label"></label>
-                <select asp-for="IdTipoAnimal" class="form-control" asp-items="ViewBag.IdTipoAnimal"><option>Selecione o tipo do animal</option></select>
+            <br />
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="IdTipoAnimal" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <select asp-for="IdTipoAnimal" class="form-control" asp-items="ViewBag.IdTipoAnimal"><option>Selecione o tipo de animal</option></select>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-group mt-2">
+                <a asp-action="Index" class="btn btn-cinza">Voltar a lista</a>
+                <input type="submit" value="Criar" class="btn btn-roxo" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

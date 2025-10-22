@@ -1,14 +1,14 @@
 ﻿@model PetDiverse.Data.TipoAnimal
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Exclução de tipo animal";
 }
 
-<h1>Delete</h1>
+<h2>Excluir de tipo de animal</h2>
 
-<h3>Are you sure you want to delete this?</h3>
+<h4>Tem certeza de que deseja excluir este tipo de animal?</h4>
 <div>
-    <h4>TipoAnimal</h4>
+    @* <h4>TipoAnimal</h4> *@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -21,7 +21,7 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index" class="btn btn-cinza">Voltar a lista</a>
+        <input type="submit" value="Excluir" class="btn btn-danger" />
     </form>
 </div>

@@ -8,9 +8,9 @@ namespace PetDiverse.Models
     public class TipoCirurgiaViewModel
     {
         public int Id { get; set; }
-        [Display(Name = "Cirurgia")]
+        [DisplayName ("Cirurgia")]
         public string Descricao { get; set; } = string.Empty;
-        [Display(Name = "Tipo de animal")]
+        [DisplayName ("Tipo de animal")]
         public int IdTipoAnimal { get; set; } // campo FK - Tipo de animal
     }
 }

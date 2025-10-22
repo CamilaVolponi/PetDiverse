@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<PetDiverse.Data.TipoAnimal>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Tipos de animais";
 }
 
 <h1 class="text-center">Tipos de animais</h1>
@@ -29,7 +29,6 @@
                     <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_@item.Id">
                         <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                        <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id">Detalhar</a>
                         <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
                     </div>
                 </div>
@@ -38,3 +37,6 @@
 }
     </tbody>
 </table>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>

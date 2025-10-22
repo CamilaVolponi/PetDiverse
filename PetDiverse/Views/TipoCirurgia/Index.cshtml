@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<PetDiverse.Data.TipoCirurgia>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Tipos de cirurgias";
 }
 
 <h1 class="text-center">Tipos de cirurgias</h1>
@@ -13,12 +13,14 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Descricao)
+                Descrição
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TipoAnimal)
+                Tipo de animal
             </th>
-            <th></th>
+            <th>
+                Ações
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -28,14 +30,13 @@
                 @Html.DisplayFor(modelItem => item.Descricao)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.TipoAnimal.Descricao)
+                @Html.DisplayFor(modelItem => item.TipoAnimal.Descricao)
             </td>
             <td>
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_@item.Id">
                         <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                        <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id">Detalhar</a>
                         <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
                     </div>
                 </div>

@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<PetDiverse.Data.RegistroVacina>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Registros de Vacina";
 }
 
-<h1>Index</h1>
+<h1>Registros de Vacina de @ViewData["NomeAnimal"]</h1>
 
 <p>
-    <a asp-action="Create" asp-route-id="@ViewData["IdAnimal"]">Create New</a>
+    <a asp-action="Create" asp-route-idAnimal="@ViewData["IdAnimal"]">Create New</a>
 </p>
 <table class="table">
     <thead>

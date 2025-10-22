@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
@@ -26,6 +27,7 @@ namespace PetDiverse.Controllers
         public async Task<IActionResult> Index(int idAnimal)
         {
             var applicationDbContext = _context.RegistroVacina.Where(r => r.IdAnimal == idAnimal);
+            ViewData["NomeAnimal"] = _context.Animal.Find(idAnimal)?.Nome;
             ViewData["IdAnimal"] = idAnimal;
             return View(await applicationDbContext.ToListAsync());
         }
@@ -54,8 +56,9 @@ namespace PetDiverse.Controllers
         public IActionResult Create(int idAnimal)
         {
             var registroVacinaViewModel = new RegistroVacinaViewModel();
+            var animal = _context.Animal.Find(idAnimal);
             registroVacinaViewModel.IdAnimal = idAnimal;
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao");
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao");
             return View(registroVacinaViewModel);
         }
 
@@ -71,10 +74,10 @@ namespace PetDiverse.Controllers
                 var registroVacina = _mapper.Map<RegistroVacina>(registroVacinaViewModel);
                 _context.Add(registroVacina);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index),new {registroVacina.IdAnimal });
             }
-            
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao", registroVacinaViewModel.IdTipoVacina);
+            var animal = _context.Animal.Find(registroVacinaViewModel.IdAnimal);
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", registroVacinaViewModel.IdTipoVacina);
             return View(registroVacinaViewModel);
         }
 
@@ -92,7 +95,8 @@ namespace PetDiverse.Controllers
                 return NotFound();
             }
             var registroVacinaViewModel = _mapper.Map<RegistroVacinaViewModel>(registroVacina);
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao", registroVacina.IdTipoVacina);
+            var animal = _context.Animal.Find(registroVacinaViewModel.IdAnimal);
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", registroVacina.IdTipoVacina);
             return View(registroVacinaViewModel);
         }
 
@@ -127,10 +131,10 @@ namespace PetDiverse.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { registroVacinaViewModel.IdAnimal });
             }
-            
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina, "Id", "Descricao", registroVacinaViewModel.IdTipoVacina);
+            var animal = _context.Animal.Find(registroVacinaViewModel.IdAnimal);
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", registroVacinaViewModel.IdTipoVacina);
             return View(registroVacinaViewModel);
         }
 
@@ -157,7 +161,7 @@ namespace PetDiverse.Controllers
         // POST: RegistroVacina/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int idAnimal)
         {
             var registroVacina = await _context.RegistroVacina.FindAsync(id);
             if (registroVacina != null)
@@ -166,7 +170,7 @@ namespace PetDiverse.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { idAnimal });
         }
 
         private bool RegistroVacinaExists(int id)

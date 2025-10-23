@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<PetDiverse.Data.Cidade>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Cidades";
 }
 
 <h1 class="text-center">Cidades</h1>
@@ -18,7 +18,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Estado)
             </th>
-            <th></th>
+            <th>
+                Ações
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -35,7 +37,6 @@
                     <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_@item.Id">
                         <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                        <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id">Detalhar</a>
                         <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
                     </div>
                 </div>

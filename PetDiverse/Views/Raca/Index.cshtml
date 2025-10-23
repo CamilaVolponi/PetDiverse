@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<PetDiverse.Data.Raca>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Raças";
 }
 
 <h1 class="text-center">Raças</h1>
@@ -13,12 +13,14 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Descricao)
+                Raça
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TipoAnimal)
+                Tipo de animal
             </th>
-            <th></th>
+            <th>
+                Ações
+            </th>
         </tr>
     </thead>
     <tbody>

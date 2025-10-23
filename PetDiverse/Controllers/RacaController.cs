@@ -1,22 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
 using PetDiverse.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PetDiverse.Controllers
 {
     public class RacaController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public RacaController(ApplicationDbContext context)
+        public RacaController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: Racas
@@ -61,7 +64,7 @@ namespace PetDiverse.Controllers
         {
             if (ModelState.IsValid)
             {
-                var raca = new Raca();
+                var raca = _mapper.Map<Raca>(racaViewModel);
                 raca.Id = racaViewModel.Id;
                 raca.IdTipoAnimal = racaViewModel.IdTipoAnimal;
                 raca.Descricao = racaViewModel.Descricao;
@@ -110,7 +113,7 @@ namespace PetDiverse.Controllers
             {
                 try
                 {
-                    var raca = new Raca();
+                    var raca = _mapper.Map<Raca>(racaViewModel);
                     raca.Id = racaViewModel.Id;
                     raca.IdTipoAnimal = racaViewModel.IdTipoAnimal;
                     raca.Descricao = racaViewModel.Descricao;

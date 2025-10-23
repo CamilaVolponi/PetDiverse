@@ -9,8 +9,10 @@ namespace PetDiverse.Models
     {
         public int Id { get; set; }
         [DisplayName ("Cirurgia")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public string Descricao { get; set; } = string.Empty;
         [DisplayName ("Tipo de animal")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public int IdTipoAnimal { get; set; } // campo FK - Tipo de animal
     }
 }

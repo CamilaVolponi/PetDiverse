@@ -1,22 +1,18 @@
-﻿using System.ComponentModel;
+﻿using PetDiverse.Data;
+using PetDiverse.Data.Enuns;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace PetDiverse.Data
+namespace PetDiverse.Models
 {
-    public class Cidade
+    public class CidadeViewModel
     {
-        public Cidade()
-        {
-            Bairros = new HashSet<Bairro>();
-        }
         public int Id { get; set; }
         [DisplayName("Cidade")]
         [Required(ErrorMessage = "Campo obrigatório")]
         public string Nome { get; set; } = string.Empty;
-        public virtual ICollection<Bairro> Bairros { get; set; }
         [DisplayName("Estado")]
         [Required(ErrorMessage = "Campo obrigatório")]
         public int IdEstado { get; set; }
-        public virtual Estado Estado { get; set; }
     }
 }

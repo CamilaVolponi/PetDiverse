@@ -1,21 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
+using PetDiverse.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PetDiverse.Controllers
 {
     public class CidadeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CidadeController(ApplicationDbContext context)
+        public CidadeController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: Cidade
@@ -56,16 +60,20 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,IdEstado")] Cidade cidade)
+        public async Task<IActionResult> Create(CidadeViewModel cidadeViewModel)
         {
             if (ModelState.IsValid)
             {
+                var cidade = _mapper.Map<Cidade>(cidadeViewModel);
+                cidade.Id = cidadeViewModel.Id;
+                cidade.Nome = cidadeViewModel.Nome;
+                cidade.IdEstado = cidadeViewModel.IdEstado;
                 _context.Add(cidade);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome", cidade.IdEstado);
-            return View(cidade);
+            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome", cidadeViewModel.IdEstado);
+            return View(cidadeViewModel);
         }
 
         // GET: Cidade/Edit/5
@@ -81,8 +89,12 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome", cidade.IdEstado);
-            return View(cidade);
+            var cidadeViewModel = new CidadeViewModel();
+            cidadeViewModel.Id = cidade.Id;
+            cidadeViewModel.Nome = cidade.Nome;
+            cidadeViewModel.IdEstado = cidade.IdEstado;
+            ViewData["IdEstado"] = new SelectList(_context.Set<Estado>(), "Id", "Nome", cidade.IdEstado);
+            return View(cidadeViewModel);
         }
 
         // POST: Cidade/Edit/5
@@ -90,9 +102,9 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,IdEstado")] Cidade cidade)
+        public async Task<IActionResult> Edit(int id, CidadeViewModel cidadeViewModel)
         {
-            if (id != cidade.Id)
+            if (id != cidadeViewModel.Id)
             {
                 return NotFound();
             }
@@ -101,12 +113,16 @@ namespace PetDiverse.Controllers
             {
                 try
                 {
+                    var cidade = _mapper.Map<Cidade>(cidadeViewModel);
+                    cidade.Id = cidadeViewModel.Id;
+                    cidade.Nome = cidadeViewModel.Nome;
+                    cidade.IdEstado = cidadeViewModel.IdEstado;
                     _context.Update(cidade);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CidadeExists(cidade.Id))
+                    if (!CidadeExists(cidadeViewModel.Id))
                     {
                         return NotFound();
                     }
@@ -117,8 +133,8 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome", cidade.IdEstado);
-            return View(cidade);
+            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome", cidadeViewModel.IdEstado);
+            return View(cidadeViewModel);
         }
 
         // GET: Cidade/Delete/5

@@ -8,11 +8,11 @@ namespace PetDiverse.Models
     public class TipoVacinaViewModel
     {
         public int Id { get; set; }
-        [Display(Name = "Vacina")]
+        [DisplayName ("Vacina")]
         [Required(ErrorMessage = "Campo obrigatório!")]
         public string Descricao { get; set; } = string.Empty;
-        [Display(Name = "Tipo de animal")]
-        
+        [DisplayName ("Tipo de animal")]
+        [Required(ErrorMessage = "Campo obrigatório!")]
         public int? IdTipoAnimal { get; set; } // campo FK
 
     }

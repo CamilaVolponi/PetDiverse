@@ -20,5 +20,15 @@ public class MappingProfile : Profile
 
         CreateMap<TipoCirurgia, TipoCirurgiaViewModel>();
         CreateMap<TipoCirurgiaViewModel, TipoCirurgia>();
+
+        CreateMap<Raca, RacaViewModel>();
+        CreateMap<RacaViewModel, Raca>();
+
+        CreateMap<Cidade, CidadeViewModel>();
+        CreateMap<CidadeViewModel, Cidade>();
+
+        CreateMap<Bairro, BairroViewModel>();
+        CreateMap<BairroViewModel, Bairro>();
+
     }
 }

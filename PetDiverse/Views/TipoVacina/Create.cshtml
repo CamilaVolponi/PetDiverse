@@ -1,10 +1,10 @@
 ﻿@model PetDiverse.Models.TipoVacinaViewModel
 
 @{
-    ViewData["Title"] = "Criação tipo de vacina";
+    ViewData["Title"] = "Criar tipo de vacina";
 }
 
-<h2>Criação tipo de vacina</h2>
+<h2>Criar tipo de vacina</h2>
 
 @* <h4>TipoVacina</h4> *@
 <hr />
@@ -30,6 +30,7 @@
                         <label asp-for="IdTipoAnimal" class="col-sm-5 control-label"></label>
                         <div class="col-sm-7">
                             <select asp-for="IdTipoAnimal" class="form-control" asp-items="ViewBag.IdTipoAnimal"><option value="">Selecione um tipo de animal</option></select>
+                            <span asp-validation-for="IdTipoAnimal" class="text-danger"></span>
                         </div>
                     </div>
                 </div>

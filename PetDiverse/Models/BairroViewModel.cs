@@ -5,14 +5,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PetDiverse.Models
 {
-    public class RacaViewModel
+    public class BairroViewModel
     {
         public int Id { get; set; }
-        [DisplayName ("Raça")]
+        [DisplayName("Bairro")]
         [Required(ErrorMessage = "Campo obrigatório!")]
-        public string Descricao { get; set; } = string.Empty;
-        [DisplayName ("Tipo de animal")]
+        public string Nome { get; set; } = string.Empty;
+        [DisplayName("Cidade")]
         [Required(ErrorMessage = "Campo obrigatório!")]
-        public int IdTipoAnimal { get; set; }
+        public int IdCidade { get; set; }
     }
 }

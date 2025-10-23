@@ -68,6 +68,11 @@ namespace PetDiverse.Controllers
                 Nome = e.ToString()
             });
             ViewData["PorteAnimal"] = new SelectList(listaPorte, "Valor", "Nome");
+            var listaSexoBiologico = Enum.GetValues(typeof(SexoBiologico)).Cast<SexoBiologico>().Select(e => new {
+                Valor = e,
+                Nome = e.ToString()
+            });
+            ViewData["SexoBiologico"] = new SelectList(listaSexoBiologico, "Valor", "Nome");
             ViewData["IdRaca"] = new SelectList(new List<Raca>());
             return View();
         }
@@ -109,6 +114,11 @@ namespace PetDiverse.Controllers
                 Nome = e.ToString()
             });
             ViewData["PorteAnimal"] = new SelectList(listaPorte, "Valor", "Nome");
+            var listaSexoBiologico = Enum.GetValues(typeof(SexoBiologico)).Cast<SexoBiologico>().Select(e => new {
+                Valor = e,
+                Nome = e.ToString()
+            });
+            ViewData["SexoBiologico"] = new SelectList(listaSexoBiologico, "Valor", "Nome");
             ViewData["IdRaca"] = new SelectList(new List<Raca>());
             return View(animal);
         }
@@ -138,6 +148,11 @@ namespace PetDiverse.Controllers
                 Nome = e.ToString()
             });
             ViewData["PorteAnimal"] = new SelectList(listaPorte, "Valor", "Nome");
+            var listaSexoBiologico = Enum.GetValues(typeof(SexoBiologico)).Cast<SexoBiologico>().Select(e => new {
+                Valor = e,
+                Nome = e.ToString()
+            });
+            ViewData["SexoBiologico"] = new SelectList(listaSexoBiologico, "Valor", "Nome");
             ViewData["IdRaca"] = new SelectList(new List<Raca>());
             return View(animal);
         }
@@ -197,6 +212,11 @@ namespace PetDiverse.Controllers
                 Nome = e.ToString()
             });
             ViewData["PorteAnimal"] = new SelectList(listaPorte, "Valor", "Nome");
+            var listaSexoBiologico = Enum.GetValues(typeof(SexoBiologico)).Cast<SexoBiologico>().Select(e => new {
+                Valor = e,
+                Nome = e.ToString()
+            });
+            ViewData["SexoBiologico"] = new SelectList(listaSexoBiologico, "Valor", "Nome");
             ViewData["IdRaca"] = new SelectList(new List<Raca>());
             return View(animalViewModel);
         }

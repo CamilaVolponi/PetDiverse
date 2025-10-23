@@ -18,7 +18,8 @@ namespace PetDiverse.Data
         public ContagemIdade ContagemIdade { get; set; }  
         public bool Adotado { get; set; }
         public string? CaminhoFoto { get; set; } // "?" é pq pode ser nulo
-        public PorteAnimal? Porte { get; set; }
+        public SexoBiologico SexoBiologico { get; set; }
+        public PorteAnimal Porte { get; set; }
         public int IdTipoAnimal { get; set; } // campo FK - TipoAnimal
         public virtual TipoAnimal TipoAnimal { get; set; } // 1 Animal -> 1 TipoAnimal, virtual = faz o join implicitamente
         public virtual ICollection<RegistroVacina>? RegistrosVacina { get; set; } // 1 Animal -> N Registros de vacina

@@ -34,6 +34,9 @@
                 <span asp-validation-for="Foto" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <select asp-for="SexoBiologico" class="form-control" asp-items="ViewBag.SexoBiologico"><option>Selecione um sexo biológico</option></select>
+            </div>
+            <div class="form-group">
                 <select asp-for="Porte" class="form-control" asp-items="ViewBag.PorteAnimal"><option>Selecione um porte</option></select>
             </div>
             <div class="form-group">

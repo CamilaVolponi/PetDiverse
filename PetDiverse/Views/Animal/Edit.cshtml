@@ -27,7 +27,7 @@
                 <label asp-for="Idade" class="control-label"></label>
                 <input asp-for="Idade" class="form-control" />
                 <span asp-validation-for="Idade" class="text-danger"></span>
-                <select asp-for="ContagemIdade" class="form-control" asp-items="ViewBag.ContagemIdade"><option>Selecione uma contagem de idade</option></select>
+                <select asp-for="ContagemIdade" class="form-control" asp-items="ViewBag.ContagemIdade"></select>
             </div>
             <div class="form-group">
                 <label asp-for="CaminhoFoto" class="control-label"></label>
@@ -35,7 +35,10 @@
                 <span asp-validation-for="CaminhoFoto" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <select asp-for="Porte" class="form-control" asp-items="ViewBag.ContagemIdade"><option>Selecione um porte</option></select>
+                <select asp-for="SexoBiologico" class="form-control" asp-items="ViewBag.SexoBiologico"></select>
+            </div>
+            <div class="form-group">
+                <select asp-for="Porte" class="form-control" asp-items="ViewBag.ContagemIdade"></select>
             </div>
             <div class="form-group">
                 <label asp-for="IdTipoAnimal" class="control-label"></label>

@@ -14,6 +14,7 @@ namespace PetDiverse.Models
         public ContagemIdade ContagemIdade { get; set; }
         public bool Adotado { get; set; }
         public IFormFile Foto { get; set; } // "?" é pq pode ser nulo
+        public SexoBiologico SexoBiologico { get; set; }
         public PorteAnimal? Porte { get; set; }
         public int IdTipoAnimal { get; set; } // campo FK - TipoAnimal
         public int IdRaca { get; set; }

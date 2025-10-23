@@ -2,7 +2,7 @@
 {
     public enum SexoBiologico
     {
-        Fêamea = 1,
+        Fêmea = 1,
         Macho = 2
     }
 }

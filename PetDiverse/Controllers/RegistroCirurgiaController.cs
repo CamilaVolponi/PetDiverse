@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
+using PetDiverse.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,11 +50,13 @@ namespace PetDiverse.Controllers
         }
 
         // GET: RegistroCirurgia/Create
-        public IActionResult Create()
+        public IActionResult Create(int idAnimal)
         {
-            ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto");
-            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "Descricao");
-            return View();
+            var registroCirurgiaViewModel = new RegistroCirurgiaViewModel();
+            var animal = _context.Animal.Find(idAnimal);
+            registroCirurgiaViewModel.IdAnimal = idAnimal;
+            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao"); 
+            return View(registroCirurgiaViewModel);
         }
 
         // POST: RegistroCirurgia/Create
@@ -61,17 +64,18 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,DataRegistro,IdAnimal,IdTipoCirurgia")] RegistroCirurgia registroCirurgia)
+        public async Task<IActionResult> Create(RegistroCirurgiaViewModel registroCirurgiaViewModel)
         {
             if (ModelState.IsValid)
             {
+                var registroCirurgia = _mapper.Map<RegistroCirurgia>(registroCirurgiaViewModel);
                 _context.Add(registroCirurgia);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroCirurgia.IdAnimal);
-            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "Descricao", registroCirurgia.IdTipoCirurgia);
-            return View(registroCirurgia);
+            var animal = _context.Animal.Find(registroCirurgiaViewModel.IdAnimal);
+            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao");
+            return View(registroCirurgiaViewModel);
         }
 
         // GET: RegistroCirurgia/Edit/5
@@ -87,9 +91,10 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroCirurgia.IdAnimal);
-            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "Descricao", registroCirurgia.IdTipoCirurgia);
-            return View(registroCirurgia);
+            var registroCirurgiaViewModel = _mapper.Map<RegistroCirurgiaViewModel>(registroCirurgia);
+            var animal = _context.Animal.Find(registroCirurgiaViewModel.IdAnimal);
+            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", registroCirurgiaViewModel.IdTipoCirurgia);
+            return View(registroCirurgiaViewModel);
         }
 
         // POST: RegistroCirurgia/Edit/5
@@ -97,9 +102,9 @@ namespace PetDiverse.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,DataRegistro,IdAnimal,IdTipoCirurgia")] RegistroCirurgia registroCirurgia)
+        public async Task<IActionResult> Edit(int id, RegistroCirurgiaViewModel registroCirurgiaViewModel)
         {
-            if (id != registroCirurgia.Id)
+            if (id != registroCirurgiaViewModel.Id)
             {
                 return NotFound();
             }
@@ -108,12 +113,13 @@ namespace PetDiverse.Controllers
             {
                 try
                 {
+                    var registroCirurgia = _mapper.Map<RegistroCirurgia>(registroCirurgiaViewModel);
                     _context.Update(registroCirurgia);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RegistroCirurgiaExists(registroCirurgia.Id))
+                    if (!RegistroCirurgiaExists(registroCirurgiaViewModel.Id))
                     {
                         return NotFound();
                     }
@@ -124,9 +130,9 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdAnimal"] = new SelectList(_context.Animal, "Id", "CaminhoFoto", registroCirurgia.IdAnimal);
-            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia, "Id", "Descricao", registroCirurgia.IdTipoCirurgia);
-            return View(registroCirurgia);
+            var animal = _context.Animal.Find(registroCirurgiaViewModel.IdAnimal);
+            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", registroCirurgiaViewModel.IdTipoCirurgia);
+            return View(registroCirurgiaViewModel);
         }
 
         // GET: RegistroCirurgia/Delete/5

@@ -1,72 +1,133 @@
 ﻿@model PetDiverse.Data.Animal
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Mais informações";
 }
 
-<h1>Details</h1>
-
 <div>
-    <h4>Animal</h4>
+    <h2>@Html.DisplayFor(model => model.Nome)</h2>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Idade)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Idade)
-        </dd>
-        @* <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Adotado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Adotado)
-        </dd> *@
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CaminhoFoto)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CaminhoFoto)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Porte)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Porte)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SexoBiologico)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SexoBiologico)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TipoAnimal)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TipoAnimal.Descricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PessoaDoadora)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PessoaDoadora.Nome)
-        </dd>
-    </dl>
+
+    <div class="row">
+        <div class="col-md-8">
+            <p><strong>Idade:</strong> @Html.DisplayFor(model => model.Idade) @Model.ContagemIdade.ToString().ToLower()</p>
+            <p><strong>Raça:</strong> @Model.Raca.Descricao</p>
+            <p><strong>Sexo Biológico:</strong> @Html.DisplayFor(model => model.SexoBiologico)</p>
+            <p><strong>Porte:</strong> @Html.DisplayFor(model => model.Porte)</p>
+
+            <p><strong>Descrição:</strong><br />
+                @Model.Descricao
+            </p>
+
+            @if (Model.RegistrosVacina != null && Model.RegistrosVacina.Any())
+            {
+                <p><strong>Vacinas:</strong></p>
+                <ul>
+                    @foreach (var vacina in Model.RegistrosVacina)
+                    {
+                        <li>
+                            <strong>@vacina.TipoVacina.Descricao</strong>
+                            - @vacina.DataRegistro.ToString("dd/MM/yyyy")
+                        </li>
+                    }
+                </ul>
+            }    
+            
+            @if (Model.RegistrosCirurgia != null && Model.RegistrosCirurgia.Any())
+            {
+                <p><strong>Vacinas:</strong></p>
+                <ul>
+                    @foreach (var vacina in Model.RegistrosCirurgia)
+                    {
+                        <li>
+                            <strong>@vacina.TipoCirurgia.Descricao</strong>
+                            - @vacina.DataRegistro.ToString("dd/MM/yyyy")
+                        </li>
+                    }
+                </ul>
+            }
+
+            <p><strong>Cadastrado por:</strong> @Model.PessoaDoadora.Nome</p>
+            <p><strong>Endereço:</strong> @Model.PessoaDoadora.Bairro.Nome, @Model.PessoaDoadora.Bairro.Cidade.Nome, @Model.PessoaDoadora.Bairro.Cidade.Estado.Nome</p>
+
+            @if (Model.PessoaDoadora is PetDiverse.Data.PessoaJuridica pessoaJuridica)
+            {
+                <p><strong>@pessoaJuridica.RedeSocial</strong> / <strong>@pessoaJuridica.Site</strong></p>
+            }
+
+        </div>
+
+        <div class="col-md-4 text-center">
+            <div class="row justify-content-center">
+                <img src="@Model.CaminhoFoto.Replace("wwwroot", "")" class="img-pet-detalhe" alt="Foto do @Model.Nome">
+            </div>
+            <br />
+            <div>
+                <button type="button" class="btn btn-roxo" data-bs-toggle="modal" data-bs-target="#modalAdocao">
+                    Quero adotar
+                </button>
+            </div>
+        </div>
+    </div>
+
 </div>
-<div>
-    @* <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a> *@
+
+
+<div class="modal fade" id="modalAdocao" tabindex="-1" aria-labelledby="modalAdocaoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-adocao">
+            <div class="modal-body">
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <img src="~/Imagens/logo.png" alt="PetDiverse" class="logo-modal">
+                    <h4 class="mb-0 ms-2" style="color: #8B5CF6">PetDiverse</h4>
+                </div>
+
+                <div class="text-start">
+                    <p>
+                        Este animal está sendo anunciado pelo(a) @Model.PessoaDoadora.Nome. Para mais informações, entre em contato através:
+                    </p>
+
+                    <ul>
+                        @{
+                            var usuarioDoador = await UserManager.FindByIdAsync(Model.PessoaDoadora.IdUsuario);
+                            var emailDoador = usuarioDoador?.UserName;
+
+                            var temEmail = Model.PessoaDoadora.FormasContato
+                            .Any(c => c.TipoFormaContato == PetDiverse.Data.Enums.TipoFormaContato.Email);
+
+                            var temTelefone = Model.PessoaDoadora.FormasContato
+                            .Any(c => c.TipoFormaContato == PetDiverse.Data.Enums.TipoFormaContato.Telefone);
+
+                            var temWhatsapp = Model.PessoaDoadora.FormasContato
+                            .Any(c => c.TipoFormaContato == PetDiverse.Data.Enums.TipoFormaContato.Whatsapp);
+                        }
+
+                        @if (temEmail)
+                        {
+                            <li><strong>E-mail:</strong> @emailDoador</li>
+                        }
+
+                        @if (temTelefone && temWhatsapp)
+                        {
+                            <li><strong>Telefone:</strong> @Model.PessoaDoadora.Telefone (este telefone possui WhatsApp)</li>
+                        } else if (temTelefone)
+                        {
+                            <li><strong>Telefone:</strong> @Model.PessoaDoadora.Telefone</li>
+                        }
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+

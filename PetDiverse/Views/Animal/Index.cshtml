@@ -44,7 +44,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Nome)
+                <a class="link-roxo" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Nome)</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Descricao)
@@ -72,11 +72,10 @@
                     <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_@item.Id">
                         <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                        <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id">Detalhar</a>
-                        <button class="dropdown-item btn-adocao" animal-id="@item.Id">Foi adotado</button>
-                        <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
                         <a class="dropdown-item" asp-controller="RegistroVacina" asp-route-idAnimal="@item.Id">Vacinas</a>
                         <a class="dropdown-item" asp-controller="RegistroCirurgia" asp-route-idAnimal="@item.Id">Cirurgias</a>
+                        <button class="dropdown-item btn-adocao" animal-id="@item.Id">Foi adotado</button>
+                        <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
                     </div>
                 </div>
             </td>

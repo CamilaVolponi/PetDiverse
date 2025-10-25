@@ -35,7 +35,7 @@ body {
 }
 
     .btn-roxo:hover {
-        background-color: ;
+        background-color: #A78BFA;
         color: #FFFFFF;
     }
 
@@ -88,4 +88,42 @@ body {
 .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='%23A590FF' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
 }
+
+.img-pet-detalhe {
+    width: 70%; 
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 30px;
+}
+
+.modal-adocao {
+    background-color: #EDE9FE; 
+    border-radius: 15px;
+    padding: 20px;
+    border: none;
+}
+
+.logo-modal {
+    width: 50px;
+}
+
+.modal-adocao ul {
+    list-style-position: outside; /* bullets para fora do texto */
+    padding-left: 20px; /* espaçamento à esquerda */
+    margin-left: 0;
+}
+
+.modal-adocao li {
+    margin-bottom: 5px; /* espaçamento entre os itens */
+}
+
+.link-roxo {
+    color: #8B5CF6;
+    text-decoration: none;
+}
+
+    .link-roxo:hover {
+        color: #A78BFA;
+        text-decoration: none; 
+    }
 

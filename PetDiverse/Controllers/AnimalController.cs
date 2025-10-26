@@ -84,26 +84,35 @@ namespace PetDiverse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AnimalViewModel animalViewModel)
         {
-            var pessoaDoadora = await _context.PessoaDoadora.FirstAsync(p => p.IdUsuario == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var animal = _mapper.Map<AnimalViewModel,Animal>(animalViewModel);
+            var pessoaDoadora = await _context.PessoaDoadora
+                .FirstAsync(p => p.IdUsuario == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var animal = _mapper.Map<AnimalViewModel, Animal>(animalViewModel);
             animal.IdPessoaDoadora = pessoaDoadora.Id;
+
+            // ⚠️ Validação ANTES
+            if (animalViewModel.Foto == null || animalViewModel.Foto.Length == 0)
+            {
+                ModelState.AddModelError("Foto", "Campo obrigatório!");
+            }
+
             if (ModelState.IsValid)
             {
-                if (animalViewModel.Foto != null && animalViewModel.Foto.Length > 0)
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(animalViewModel.Foto.FileName);
+                var filePath = Path.Combine("wwwroot", "fotoPet", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    var filePath = Path.Combine("wwwroot\\fotoPet", Guid.NewGuid().ToString()+Path.GetExtension(animalViewModel.Foto.FileName));
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await animalViewModel.Foto.CopyToAsync(stream);
-                    }
-                    animal.CaminhoFoto = filePath;
+                    await animalViewModel.Foto.CopyToAsync(stream);
                 }
+
+                animal.CaminhoFoto = $"fotoPet/{fileName}";
                 _context.Add(animal);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", animal.IdTipoAnimal);
+
+            // Repopula selects se falhar a validação
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", animalViewModel.IdTipoAnimal);
             var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
                 Valor = e,
                 Nome = e.ToString()
@@ -120,8 +129,10 @@ namespace PetDiverse.Controllers
             });
             ViewData["SexoBiologico"] = new SelectList(listaSexoBiologico, "Valor", "Nome");
             ViewData["IdRaca"] = new SelectList(new List<Raca>());
-            return View(animal);
+
+            return View(animalViewModel);
         }
+
 
         // GET: Animal/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -136,7 +147,7 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
-            
+            var animalViewModel = new AnimalViewModel();
             ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", animal.IdTipoAnimal);
             var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
                 Valor = e,
@@ -153,8 +164,20 @@ namespace PetDiverse.Controllers
                 Nome = e.ToString()
             });
             ViewData["SexoBiologico"] = new SelectList(listaSexoBiologico, "Valor", "Nome");
-            ViewData["IdRaca"] = new SelectList(new List<Raca>());
-            return View(animal);
+            ViewData["IdRaca"] = new SelectList(_context.Raca.Where(r => r.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", animal.IdRaca);
+
+            animalViewModel.Id = animal.Id;
+            animalViewModel.Nome = animal.Nome;
+            animalViewModel.Descricao = animal.Descricao;
+            animalViewModel.Idade = animal.Idade;
+            animalViewModel.ContagemIdade = animal.ContagemIdade;
+            animalViewModel.Adotado = animal.Adotado;
+            animalViewModel.CaminhoFoto = animal.CaminhoFoto;
+            animalViewModel.SexoBiologico = animal.SexoBiologico;
+            animalViewModel.Porte = animal.Porte;
+            animalViewModel.IdTipoAnimal = animal.IdTipoAnimal;
+            animalViewModel.IdRaca = animal.IdRaca;
+            return View(animalViewModel);
         }
 
         // POST: Animal/Edit/5
@@ -176,15 +199,32 @@ namespace PetDiverse.Controllers
             {
                 try
                 {
+                    // Verifica se foi enviada uma nova imagem
                     if (animalViewModel.Foto != null && animalViewModel.Foto.Length > 0)
                     {
-                        var filePath = Path.Combine("wwwroot\\fotoPet", Guid.NewGuid().ToString() + Path.GetExtension(animalViewModel.Foto.FileName));
+                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(animalViewModel.Foto.FileName);
+                        var filePath = Path.Combine("wwwroot\\fotoPet", fileName);
+
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                             await animalViewModel.Foto.CopyToAsync(stream);
                         }
-                        animal.CaminhoFoto = filePath;
+
+                        // Salva só o caminho relativo para exibir corretamente
+                        animal.CaminhoFoto = $"fotoPet/{fileName}";
                     }
+                    else
+                    {
+                        // Mantém a imagem antiga se não tiver nova
+                        var animalExistente = await _context.Animal.AsNoTracking()
+                            .FirstOrDefaultAsync(a => a.Id == animal.Id);
+
+                        if (animalExistente != null)
+                        {
+                            animal.CaminhoFoto = animalExistente.CaminhoFoto;
+                        }
+                    }
+
                     _context.Update(animal);
                     await _context.SaveChangesAsync();
                 }
@@ -217,7 +257,7 @@ namespace PetDiverse.Controllers
                 Nome = e.ToString()
             });
             ViewData["SexoBiologico"] = new SelectList(listaSexoBiologico, "Valor", "Nome");
-            ViewData["IdRaca"] = new SelectList(new List<Raca>());
+            ViewData["IdRaca"] = new SelectList(_context.Raca.Where(r => r.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", animal.IdRaca);
             return View(animalViewModel);
         }
 

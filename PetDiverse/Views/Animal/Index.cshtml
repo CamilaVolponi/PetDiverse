@@ -12,28 +12,25 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nome)
+                Nome
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Descricao)
+                Idade
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Idade)
+                Sexo biológico
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CaminhoFoto)
+                Porte
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SexoBiologico)
+                Tipo de animal
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Porte)
+                Raça
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TipoAnimal)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PessoaDoadora)
+                Adotado
             </th>
             <th>
                 Ações
@@ -47,13 +44,7 @@
                 <a class="link-roxo" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Nome)</a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Descricao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Idade)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CaminhoFoto)
+                @Html.DisplayFor(modelItem => item.Idade) @item.ContagemIdade.ToString().ToLower()
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SexoBiologico)
@@ -65,7 +56,17 @@
                 @Html.DisplayFor(modelItem => item.TipoAnimal.Descricao)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PessoaDoadora.Nome)
+                 @Html.DisplayFor(modelItem => item.Raca.Descricao)
+            </td>
+            <td>
+                @if (item.Adotado)
+                {
+                    <span>Adotado</span>
+                }
+                else
+                {
+                    <span>Ainda não foi adotado</span>
+                }
             </td>
             <td>
                 <div class="dropdown">

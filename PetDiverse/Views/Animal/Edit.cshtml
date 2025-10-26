@@ -1,61 +1,188 @@
-﻿@model PetDiverse.Data.Animal
+﻿@model PetDiverse.Models.AnimalViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar animal";
 }
 
-<h1>Edit</h1>
+<h2>Editar animal</h2>
 
-<h4>Animal</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+    <div class="col-md-12">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
+            <!-- Tipo de Animal -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="IdTipoAnimal" class="col-sm-5 control-label">Qual o tipo do animal?</label>
+                        <div class="col-sm-7">
+                            <select asp-for="IdTipoAnimal" class="form-control" asp-items="ViewBag.IdTipoAnimal">
+                                <option>Selecione um tipo de animal</option>
+                            </select>
+                            <span asp-validation-for="IdTipoAnimal" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Descricao" class="control-label"></label>
-                <input asp-for="Descricao" class="form-control" />
-                <span asp-validation-for="Descricao" class="text-danger"></span>
+
+            <!-- Nome -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Nome" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <input asp-for="Nome" class="form-control" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Idade" class="control-label"></label>
-                <input asp-for="Idade" class="form-control" />
-                <span asp-validation-for="Idade" class="text-danger"></span>
-                <select asp-for="ContagemIdade" class="form-control" asp-items="ViewBag.ContagemIdade"></select>
+
+            <!-- Idade + Contagem -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Idade" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-2">
+                            <input asp-for="Idade" class="form-control mb-1" />
+                            <span asp-validation-for="Idade" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-5">
+                            <select asp-for="ContagemIdade" class="form-control" asp-items="ViewBag.ContagemIdade">
+                                <option>Selecione uma contagem de idade</option>
+                            </select>
+                            <span asp-validation-for="ContagemIdade" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="CaminhoFoto" class="control-label"></label>
-                <input asp-for="CaminhoFoto" class="form-control" type="file" accept="image/jpg,image/jpeg,image/png" />
-                <span asp-validation-for="CaminhoFoto" class="text-danger"></span>
+
+            <!-- Descrição -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Descricao" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <textarea asp-for="Descricao" class="form-control"> </textarea>
+                            <span asp-validation-for="Descricao" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <select asp-for="SexoBiologico" class="form-control" asp-items="ViewBag.SexoBiologico"></select>
+
+            <!-- Sexo biológico -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="SexoBiologico" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <select asp-for="SexoBiologico" class="form-control" asp-items="ViewBag.SexoBiologico">
+                                <option>Selecione um sexo biológico</option>
+                            </select>
+                            <span asp-validation-for="SexoBiologico" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <select asp-for="Porte" class="form-control" asp-items="ViewBag.ContagemIdade"></select>
+
+            <!-- Porte -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Porte" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <select asp-for="Porte" class="form-control" asp-items="ViewBag.PorteAnimal">
+                                <option>Selecione um porte</option>
+                            </select>
+                            <span asp-validation-for="Porte" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="IdTipoAnimal" class="control-label"></label>
-                <select asp-for="IdTipoAnimal" class="form-control" asp-items="ViewBag.IdTipoAnimal"></select>
-                <span asp-validation-for="IdTipoAnimal" class="text-danger"></span>
+
+            <!-- Raça -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="IdRaca" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <select asp-for="IdRaca" class="form-control" asp-items="ViewBag.IdRaca">
+                                <option >Selecione uma raça</option>
+                            </select>
+                            <span asp-validation-for="IdRaca" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+
+            <!-- Foto -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Foto" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <!-- Exibe imagem atual, se existir -->
+                            @if (!string.IsNullOrEmpty(Model.CaminhoFoto))
+                            {
+                                <div class="mb-2">
+                                    <img src="~/@Model.CaminhoFoto" alt="Foto do animal" style="max-width: 150px; border-radius: 10px;" />
+                                </div>
+                            }
+
+                            <!-- Input para trocar -->
+                            <input asp-for="Foto" class="form-control" type="file" accept="image/jpg,image/jpeg,image/png" />
+                            <span asp-validation-for="Foto" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-cinza">Voltar à lista</a>
+                <input type="submit" value="Editar" class="btn btn-roxo" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function(){
+            $("#IdTipoAnimal").change(function(){
+            var racaSelect = $('#IdRaca');
+
+            racaSelect.empty(); // limpa as opções anteriores
+            racaSelect.append('<option value="">Carregando...</option>');
+                if ($(this).val()) {
+                    $.get('/Animal/RecuperarRaca', { id: $(this).val() }, function (data) {
+                        racaSelect.empty(); // limpa novamente
+                        racaSelect.append('<option>Selecione uma raça</option>');
+                        $.each(data, function (index, item) {
+                            racaSelect.append($('<option>', {
+                                value: item.value,
+                                text: item.text
+                            }));
+                        });
+                    });
+                } else {
+                    racaSelect.empty();
+                    racaSelect.append('<option>Selecione uma raça</option>');
+                }
+            })
+
+         })
+
+    </script>
 }
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

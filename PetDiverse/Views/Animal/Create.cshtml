@@ -1,61 +1,143 @@
 ﻿@model PetDiverse.Models.AnimalViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Criar animal";
 }
 
-<h1>Create</h1>
+<h2>Criar animal</h2>
 
-<h4>Animal</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
+
+            <!-- Tipo de Animal -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="IdTipoAnimal" class="col-sm-5 control-label">Qual o tipo do animal?</label>
+                        <div class="col-sm-7">
+                            <select asp-for="IdTipoAnimal" class="form-control" asp-items="ViewBag.IdTipoAnimal">
+                                <option value="">Selecione um tipo de animal</option>
+                            </select>
+                            <span asp-validation-for="IdTipoAnimal" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Descricao" class="control-label"></label>
-                <input asp-for="Descricao" class="form-control" />
-                <span asp-validation-for="Descricao" class="text-danger"></span>
+
+            <!-- Nome -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Nome" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <input asp-for="Nome" class="form-control" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Idade" class="control-label"></label> 
-                <input asp-for="Idade" class="form-control" />  
-                <span asp-validation-for="Idade" class="text-danger"></span> 
-                <select asp-for="ContagemIdade" class="form-control" asp-items="ViewBag.ContagemIdade"><option>Selecione uma contagem de idade</option></select>
+
+            <!-- Idade + Contagem -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Idade" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-2">
+                            <input asp-for="Idade" class="form-control mb-1" />
+                            <span asp-validation-for="Idade" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-5">
+                            <select asp-for="ContagemIdade" class="form-control" asp-items="ViewBag.ContagemIdade">
+                                <option value="">Selecione uma contagem de idade</option>
+                            </select>
+                            <span asp-validation-for="ContagemIdade" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Foto" class="control-label"></label>
-                <input asp-for="Foto" class="form-control" type="file" accept="image/jpg,image/jpeg,image/png" />
-                <span asp-validation-for="Foto" class="text-danger"></span>
+
+            <!-- Descrição -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Descricao" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <textarea asp-for="Descricao" class="form-control"> </textarea>
+                            <span asp-validation-for="Descricao" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <select asp-for="SexoBiologico" class="form-control" asp-items="ViewBag.SexoBiologico"><option>Selecione um sexo biológico</option></select>
+
+            <!-- Sexo biológico -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="SexoBiologico" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <select asp-for="SexoBiologico" class="form-control" asp-items="ViewBag.SexoBiologico">
+                                <option value="">Selecione um sexo biológico</option>
+                            </select>
+                            <span asp-validation-for="SexoBiologico" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <select asp-for="Porte" class="form-control" asp-items="ViewBag.PorteAnimal"><option>Selecione um porte</option></select>
+
+            <!-- Porte -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Porte" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <select asp-for="Porte" class="form-control" asp-items="ViewBag.PorteAnimal">
+                                <option value="">Selecione um porte</option>
+                            </select>
+                            <span asp-validation-for="Porte" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="IdTipoAnimal" class="control-label"></label>
-                <select asp-for="IdTipoAnimal" class="form-control" asp-items="ViewBag.IdTipoAnimal"><option>Selecione uma tipo de animal</option></select>
+
+            <!-- Raça -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="IdRaca" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <select asp-for="IdRaca" class="form-control" asp-items="ViewBag.IdRaca">
+                                <option value="">Selecione uma raça</option>
+                            </select>
+                            <span asp-validation-for="IdRaca" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="IdRaca" class="control-label"></label>
-                <select asp-for="IdRaca" class="form-control" asp-items="ViewBag.IdRaca"><option>Selecione uma raça</option></select>
+
+
+            <!-- Foto -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Foto" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <input asp-for="Foto" class="form-control" type="file" accept="image/jpg,image/jpeg,image/png" />
+                            <span asp-validation-for="Foto" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <!-- Botões -->
+            <div class="form-group mt-2">
+                <a asp-action="Index" class="btn btn-cinza">Voltar à lista</a>
+                <input type="submit" value="Criar" class="btn btn-roxo" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
@@ -85,7 +167,24 @@
                     }
                 })
 
+                $('form').submit(function (e) {
+                    const fileInput = $('input[name="Foto"]');
+                    const file = fileInput[0].files[0];
+
+                    if (!file) {
+                        fileInput.next('span.text-danger').text('Campo obrigatório!');
+                        e.preventDefault();
+                    } else {
+                        fileInput.next('span.text-danger').text('');
+                    }
+                })
+
              })
 
     </script>
 }
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+

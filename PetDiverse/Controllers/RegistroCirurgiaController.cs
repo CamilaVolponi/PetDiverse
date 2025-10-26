@@ -26,6 +26,8 @@ namespace PetDiverse.Controllers
         public async Task<IActionResult> Index(int idAnimal)
         {
             var applicationDbContext = _context.RegistroCirurgia.Where(r => r.IdAnimal == idAnimal);
+            ViewData["NomeAnimal"] = _context.Animal.Find(idAnimal)?.Nome;
+            ViewData["IdAnimal"] = idAnimal;
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -55,7 +57,7 @@ namespace PetDiverse.Controllers
             var registroCirurgiaViewModel = new RegistroCirurgiaViewModel();
             var animal = _context.Animal.Find(idAnimal);
             registroCirurgiaViewModel.IdAnimal = idAnimal;
-            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao"); 
+            ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao"); 
             return View(registroCirurgiaViewModel);
         }
 
@@ -71,7 +73,7 @@ namespace PetDiverse.Controllers
                 var registroCirurgia = _mapper.Map<RegistroCirurgia>(registroCirurgiaViewModel);
                 _context.Add(registroCirurgia);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { registroCirurgia.IdAnimal });
             }
             var animal = _context.Animal.Find(registroCirurgiaViewModel.IdAnimal);
             ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao");
@@ -128,7 +130,7 @@ namespace PetDiverse.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { registroCirurgiaViewModel.IdAnimal });
             }
             var animal = _context.Animal.Find(registroCirurgiaViewModel.IdAnimal);
             ViewData["IdTipoCirurgia"] = new SelectList(_context.TipoCirurgia.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", registroCirurgiaViewModel.IdTipoCirurgia);
@@ -158,7 +160,7 @@ namespace PetDiverse.Controllers
         // POST: RegistroCirurgia/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int idAnimal)
         {
             var registroCirurgia = await _context.RegistroCirurgia.FindAsync(id);
             if (registroCirurgia != null)
@@ -167,7 +169,7 @@ namespace PetDiverse.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { idAnimal });
         }
 
         private bool RegistroCirurgiaExists(int id)

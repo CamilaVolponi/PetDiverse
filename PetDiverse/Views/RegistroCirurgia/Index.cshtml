@@ -4,10 +4,10 @@
     ViewData["Title"] = "Registros de cirurgias";
 }
 
-<h2>Registros de Vacina de @ViewData["NomeAnimal"]</h2>
+<h1 class="text-center">Registros de Cirurgia de @ViewData["NomeAnimal"]</h1>
 
 <p>
-    <a asp-action="Create" asp-route-idAnimal="@ViewData["IdAnimal"]">Create New</a>
+    <a asp-action="Create" asp-route-idAnimal="@ViewData["IdAnimal"]" class="btn btn-roxo">+ Adicionar</a>
 </p>
 
 <table class="table">

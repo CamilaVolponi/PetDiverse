@@ -4,7 +4,7 @@
     ViewData["Title"] = "Registros de cirurgias";
 }
 
-<h1 class="text-center">Registros de Cirurgia de @ViewData["NomeAnimal"]</h1>
+<h2 class="text-center">Registros de Cirurgia de @ViewData["NomeAnimal"]</h2>
 
 <p>
     <a asp-action="Create" asp-route-idAnimal="@ViewData["IdAnimal"]" class="btn btn-roxo">+ Adicionar</a>
@@ -28,7 +28,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.DataRegistro)
+                @item.DataRegistro.ToString("dd/MM/yyyy")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TipoCirurgia.Descricao)

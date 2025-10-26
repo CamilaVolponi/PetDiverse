@@ -97,6 +97,7 @@ namespace PetDiverse.Controllers
             var registroVacinaViewModel = _mapper.Map<RegistroVacinaViewModel>(registroVacina);
             var animal = _context.Animal.Find(registroVacinaViewModel.IdAnimal);
             ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", registroVacina.IdTipoVacina);
+
             return View(registroVacinaViewModel);
         }
 

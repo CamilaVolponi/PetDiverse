@@ -7,7 +7,7 @@
 <h2>Registros de Vacina de @ViewData["NomeAnimal"]</h2>
 
 <p>
-    <a asp-action="Create" asp-route-idAnimal="@ViewData["IdAnimal"]">Create New</a>
+    <a asp-action="Create" asp-route-idAnimal="@ViewData["IdAnimal"]" class="btn btn-roxo">+ Adicionar</a>
 </p>
 <table class="table">
     <thead>
@@ -27,7 +27,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.DataRegistro)
+                @item.DataRegistro.ToString("dd/MM/yyyy")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TipoVacina.Descricao)

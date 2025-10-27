@@ -6,89 +6,181 @@
 
 <h1>Finalize seu cadastro</h1>
 
-@* <h4>PessoaDoadora</h4> *@
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-12">
         <form asp-action="Create" id="CreatePessoaDoadora">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IdBairro" class="control-label"></label>
-                @foreach (var opcao in ViewBag.TipoPessoaCadastro)
-                {
-                    <input name="TipoPessoaCadastro" type="radio" value="@opcao.Value" class="form-check-input" />
-                    <label class="form-check-label">@opcao.Text</label>
-                }
-            </div>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
+
+            <!-- Tipo de pessoa -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label class="col-sm-5 control-label">Você está se cadastrando como:</label>
+                        <div class="col-sm-7">
+                            @foreach (var opcao in ViewBag.TipoPessoaCadastro)
+                            {
+                                <input name="TipoPessoaCadastro" type="radio" value="@opcao.Value" class="form-check-input" />
+                                <label class="form-check-label">@opcao.Text</label>
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            @* Pessoa fisica *@
-            <div class="form-group pessoa-fisica">
-                <label asp-for="CPF" class="control-label"></label>
-                <input asp-for="CPF" class="form-control" />
-                <span asp-validation-for="CPF" class="text-danger"></span>
-            </div>
-            <div class="form-group pessoa-fisica">
-                <label asp-for="DataNascimento" class="control-label"></label>
-                <input asp-for="DataNascimento" type="date" class="form-control" />
-                <span asp-validation-for="DataNascimento" class="text-danger"></span>
-            </div>
-
-            @* Pessoa juridica *@
-            <div class="form-group pessoa-juridica">
-                <label asp-for="CNPJ" class="control-label"></label>
-                <input asp-for="CNPJ" class="form-control" />
-                <span asp-validation-for="CNPJ" class="text-danger"></span>
-            </div>
-            <div class="form-group pessoa-juridica">
-                <label asp-for="RedeSocial" class="control-label"></label>
-                <input asp-for="RedeSocial" class="form-control" />
-                <span asp-validation-for="RedeSocial" class="text-danger"></span>
-            </div>
-            <div class="form-group pessoa-juridica">
-                <label asp-for="Site" class="control-label"></label>
-                <input asp-for="Site" class="form-control" />
-                <span asp-validation-for="Site" class="text-danger"></span>
+            <!-- Nome -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Nome" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <input asp-for="Nome" class="form-control" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Telefone" class="control-label"></label>
-                <input asp-for="Telefone" class="form-control" />
-                <span asp-validation-for="Telefone" class="text-danger"></span>
+            <!-- Pessoa Física -->
+            <!-- CPF -->
+            <div class="row mb-2 pessoa-fisica">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="CPF" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <input asp-for="CPF" id="CPF" class="form-control" />
+                            <span asp-validation-for="CPF" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data de nascimento -->
+            <div class="row mb-2 pessoa-fisica">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="DataNascimento" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <input asp-for="DataNascimento" type="date" class="form-control" />
+                            <span asp-validation-for="DataNascimento" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pessoa Jurídica -->
+            <!-- CNPJ -->
+            <div class="row mb-2 pessoa-juridica">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="CNPJ" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <input asp-for="CNPJ" id="CNPJ" class="form-control" />
+                            <span asp-validation-for="CNPJ" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rede Social -->
+            <div class="row mb-2 pessoa-juridica">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="RedeSocial" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <input asp-for="RedeSocial" class="form-control" />
+                            <span asp-validation-for="RedeSocial" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Site -->
+            <div class="row mb-2 pessoa-juridica">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Site" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <input asp-for="Site" class="form-control" />
+                            <span asp-validation-for="Site" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--- Fim --->
+            <!-- Telefone -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="Telefone" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <input asp-for="Telefone" id="Telefone" class="form-control" />
+                            <span asp-validation-for="Telefone" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="IdEstado" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <select asp-for="IdEstado" class="form-control" asp-items="ViewBag.IdEstado"><option>Selecione um estado</option></select>
+                            <span asp-validation-for="IdEstado" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cidade -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="IdCidade" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <select asp-for="IdCidade" class="form-control" asp-items="ViewBag.IdCidade"><option>Selecione uma cidade</option></select>
+                            <span asp-validation-for="IdCidade" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bairro -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label asp-for="IdBairro" class="col-sm-5 control-label"></label>
+                        <div class="col-sm-7">
+                            <select asp-for="IdBairro" class="form-control" asp-items="ViewBag.IdBairro"><option>Selecione um bairro</option></select>
+                            <span asp-validation-for="IdBairro" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forma de contato -->
+            <div class="row mb-2">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label class="col-sm-5 control-label">Como prefere receber o contato para adoção?</label>
+                        <div class="col-sm-7">
+                            @foreach (var opcao in ViewBag.TiposFormaContato)
+                            {
+                                <input name="TipoFormaContato" type="checkbox" value="@opcao.Value" class="form-check-input" />
+                                <label class="form-check-label">@opcao.Text</label>
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="IdEstado" class="control-label"></label>
-                <select asp-for="IdEstado" class="form-control" asp-items="ViewBag.IdEstado"><option>Selecione um estado</option></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdCidade" class="control-label"></label>
-                <select asp-for="IdCidade" class="form-control" asp-items="ViewBag.IdCidade"><option>Selecione uma cidade</option></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdBairro" class="control-label"></label>
-                <select asp-for="IdBairro" class="form-control" asp-items="ViewBag.IdBairro"><option>Selecione um bairro</option></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdBairro" class="control-label"></label>
-                @foreach (var opcao in ViewBag.TiposFormaContato)
-                {
-                    <input name="TipoFormaContato" type="checkbox" value="@opcao.Value" class="form-check-input"/>
-                    <label class="form-check-label">@opcao.Text</label>
-                }
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-roxo" />
+                <input type="submit" value="Finalizar cadastro" class="btn btn-roxo text-center" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
@@ -147,9 +239,11 @@
                 if($(this).val() == "Fisica"){
                     $(".pessoa-fisica").show();
                     $(".pessoa-juridica").hide();
+                    $("label[for='Nome']").text("Nome completo");
                 }else{
                     $(".pessoa-juridica").show();
                     $(".pessoa-fisica").hide();
+                    $("label[for='Nome']").text("Nome da ONG");
                 }
                 var validator = $("#CreatePessoaDoadora").validate();
                 validator.resetForm(); // limpa tudo
@@ -188,9 +282,21 @@
                 }
                 }
             });
-        })
 
+            $('#Telefone').mask('(00) 0000-00009');
+            $('#Telefone').blur(function() {
+                if($(this).val().length == 15){
+                    $(this).mask('(00) 00000-0000');
+                } else {
+                    $(this).mask('(00) 0000-0000');
+                }
+            });
+
+            $('#CPF').mask('000.000.000-00', { reverse: true });
+            
+            $('#CNPJ').mask('00.000.000/0000-00', { reverse: true });
+
+        });
     </script>
 
 }
-

@@ -20,9 +20,14 @@
                         <div class="col-sm-7">
                             @foreach (var opcao in ViewBag.TipoPessoaCadastro)
                             {
-                                <input name="TipoPessoaCadastro" type="radio" value="@opcao.Value" class="form-check-input" />
-                                <label class="form-check-label">@opcao.Text</label>
+                                <input type="radio"
+                                       asp-for="TipoPessoaCadastro"
+                                       id="tp_@opcao.Value"
+                                       value="@opcao.Value"
+                                       class="form-check-input" />
+                                <label for="tp_@opcao.Value" class="form-check-label">@opcao.Text</label>
                             }
+                            <span asp-validation-for="TipoPessoaCadastro" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -128,7 +133,7 @@
                     <div class="form-group row">
                         <label asp-for="IdEstado" class="col-sm-5 control-label"></label>
                         <div class="col-sm-7">
-                            <select asp-for="IdEstado" class="form-control" asp-items="ViewBag.IdEstado"><option>Selecione um estado</option></select>
+                            <select asp-for="IdEstado" class="form-control" asp-items="ViewBag.IdEstado"><option value="">Selecione um estado</option></select>
                             <span asp-validation-for="IdEstado" class="text-danger"></span>
                         </div>
                     </div>
@@ -141,7 +146,7 @@
                     <div class="form-group row">
                         <label asp-for="IdCidade" class="col-sm-5 control-label"></label>
                         <div class="col-sm-7">
-                            <select asp-for="IdCidade" class="form-control" asp-items="ViewBag.IdCidade"><option>Selecione uma cidade</option></select>
+                            <select asp-for="IdCidade" class="form-control" asp-items="ViewBag.IdCidade"><option value="">Selecione uma cidade</option></select>
                             <span asp-validation-for="IdCidade" class="text-danger"></span>
                         </div>
                     </div>
@@ -154,7 +159,7 @@
                     <div class="form-group row">
                         <label asp-for="IdBairro" class="col-sm-5 control-label"></label>
                         <div class="col-sm-7">
-                            <select asp-for="IdBairro" class="form-control" asp-items="ViewBag.IdBairro"><option>Selecione um bairro</option></select>
+                            <select asp-for="IdBairro" class="form-control" asp-items="ViewBag.IdBairro"><option value="">Selecione um bairro</option></select>
                             <span asp-validation-for="IdBairro" class="text-danger"></span>
                         </div>
                     </div>
@@ -167,11 +172,17 @@
                     <div class="form-group row">
                         <label class="col-sm-5 control-label">Como prefere receber o contato para adoção?</label>
                         <div class="col-sm-7">
+                            @{
+                                var first = true;
+                            }
                             @foreach (var opcao in ViewBag.TiposFormaContato)
                             {
-                                <input name="TipoFormaContato" type="checkbox" value="@opcao.Value" class="form-check-input" />
+                                <input type="checkbox" name="TipoFormaContato"value="@opcao.Value" class="form-check-input" @(first ? "data-val='true' data-val-required='Selecione pelo menos uma forma de contato'" : "") />
                                 <label class="form-check-label">@opcao.Text</label>
+                                first = false;
                             }
+                            <br />
+                            <span asp-validation-for="TipoFormaContato" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -280,7 +291,12 @@
                     expectedValue: "Juridica"       // Valor que ativa a obrigatoriedade
                     }
                 }
+
                 }
+            });
+            $("input[name='TipoFormaContato']").first().rules("add", {
+                required: true,
+                messages: { required: "Selecione pelo menos uma forma de contato" }
             });
 
             $('#Telefone').mask('(00) 0000-00009');
@@ -295,7 +311,6 @@
             $('#CPF').mask('000.000.000-00', { reverse: true });
             
             $('#CNPJ').mask('00.000.000/0000-00', { reverse: true });
-
         });
     </script>
 

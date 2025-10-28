@@ -127,3 +127,10 @@ body {
         text-decoration: none; 
     }
 
+.img-pet-card {
+    width: 100%; /* ocupa toda a largura do card */
+    aspect-ratio: 1 / 1; /* mantém proporção quadrada */
+    object-fit: cover; 
+}
+
+

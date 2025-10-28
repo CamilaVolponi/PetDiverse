@@ -289,6 +289,12 @@ namespace PetDiverse.Controllers
             var animal = await _context.Animal.FindAsync(id);
             if (animal != null)
             {
+                var cirurgias = _context.RegistroCirurgia.Where(r => r.IdAnimal == id);
+                _context.RegistroCirurgia.RemoveRange(cirurgias);
+
+                var vacinas = _context.RegistroVacina.Where(r => r.IdAnimal == id);
+                _context.RegistroVacina.RemoveRange(vacinas);
+
                 _context.Animal.Remove(animal);
             }
 

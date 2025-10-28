@@ -117,60 +117,70 @@ namespace PetDiverse.Controllers
         }
 
         // GET: PessoaDoadora/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: PessoaDoadora/Edit/5
+        public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
-            var pessoaDoadora = await _context.PessoaDoadora.FindAsync(id);
+            var pessoaDoadora = await _context.PessoaDoadora
+                .Include(p => p.Bairro)
+                .ThenInclude(b => b.Cidade)
+                .FirstOrDefaultAsync(p => p.IdUsuario == id);
+
             if (pessoaDoadora == null)
             {
                 return NotFound();
             }
 
-            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
-            ViewData["IdCidade"] = new SelectList(_context.Cidade.Where(c => pessoaDoadora.Bairro.Cidade.IdEstado == c.IdEstado), "Id", "Nome");
-            ViewData["IdBairro"] = new SelectList(_context.Bairro.Where(c => pessoaDoadora.Bairro.IdCidade == c.IdCidade), "Id", "Nome");
-            var listaTipoContato = Enum.GetValues(typeof(TipoFormaContato)).Cast<TipoFormaContato>().Select(e => new {
-                Valor = e,
-                Nome = e.ToString()
-            });
-            ViewData["TiposFormaContato"] = new SelectList(listaTipoContato, "Valor", "Nome");
-            var listaTipoPessoa = Enum.GetValues(typeof(TipoPessoaCadastro)).Cast<TipoPessoaCadastro>().Select(e => new {
-                Valor = e,
-                Nome = e.ToString()
-            });
-
-            var pessoaDoadoraCadastroViewModel = new PessoaDoadoraCadastroViewModel();
-            pessoaDoadoraCadastroViewModel.Id = pessoaDoadora.Id;
-            pessoaDoadoraCadastroViewModel.IdEstado = pessoaDoadora.Bairro.Cidade.IdEstado;
-            pessoaDoadoraCadastroViewModel.IdCidade = pessoaDoadora.Bairro.IdCidade;
-
-
-            if (pessoaDoadora is PessoaFisica)
+            var pessoaDoadoraCadastroViewModel = new PessoaDoadoraCadastroViewModel
             {
-                var pessoaDoadoraFisica = (pessoaDoadora as PessoaFisica);
+                Id = pessoaDoadora.Id,
+                Nome = pessoaDoadora.Nome,
+                IdBairro = pessoaDoadora.IdBairro,
+                TipoFormaContato = pessoaDoadora.FormasContato.Select(fc => fc.TipoFormaContato).ToList(),
+                Telefone = pessoaDoadora.Telefone,
+                IdEstado = pessoaDoadora.Bairro.Cidade.IdEstado,
+                IdCidade = pessoaDoadora.Bairro.IdCidade
+            };
+
+            if (pessoaDoadora is PessoaFisica pessoaDoadoraFisica)
+            {
                 pessoaDoadoraCadastroViewModel.CPF = pessoaDoadoraFisica.CPF;
                 pessoaDoadoraCadastroViewModel.DataNascimento = pessoaDoadoraFisica.DataNascimento;
                 pessoaDoadoraCadastroViewModel.TipoPessoaCadastro = TipoPessoaCadastro.Fisica;
             }
-            else
+            else if (pessoaDoadora is PessoaJuridica pessoaDoadoraJuridica)
             {
-                var pessoaDoadoraJuridica = (pessoaDoadora as PessoaJuridica);
                 pessoaDoadoraCadastroViewModel.CNPJ = pessoaDoadoraJuridica.CNPJ;
                 pessoaDoadoraCadastroViewModel.Site = pessoaDoadoraJuridica.Site;
-                pessoaDoadoraCadastroViewModel.RedeSocial = pessoaDoadoraJuridica.Site;
+                pessoaDoadoraCadastroViewModel.RedeSocial = pessoaDoadoraJuridica.RedeSocial;
                 pessoaDoadoraCadastroViewModel.TipoPessoaCadastro = TipoPessoaCadastro.Juridica;
             }
-            pessoaDoadoraCadastroViewModel.Nome =  pessoaDoadora.Nome;
-            pessoaDoadoraCadastroViewModel.TipoFormaContato = pessoaDoadora.FormasContato.Select(t =>t.TipoFormaContato).ToList();
-            pessoaDoadoraCadastroViewModel.Telefone = pessoaDoadora.Telefone;
-            pessoaDoadoraCadastroViewModel.IdBairro = pessoaDoadora.IdBairro;
+
+            // ⚡️ Carrega os SelectLists já com os valores corretos selecionados
+            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome", pessoaDoadoraCadastroViewModel.IdEstado);
+            ViewData["IdCidade"] = new SelectList(_context.Cidade.Where(c => c.IdEstado == pessoaDoadoraCadastroViewModel.IdEstado), "Id", "Nome", pessoaDoadoraCadastroViewModel.IdCidade);
+            ViewData["IdBairro"] = new SelectList(_context.Bairro.Where(b => b.IdCidade == pessoaDoadoraCadastroViewModel.IdCidade), "Id", "Nome", pessoaDoadoraCadastroViewModel.IdBairro);
+
+            var listaTipoContato = Enum.GetValues(typeof(TipoFormaContato))
+                .Cast<TipoFormaContato>()
+                .Select(e => new { Valor = e, Nome = e.ToString() });
+
+            ViewData["TiposFormaContato"] = new SelectList(listaTipoContato, "Valor", "Nome");
+
+            var listaTipoPessoa = Enum.GetValues(typeof(TipoPessoaCadastro))
+                .Cast<TipoPessoaCadastro>()
+                .Select(e => new { Valor = e, Nome = e.ToString() });
+
+            ViewData["TipoPessoaCadastro"] = new SelectList(listaTipoPessoa, "Valor", "Nome");
 
             return View(pessoaDoadoraCadastroViewModel);
         }
+
+
 
         // POST: PessoaDoadora/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -178,135 +188,6 @@ namespace PetDiverse.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, PessoaDoadoraCadastroViewModel pessoaDoadoraCadastroViewModel)
-        {
-            if (id != pessoaDoadoraCadastroViewModel.Id)
-            {
-                return NotFound();
-            }
-
-            ObrigatoriedadePessoaDoadora(pessoaDoadoraCadastroViewModel);
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var pessoaDoadora = await _context.PessoaDoadora.FindAsync(id);
-                    if (pessoaDoadoraCadastroViewModel.TipoPessoaCadastro == TipoPessoaCadastro.Fisica)
-                    {
-                        var pessoaDoadoraFisica = (pessoaDoadora as PessoaFisica);
-                        pessoaDoadoraFisica.CPF = pessoaDoadoraCadastroViewModel.CPF;
-                        pessoaDoadoraFisica.DataNascimento = pessoaDoadoraCadastroViewModel.DataNascimento;
-                        pessoaDoadora = pessoaDoadoraFisica;
-                    }
-                    else
-                    {
-                        var pessoaDoadoraJuridica = (pessoaDoadora as PessoaJuridica);
-                        pessoaDoadoraJuridica.CNPJ = pessoaDoadoraCadastroViewModel.CNPJ;
-                        pessoaDoadoraJuridica.Site = pessoaDoadoraCadastroViewModel.Site;
-                        pessoaDoadoraJuridica.RedeSocial = pessoaDoadoraCadastroViewModel.Site;
-                        pessoaDoadora = pessoaDoadoraJuridica;
-                    }
-                    pessoaDoadora.Nome = pessoaDoadoraCadastroViewModel.Nome;
-                    var formascontatos = pessoaDoadora.FormasContato.ToList();
-                    pessoaDoadora.FormasContato.Clear();
-                    pessoaDoadora.FormasContato = pessoaDoadoraCadastroViewModel.TipoFormaContato.Select(t => new FormaContato { TipoFormaContato = t }).ToList();
-                    pessoaDoadora.Telefone = pessoaDoadoraCadastroViewModel.Telefone;
-                    pessoaDoadora.IdBairro = pessoaDoadoraCadastroViewModel.IdBairro;
-                    pessoaDoadora.Id = pessoaDoadoraCadastroViewModel.Id;
-                    _context.FormaContato.RemoveRange(formascontatos);
-                    _context.Update(pessoaDoadora);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PessoaDoadoraExists(pessoaDoadoraCadastroViewModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
-            ViewData["IdCidade"] = new SelectList(new List<Cidade>());
-            ViewData["IdBairro"] = new SelectList(new List<Bairro>());
-            var listaTipoContato = Enum.GetValues(typeof(TipoFormaContato)).Cast<TipoFormaContato>().Select(e => new {
-                Valor = e,
-                Nome = e.ToString()
-            });
-            ViewData["TiposFormaContato"] = new SelectList(listaTipoContato, "Valor", "Nome");
-            var listaTipoPessoa = Enum.GetValues(typeof(TipoPessoaCadastro)).Cast<TipoPessoaCadastro>().Select(e => new {
-                Valor = e,
-                Nome = e.ToString()
-            });
-            ViewData["TipoPessoaCadastro"] = new SelectList(listaTipoPessoa, "Valor", "Nome");
-            return View(pessoaDoadoraCadastroViewModel);
-        }
-
-        // GET: PessoaDoadora/Edit/5
-        public async Task<IActionResult> EditInformacoesComplementares(string idUsuario)
-        {
-            if (idUsuario == null)
-            {
-                return NotFound();
-            }
-
-            var pessoaDoadora = await _context.PessoaDoadora.FindAsync(idUsuario);
-            if (pessoaDoadora == null)
-            {
-                return NotFound();
-            }
-
-            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
-            ViewData["IdCidade"] = new SelectList(_context.Cidade.Where(c => pessoaDoadora.Bairro.Cidade.IdEstado == c.IdEstado), "Id", "Nome");
-            ViewData["IdBairro"] = new SelectList(_context.Bairro.Where(c => pessoaDoadora.Bairro.IdCidade == c.IdCidade), "Id", "Nome");
-            var listaTipoContato = Enum.GetValues(typeof(TipoFormaContato)).Cast<TipoFormaContato>().Select(e => new {
-                Valor = e,
-                Nome = e.ToString()
-            });
-            ViewData["TiposFormaContato"] = new SelectList(listaTipoContato, "Valor", "Nome");
-            var listaTipoPessoa = Enum.GetValues(typeof(TipoPessoaCadastro)).Cast<TipoPessoaCadastro>().Select(e => new {
-                Valor = e,
-                Nome = e.ToString()
-            });
-
-            var pessoaDoadoraCadastroViewModel = new PessoaDoadoraCadastroViewModel();
-            pessoaDoadoraCadastroViewModel.Id = pessoaDoadora.Id;
-            pessoaDoadoraCadastroViewModel.IdEstado = pessoaDoadora.Bairro.Cidade.IdEstado;
-            pessoaDoadoraCadastroViewModel.IdCidade = pessoaDoadora.Bairro.IdCidade;
-
-
-            if (pessoaDoadora is PessoaFisica)
-            {
-                var pessoaDoadoraFisica = (pessoaDoadora as PessoaFisica);
-                pessoaDoadoraCadastroViewModel.CPF = pessoaDoadoraFisica.CPF;
-                pessoaDoadoraCadastroViewModel.DataNascimento = pessoaDoadoraFisica.DataNascimento;
-                pessoaDoadoraCadastroViewModel.TipoPessoaCadastro = TipoPessoaCadastro.Fisica;
-            }
-            else
-            {
-                var pessoaDoadoraJuridica = (pessoaDoadora as PessoaJuridica);
-                pessoaDoadoraCadastroViewModel.CNPJ = pessoaDoadoraJuridica.CNPJ;
-                pessoaDoadoraCadastroViewModel.Site = pessoaDoadoraJuridica.Site;
-                pessoaDoadoraCadastroViewModel.RedeSocial = pessoaDoadoraJuridica.Site;
-                pessoaDoadoraCadastroViewModel.TipoPessoaCadastro = TipoPessoaCadastro.Juridica;
-            }
-            pessoaDoadoraCadastroViewModel.Nome = pessoaDoadora.Nome;
-            pessoaDoadoraCadastroViewModel.TipoFormaContato = pessoaDoadora.FormasContato.Select(t => t.TipoFormaContato).ToList();
-            pessoaDoadoraCadastroViewModel.Telefone = pessoaDoadora.Telefone;
-            pessoaDoadoraCadastroViewModel.IdBairro = pessoaDoadora.IdBairro;
-
-            return View(pessoaDoadoraCadastroViewModel);
-        }
-
-        // POST: PessoaDoadora/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditInformacoesComplementares(int id, PessoaDoadoraCadastroViewModel pessoaDoadoraCadastroViewModel)
         {
             if (id != pessoaDoadoraCadastroViewModel.Id)
             {

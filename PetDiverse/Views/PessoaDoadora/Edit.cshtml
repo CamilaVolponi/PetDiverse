@@ -2,190 +2,196 @@
 @model PetDiverse.Models.PessoaDoadoraCadastroViewModel
 
 @{
-    ViewData["Title"] = "Editar Cadastro";
+    Layout = null;
+    ViewData["Title"] = "Meus dados";
 }
 
-<h1>Edite seu cadastro</h1>
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PetDiverse.styles.css" asp-append-version="true" />
+</head>
 
-@* <h4>PessoaDoadora</h4> *@
-<hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" id="CreatePessoaDoadora">
+    <div class="col-md-9">
+        <form asp-action="Edit" id="CreatePessoaDoadora" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
             <input type="hidden" asp-for="Id" />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="TipoPessoaCadastro" />
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Nome" class="form-control" placeholder="Nome completo ou ONG" />
+                <label asp-for="Nome"></label>
             </div>
 
-            @* Pessoa fisica *@
-            <div class="form-group pessoa-fisica">
-                <label asp-for="CPF" class="control-label"></label>
-                <input asp-for="CPF" class="form-control" />
-                <span asp-validation-for="CPF" class="text-danger"></span>
+            <!-- Pessoa Física -->
+            <div class="form-floating mb-3 pessoa-fisica">
+                <input asp-for="CPF" class="form-control" placeholder="CPF" />
+                <label asp-for="CPF"></label>
             </div>
-            <div class="form-group pessoa-fisica">
-                <label asp-for="DataNascimento" class="control-label"></label>
-                <input asp-for="DataNascimento" type="date" class="form-control" />
-                <span asp-validation-for="DataNascimento" class="text-danger"></span>
+            <div class="form-floating mb-3 pessoa-fisica">
+                <input asp-for="DataNascimento" type="date" class="form-control" placeholder="Data de nascimento" />
+                <label asp-for="DataNascimento"></label>
             </div>
 
-            @* Pessoa juridica *@
-            <div class="form-group pessoa-juridica">
-                <label asp-for="CNPJ" class="control-label"></label>
-                <input asp-for="CNPJ" class="form-control" />
-                <span asp-validation-for="CNPJ" class="text-danger"></span>
+            <!-- Pessoa Jurídica -->
+            <div class="form-floating mb-3 pessoa-juridica">
+                <input asp-for="CNPJ" class="form-control" placeholder="CNPJ" />
+                <label asp-for="CNPJ"></label>
             </div>
-            <div class="form-group pessoa-juridica">
-                <label asp-for="RedeSocial" class="control-label"></label>
-                <input asp-for="RedeSocial" class="form-control" />
-                <span asp-validation-for="RedeSocial" class="text-danger"></span>
+            <div class="form-floating mb-3 pessoa-juridica">
+                <input asp-for="RedeSocial" class="form-control" placeholder="Rede social" />
+                <label asp-for="RedeSocial"></label>
             </div>
-            <div class="form-group pessoa-juridica">
-                <label asp-for="Site" class="control-label"></label>
-                <input asp-for="Site" class="form-control" />
-                <span asp-validation-for="Site" class="text-danger"></span>
+            <div class="form-floating mb-3 pessoa-juridica">
+                <input asp-for="Site" class="form-control" placeholder="Site" />
+                <label asp-for="Site"></label>
             </div>
 
-            <div class="form-group">
-                <label asp-for="Telefone" class="control-label"></label>
-                <input asp-for="Telefone" class="form-control" />
-                <span asp-validation-for="Telefone" class="text-danger"></span>
+            <div class="form-floating mb-3">
+                <input asp-for="Telefone" class="form-control" placeholder="Telefone" />
+                <label asp-for="Telefone"></label>
             </div>
-            <div class="form-group">
-                <label asp-for="IdEstado" class="control-label"></label>
-                <select asp-for="IdEstado" class="form-control" asp-items="ViewBag.IdEstado"><option>Selecione um estado</option></select>
+
+            <div class="form-floating mb-3">
+                <select asp-for="IdEstado" class="form-select" asp-items="ViewBag.IdEstado"></select>
+                <label asp-for="IdEstado"></label>
             </div>
-            <div class="form-group">
-                <label asp-for="IdCidade" class="control-label"></label>
-                <select asp-for="IdCidade" class="form-control" asp-items="ViewBag.IdCidade"><option>Selecione uma cidade</option></select>
+
+            <div class="form-floating mb-3">
+                <select asp-for="IdCidade" class="form-select" asp-items="ViewBag.IdCidade"></select>
+                <label asp-for="IdCidade"></label>
             </div>
-            <div class="form-group">
-                <label asp-for="IdBairro" class="control-label"></label>
-                <select asp-for="IdBairro" class="form-control" asp-items="ViewBag.IdBairro"><option>Selecione um bairro</option></select>
+
+            <div class="form-floating mb-3">
+                <select asp-for="IdBairro" class="form-select" asp-items="ViewBag.IdBairro"></select>
+                <label asp-for="IdBairro"></label>
             </div>
-            <div class="form-group">
-                <label asp-for="IdBairro" class="control-label"></label>
-                @foreach (var opcao in ViewBag.TiposFormaContato)
-                {
-                    <input name="TipoFormaContato" type="checkbox" value="@opcao.Value" class="form-check-input" @(Model.TipoFormaContato.Contains(Enum.Parse(typeof(TipoFormaContato), opcao.Value)) ? "checked" : "") />
-                    <label class="form-check-label">@opcao.Text</label>
-                }
+
+            <div class="mb-3">
+                <div class="col-md-9">
+                    <div class="form-group row">
+                        <label class="form-label col-sm-4">Formas de contato</label><br />
+                        <div class="col-sm-8">
+                            @foreach (var opcao in ViewBag.TiposFormaContato)
+                            {
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="TipoFormaContato" value="@opcao.Value"
+                                           @(Model.TipoFormaContato.Contains(Enum.Parse(typeof(TipoFormaContato), opcao.Value)) ? "checked" : "") />
+                                    <label class="form-check-label">@opcao.Text</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>             
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-roxo" />
-            </div>
+
+            <button type="submit" class="w-100 btn btn-lg btn-roxo">Alterar</button>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+<script>
+    $(document).ready(function () {
 
-    <script>
-        $(document).ready(function(){
-            $("#IdEstado").change(function(){
-                var cidadeSelect = $('#IdCidade');
+        // Mascara de telefone
+        $('#Telefone').mask('(00) 00000-0000');
 
-                cidadeSelect.empty(); // limpa as opções anteriores
-                cidadeSelect.append('<option value="">Carregando...</option>');
-                if ($(this).val()) {
-                    $.get('/PessoaDoadora/RecuperarCidades', { id: $(this).val() }, function (data) {
-                        cidadeSelect.empty(); // limpa novamente
-                        cidadeSelect.append('<option>Selecione uma cidade</option>');
-                        $.each(data, function (index, item) {
-                            cidadeSelect.append($('<option>', {
-                                value: item.value,
-                                text: item.text
-                            }));
-                        });
-                    });
-                } else {
-                    cidadeSelect.empty();
-                    cidadeSelect.append('<option>Selecione uma cidade</option>');
-                }
-            })
+            // Se já houver estado selecionado no carregamento, carrega cidades
+        const estadoInicial = $("#IdEstado").val();
+        const cidadeInicial = $("#IdCidade").val();
+        const bairroInicial = $("#IdBairro").val();
 
-            $("#IdCidade").change(function(){
-                var bairroSelect = $('#IdBairro');
+        if (estadoInicial) {
+            $.get('/PessoaDoadora/RecuperarCidades', { id: estadoInicial }, function (data) {
+                const cidadeSelect = $('#IdCidade');
+                cidadeSelect.empty();
+                cidadeSelect.append('<option>Selecione uma cidade</option>');
+                $.each(data, function (index, item) {
+                    cidadeSelect.append($('<option>', {
+                        value: item.value,
+                        text: item.text,
+                        selected: item.value == cidadeInicial
+                    }));
+                });
 
-                bairroSelect.empty(); // limpa as opções anteriores
-                bairroSelect.append('<option value="">Carregando...</option>');
-
-                if ($(this).val()) {
-                    $.get('/PessoaDoadora/RecuperarBairros', { id: $(this).val() }, function (data) {
-                        bairroSelect.empty(); // limpa novamente
-                        bairroSelect.append('<option>Selecione uma bairro</option>');
-                        $.each(data, function (index, item) {
+                // depois de carregar as cidades, carrega os bairros
+                if (cidadeInicial) {
+                    $.get('/PessoaDoadora/RecuperarBairros', { id: cidadeInicial }, function (dataBairro) {
+                        const bairroSelect = $('#IdBairro');
+                        bairroSelect.empty();
+                        bairroSelect.append('<option>Selecione um bairro</option>');
+                        $.each(dataBairro, function (index, item) {
                             bairroSelect.append($('<option>', {
                                 value: item.value,
-                                text: item.text
+                                text: item.text,
+                                selected: item.value == bairroInicial
                             }));
                         });
                     });
-                } else {
-                    bairroSelect.empty();
-                    bairroSelect.append('<option>Selecione uma bairro</option>');
-                }
-            })
-            $("input[name='TipoPessoaCadastro']").change(function(){
-                if($(this).val() == "Fisica"){
-                    $(".pessoa-fisica").show();
-                    $(".pessoa-juridica").hide();
-                }else{
-                    $(".pessoa-juridica").show();
-                    $(".pessoa-fisica").hide();
-                }
-                var validator = $("#CreatePessoaDoadora").validate();
-                validator.resetForm(); // limpa tudo
-            })
-            $("input[name='TipoPessoaCadastro']").trigger("change");
-            $("#CreatePessoaDoadora").validate({
-                rules: {
-                DataNascimento: {
-                    requiredIf: {
-                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "Fisica"       // Valor que ativa a obrigatoriedade
-                    }
-                },
-                CPF: {
-                    requiredIf: {
-                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "Fisica"       // Valor que ativa a obrigatoriedade
-                    }
-                },
-                CNPJ: {
-                    requiredIf: {
-                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "Juridica"       // Valor que ativa a obrigatoriedade
-                    }
-                },
-                Site: {
-                    requiredIf: {
-                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "Juridica"       // Valor que ativa a obrigatoriedade
-                    }
-                },
-                RedeSocial: {
-                    requiredIf: {
-                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "Juridica"       // Valor que ativa a obrigatoriedade
-                    }
-                }
                 }
             });
-        })
+        }
 
-    </script>
 
-}
+        // Exibir ou esconder os campos conforme o tipo
+        function atualizarCamposPessoa(tipo) {
+            if (tipo === "Fisica") {
+                $(".pessoa-fisica").show();
+                $(".pessoa-juridica").hide();
+
+                // limpa campos juridicos
+                $("#CNPJ").val('');
+                $("#RedeSocial").val('');
+                $("#Site").val('');
+
+            } else if (tipo === "Juridica") {
+                $(".pessoa-juridica").show();
+                $(".pessoa-fisica").hide();
+
+                // limpa campos fisicos
+                $("#CPF").val('');
+                $("#DataNascimento").val('');
+            }
+        }
+
+        // ao mudar o radio
+        $("input[name='TipoPessoaCadastro']").change(function () {
+            atualizarCamposPessoa($(this).val());
+        });
+
+        // executa ao carregar a página
+        const valorInicial = $("input[name='TipoPessoaCadastro']:checked").val() || $("#TipoPessoaCadastro").val();
+        if (valorInicial) {
+            atualizarCamposPessoa(valorInicial);
+        }
+
+        // validações condicionais
+        $("#CreatePessoaDoadora").validate({
+            rules: {
+                CPF: {
+                    required: function () { return $("input[name='TipoPessoaCadastro']:checked").val() === "Fisica"; }
+                },
+                DataNascimento: {
+                    required: function () { return $("input[name='TipoPessoaCadastro']:checked").val() === "Fisica"; }
+                },
+                CNPJ: {
+                    required: function () { return $("input[name='TipoPessoaCadastro']:checked").val() === "Juridica"; }
+                },
+                RedeSocial: {
+                    required: function () { return $("input[name='TipoPessoaCadastro']:checked").val() === "Juridica"; }
+                },
+                Site: {
+                    required: function () { return $("input[name='TipoPessoaCadastro']:checked").val() === "Juridica"; }
+                }
+            }
+        });
+    });
+</script>
+
 

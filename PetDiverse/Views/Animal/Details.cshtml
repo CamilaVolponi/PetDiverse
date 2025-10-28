@@ -112,9 +112,9 @@
                         @if (temTelefone && temWhatsapp)
                         {
                             <li><strong>Telefone:</strong> @Model.PessoaDoadora.Telefone (este telefone possui WhatsApp)</li>
-                        } else if (temTelefone)
+                        } else if (temTelefone && !temWhatsapp)
                         {
-                            <li><strong>Telefone:</strong> @Model.PessoaDoadora.Telefone</li>
+                            <li><strong>Telefone:</strong> @Model.PessoaDoadora.Telefone (este telefone não possui WhatsApp)</li>
                         }
                     </ul>
 

@@ -1,27 +1,19 @@
 ﻿@page
 @model IndexModel
+@using System.Security.Claims
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = "Meus dados";
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
 <h3>Meus dados</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
+
 <div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Username" class="form-control" placeholder="Por favor, informe o seu nome." disabled />
-                <label asp-for="Username" class="form-label">Nome</label>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Por favor, insira seu número de telefone."/>
-                <label asp-for="Input.PhoneNumber" class="form-label">Número de telefone</label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-roxo">Alterar</button>
-        </form>
+    <div class="col-md-12">
+        <iframe src="/PessoaDoadora/Edit/@User.FindFirst(ClaimTypes.NameIdentifier).Value"
+                style="width:100%; min-height:1000px; border:none;">
+        </iframe>
     </div>
 </div>
 

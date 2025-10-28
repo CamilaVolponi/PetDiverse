@@ -32,12 +32,14 @@ namespace PetDiverse.Models
         [Required(ErrorMessage = "Campo Obrigatório")]
         public string CPF { get; set; } = string.Empty;
         [Required(ErrorMessage = "Campo Obrigatório")]
+        [DisplayName("Data de nascimento")]
         public DateTime DataNascimento { get; set; }
         [Required(ErrorMessage = "Campo Obrigatório")]
         public string CNPJ { get; set; } = string.Empty;
         [Required(ErrorMessage = "Campo Obrigatório")]
         public string Site { get; set; }
         [Required(ErrorMessage = "Campo Obrigatório")]
+        [DisplayName("Rede social")]
         public string RedeSocial { get; set; }
         [Required(ErrorMessage = "Campo Obrigatório")]
         [DisplayName("Tipo de pessoa")]

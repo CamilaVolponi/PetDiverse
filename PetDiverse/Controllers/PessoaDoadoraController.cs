@@ -98,7 +98,7 @@ namespace PetDiverse.Controllers
                 pessoaDoadora.IdUsuario = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 _context.Add(pessoaDoadora);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
             }
             ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
             ViewData["IdCidade"] = new SelectList(new List<Cidade>());

@@ -117,10 +117,9 @@ namespace PetDiverse.Controllers
         }
 
         // GET: PessoaDoadora/Edit/5
-        // GET: PessoaDoadora/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(string idUsuario)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(idUsuario))
             {
                 return NotFound();
             }
@@ -128,7 +127,7 @@ namespace PetDiverse.Controllers
             var pessoaDoadora = await _context.PessoaDoadora
                 .Include(p => p.Bairro)
                 .ThenInclude(b => b.Cidade)
-                .FirstOrDefaultAsync(p => p.IdUsuario == id);
+                .FirstOrDefaultAsync(p => p.IdUsuario == idUsuario);
 
             if (pessoaDoadora == null)
             {
@@ -160,7 +159,6 @@ namespace PetDiverse.Controllers
                 pessoaDoadoraCadastroViewModel.TipoPessoaCadastro = TipoPessoaCadastro.Juridica;
             }
 
-            // ⚡️ Carrega os SelectLists já com os valores corretos selecionados
             ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome", pessoaDoadoraCadastroViewModel.IdEstado);
             ViewData["IdCidade"] = new SelectList(_context.Cidade.Where(c => c.IdEstado == pessoaDoadoraCadastroViewModel.IdEstado), "Id", "Nome", pessoaDoadoraCadastroViewModel.IdCidade);
             ViewData["IdBairro"] = new SelectList(_context.Bairro.Where(b => b.IdCidade == pessoaDoadoraCadastroViewModel.IdCidade), "Id", "Nome", pessoaDoadoraCadastroViewModel.IdBairro);

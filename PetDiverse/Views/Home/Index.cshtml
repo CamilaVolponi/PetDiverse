@@ -9,16 +9,16 @@
     </div>
     <form method="get" asp-action="Index" asp-controller="" class="row g-2 mb-5 align-items-stretch">
         <div class="col-lg-2 col-md-4 col-sm-6">
-            <input type="text" name="tipoAnimal" class="form-control" placeholder="Tipo de animal" />
+            <select name="IdTipoAnimal" class="form-control" asp-items="ViewBag.IdTipoAnimal"><option value="">Selecione um tipo de animal</option></select>
         </div>
         <div class="col-lg-2 col-md-4 col-sm-6">
-            <input type="text" name="estado" class="form-control" placeholder="Estado" />
+            <select id="IdEstado" name="IdEstado" class="form-control" asp-items="ViewBag.IdEstado"><option value="">Selecione um estado</option></select>
         </div>
         <div class="col-lg-2 col-md-4 col-sm-6">
-            <input type="text" name="cidade" class="form-control" placeholder="Cidade" />
+            <select id="IdCidade" name="IdCidade" class="form-control" asp-items="ViewBag.IdCidade"><option value="">Selecione uma cidade</option></select>
         </div>
         <div class="col-lg-2 col-md-4 col-sm-6">
-            <input type="text" name="bairro" class="form-control" placeholder="Bairro" />
+            <select id="IdBairro" name="IdBairro" class="form-control" asp-items="ViewBag.IdBairro"><option value="">Selecione um bairro</option></select>
         </div>
         <div class="col-lg-4 col-md-2 col-sm-12 d-flex">
             <button type="submit" class="btn btn-roxo w-100">Pesquisar</button>
@@ -44,3 +44,60 @@
         }
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function(){
+            $("#IdEstado").change(function(){
+                var cidadeSelect = $('#IdCidade');
+
+                cidadeSelect.empty(); // limpa as opções anteriores
+                cidadeSelect.append('<option value="">Carregando...</option>');
+                if ($(this).val()) {
+                    $.get('/Home/RecuperarCidades', { id: $(this).val() }, function (data) {
+                        cidadeSelect.empty(); // limpa novamente
+                        cidadeSelect.append('<option>Selecione uma cidade</option>');
+                        $.each(data, function (index, item) {
+                            cidadeSelect.append($('<option>', {
+                                value: item.value,
+                                text: item.text
+                            }));
+                        });
+                    });
+                } else {
+                    cidadeSelect.empty();
+                    cidadeSelect.append('<option>Selecione uma cidade</option>');
+                }
+            })
+
+            $("#IdCidade").change(function(){
+                var bairroSelect = $('#IdBairro');
+
+                bairroSelect.empty(); // limpa as opções anteriores
+                bairroSelect.append('<option value="">Carregando...</option>');
+
+                if ($(this).val()) {
+                    $.get('/Home/RecuperarBairros', { id: $(this).val() }, function (data) {
+                        bairroSelect.empty(); // limpa novamente
+                        bairroSelect.append('<option>Selecione um bairro</option>');
+                        $.each(data, function (index, item) {
+                            bairroSelect.append($('<option>', {
+                                value: item.value,
+                                text: item.text
+                            }));
+                        });
+                    });
+                } else {
+                    bairroSelect.empty();
+                    bairroSelect.append('<option>Selecione uma bairro</option>');
+                }
+            })
+
+        });
+    </script>
+
+}

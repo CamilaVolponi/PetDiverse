@@ -5,9 +5,17 @@
 }
 
 <h1 class="text-center">Meus animais</h1>
-<p>
-    <a asp-action="Create" class="btn btn-roxo">+ Adicionar</a>
-</p>
+<div class="row">
+    <div class="col-md-10">
+        <p>
+            <a asp-action="Create" class="btn btn-roxo">+ Adicionar</a>
+        </p>
+    </div>
+    <div class="col-md-2 d-flex align-items-center">
+        <input type="checkbox" id="mostrarAdotados" class="form-check-input me-2" />
+        <label for="mostrarAdotados" class="form-check-label">Mostrar adotados</label>
+    </div>
+</div>
 <table class="table">
     <thead>
         <tr>

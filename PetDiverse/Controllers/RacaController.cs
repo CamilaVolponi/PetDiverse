@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace PetDiverse.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: Racas
         public async Task<IActionResult> Index()
         {
@@ -29,6 +31,7 @@ namespace PetDiverse.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: Racas/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -48,6 +51,7 @@ namespace PetDiverse.Controllers
             return View(raca);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: Racas/Create
         public IActionResult Create()
         {
@@ -55,6 +59,7 @@ namespace PetDiverse.Controllers
             return View();
         }
 
+        [Authorize(Roles = "ADMIN")]
         // POST: Racas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -76,6 +81,7 @@ namespace PetDiverse.Controllers
             return View(racaViewModel);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: Racas/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -97,6 +103,7 @@ namespace PetDiverse.Controllers
             return View(racaViewModel);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // POST: Racas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -137,6 +144,7 @@ namespace PetDiverse.Controllers
             return View(racaViewModel);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: Racas/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -156,6 +164,7 @@ namespace PetDiverse.Controllers
             return View(raca);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // POST: Racas/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

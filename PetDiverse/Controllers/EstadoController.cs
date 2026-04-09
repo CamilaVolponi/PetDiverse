@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PetDiverse.Controllers
 {
@@ -18,12 +19,14 @@ namespace PetDiverse.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: Estado
         public async Task<IActionResult> Index()
         {
             return View(await _context.Estado.ToListAsync());
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: Estado/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -42,12 +45,14 @@ namespace PetDiverse.Controllers
             return View(estado);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: Estado/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize(Roles = "ADMIN")]
         // POST: Estado/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -64,6 +69,7 @@ namespace PetDiverse.Controllers
             return View(estado);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: Estado/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -80,6 +86,7 @@ namespace PetDiverse.Controllers
             return View(estado);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // POST: Estado/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -115,6 +122,7 @@ namespace PetDiverse.Controllers
             return View(estado);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: Estado/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -133,6 +141,7 @@ namespace PetDiverse.Controllers
             return View(estado);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // POST: Estado/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

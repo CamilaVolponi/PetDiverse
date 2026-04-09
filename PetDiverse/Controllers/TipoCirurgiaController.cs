@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace PetDiverse.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: TipoCirurgia
         public async Task<IActionResult> Index()
         {
@@ -29,6 +31,7 @@ namespace PetDiverse.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: TipoCirurgia/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -48,6 +51,7 @@ namespace PetDiverse.Controllers
             return View(tipoCirurgia);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: TipoCirurgia/Create
         public IActionResult Create()
         {
@@ -55,6 +59,7 @@ namespace PetDiverse.Controllers
             return View();
         }
 
+        [Authorize(Roles = "ADMIN")]
         // POST: TipoCirurgia/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -73,6 +78,7 @@ namespace PetDiverse.Controllers
             return View(tipoCirurgiaViewModel);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: TipoCirurgia/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -95,6 +101,7 @@ namespace PetDiverse.Controllers
             return View(tipoCirurgiaViewModel);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // POST: TipoCirurgia/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -132,6 +139,7 @@ namespace PetDiverse.Controllers
             return View(tipoCirurgiaViewModel);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: TipoCirurgia/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -151,6 +159,7 @@ namespace PetDiverse.Controllers
             return View(tipoCirurgia);
         }
 
+        [Authorize(Roles = "ADMIN")]
         // POST: TipoCirurgia/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

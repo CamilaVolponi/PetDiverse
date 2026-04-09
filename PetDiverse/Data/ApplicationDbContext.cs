@@ -27,19 +27,6 @@ namespace PetDiverse.Data
             builder.Entity<PessoaJuridica>().ToTable("PessoaJuridica");
 
             builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-
-            //builder.ApplyConfiguration(new AnimalConfiguration());
-            //builder.ApplyConfiguration(new BairroConfiguration());
-            //builder.ApplyConfiguration(new CidadeConfiguration());
-            //builder.ApplyConfiguration(new EstadoConfiguration());
-            //builder.ApplyConfiguration(new PessoaDoadoraConfiguration());
-            //builder.ApplyConfiguration(new PessoaFisicaConfiguration());
-            //builder.ApplyConfiguration(new PessoaJuridicaConfiguration());
-            //builder.ApplyConfiguration(new RegistroCirurgiaConfiguration());
-            //builder.ApplyConfiguration(new RegistroVacinaConfiguration());
-            //builder.ApplyConfiguration(new TipoAnimalConfiguration());
-            //builder.ApplyConfiguration(new TipoCirurgiaConfiguration());
-            //builder.ApplyConfiguration(new TipoVacinaConfiguration());
         }
         public DbSet<PetDiverse.Data.TipoVacina> TipoVacina { get; set; } = default!;
         public DbSet<PetDiverse.Data.TipoCirurgia> TipoCirurgia { get; set; } = default!;

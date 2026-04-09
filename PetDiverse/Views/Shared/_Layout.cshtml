@@ -2,7 +2,7 @@
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 @inject PetDiverse.Data.ApplicationDbContext _context
-
+@inject RoleManager<IdentityRole> RoleManager
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,66 +31,107 @@
                     <ul class="navbar-nav ms-auto">
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-roxo" asp-area="" asp-controller="Animal" asp-action="Index">Meus animais</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                @{
-                                    string primeiroNome = "";
+                            @if (User.IsInRole("ADMIN"))
+                            {
+                                <li class="nav-item dropdown">
+                                    @{
+                                        string primeiroNome = "";
 
-                                    if (SignInManager.IsSignedIn(User))
-                                    {
-                                        var usuario = await UserManager.GetUserAsync(User);
-                                        var pessoa = _context.PessoaDoadora.FirstOrDefault(p => p.IdUsuario == usuario.Id);
-
-                                        if (pessoa != null && !string.IsNullOrEmpty(pessoa.Nome))
+                                        if (SignInManager.IsSignedIn(User))
                                         {
-                                            primeiroNome = pessoa.Nome.Split(' ')[0];
+                                            var usuario = await UserManager.GetUserAsync(User);
+                                            var pessoa = _context.PessoaDoadora.FirstOrDefault(p => p.IdUsuario == usuario.Id);
+
+                                            if (pessoa != null && !string.IsNullOrEmpty(pessoa.Nome))
+                                            {
+                                                primeiroNome = pessoa.Nome.Split(' ')[0];
+                                            }
                                         }
                                     }
-                                }
 
-                                <a class="nav-link dropdown-toggle text-roxo" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    @(string.IsNullOrEmpty(primeiroNome) ? "Olá!" : $"Olá, {primeiroNome}!")
-                                </a>
+                                    <a class="nav-link dropdown-toggle text-roxo" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        @(string.IsNullOrEmpty(primeiroNome) ? "Olá!" : $"Olá, {primeiroNome}!")
+                                    </a>
 
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li>
-                                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Minha conta</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">Quero adotar!</a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Bairro" asp-action="Index">Bairro</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Cidade" asp-action="Index">Cidade</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Estado" asp-action="Index">Estado</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="Raca" asp-action="Index">Raça</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="TipoAnimal" asp-action="Index">Tipo de animal</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="TipoCirurgia" asp-action="Index">Tipo de cirurgia</a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" asp-area="" asp-controller="TipoVacina" asp-action="Index">Tipo de vacina</a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                                            <button type="submit" class="dropdown-item">Logout</button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </li>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                        <li>
+                                            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Minha conta</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">Quero adotar!</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Bairro" asp-action="Index">Bairro</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Cidade" asp-action="Index">Cidade</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Estado" asp-action="Index">Estado</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Raca" asp-action="Index">Raça</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="TipoAnimal" asp-action="Index">Tipo de animal</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="TipoCirurgia" asp-action="Index">Tipo de cirurgia</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="TipoVacina" asp-action="Index">Tipo de vacina</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                                <button type="submit" class="dropdown-item">Logout</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-roxo" asp-area="" asp-controller="Animal" asp-action="Index">Meus animais</a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    @{
+                                        string primeiroNome = "";
+
+                                        if (SignInManager.IsSignedIn(User))
+                                        {
+                                            var usuario = await UserManager.GetUserAsync(User);
+                                            var pessoa = _context.PessoaDoadora.FirstOrDefault(p => p.IdUsuario == usuario.Id);
+
+                                            if (pessoa != null && !string.IsNullOrEmpty(pessoa.Nome))
+                                            {
+                                                primeiroNome = pessoa.Nome.Split(' ')[0];
+                                            }
+                                        }
+                                    }
+
+                                    <a class="nav-link dropdown-toggle text-roxo" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        @(string.IsNullOrEmpty(primeiroNome) ? "Olá!" : $"Olá, {primeiroNome}!")
+                                    </a>
+
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                        <li>
+                                            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Minha conta</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Index">Quero adotar!</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                                <button type="submit" class="dropdown-item">Logout</button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
                         }
                         else
                         {
@@ -114,7 +155,7 @@
 
     <footer class="border-top footer text-muted bg-roxo">
         <div class="container">
-            &copy; 2025 - PetDiverse
+            &copy; PetDiverse
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

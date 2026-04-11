@@ -133,4 +133,16 @@ body {
     object-fit: cover; 
 }
 
+.nav-pills .nav-link.active {
+    background-color: #6f42c1; /* roxo */
+    color: white;
+}
 
+.nav-pills .nav-link {
+    color: #6f42c1;
+}
+
+.form-check-input:checked {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+}

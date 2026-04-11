@@ -29,6 +29,14 @@ namespace PetDiverse.Controllers
         // GET: Animal
         public async Task<IActionResult> Index()
         {
+            if (User.IsInRole("ADMIN"))
+            {
+                var todosAnimais = _context.Animal
+                    .Include(a => a.TipoAnimal)
+                    .Include(a => a.Raca);
+                return View(await todosAnimais.ToListAsync());
+            }
+
             var pessoaDoadora = await _context.PessoaDoadora.FirstAsync(p => p.IdUsuario == User.FindFirstValue(ClaimTypes.NameIdentifier));
             var applicationDbContext = _context.Animal.Where(a => a.IdPessoaDoadora == pessoaDoadora.Id);
             return View(await applicationDbContext.ToListAsync());

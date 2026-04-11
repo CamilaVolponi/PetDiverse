@@ -2,9 +2,9 @@
 
 @{
     ViewData["Title"] = "Index";
+    bool isAdmin = User.IsInRole("ADMIN");
 }
-
-<h1 class="text-center">Meus animais</h1>
+<h1 class="text-center">@(isAdmin ? "Todos os animais" : "Meus animais")</h1>
 <div class="row">
     <div class="col-md-10">
         <p>
@@ -37,6 +37,10 @@
             <th>
                 Raça
             </th>
+            @if (User.IsInRole("ADMIN"))
+            {
+                <th>Doador</th>
+            }
             <th>
                 Adotado
             </th>
@@ -47,7 +51,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr class="animal-row" data-adotado="@item.Adotado.ToString().ToLower()">
             <td>
                 <a class="link-roxo" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Nome)</a>
             </td>
@@ -66,6 +70,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Raca.Descricao)
             </td>
+                <td>
+                    @if (User.IsInRole("ADMIN"))
+                    {
+                        <a class="link-roxo" asp-controller="PessoaDoadora" asp-action="Details" asp-route-id="@item.PessoaDoadora.Id">@item.PessoaDoadora?.Nome</a>
+                    }
+                </td>
             <td>
                 @if (item.Adotado)
                 {
@@ -97,7 +107,26 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
 <script>
-    $(document).ready(function(){
-        $(".btn-adocao").click(function(){$.post('/Animal/Adotado', { id: $(this).attr("animal-id") }, function(){window.location.reload()})});
-    })
+    $(document).ready(function () {
+
+        // Esconde adotados por padrão
+        $(".animal-row[data-adotado='true']").hide();
+
+        // Checkbox mostra/esconde adotados
+        $("#mostrarAdotados").change(function () {
+            if ($(this).is(":checked")) {
+                $(".animal-row[data-adotado='true']").show();
+            } else {
+                $(".animal-row[data-adotado='true']").hide();
+            }
+        });
+
+        // Botão "Foi adotado"
+        $(".btn-adocao").click(function () {
+            $.post('/Animal/Adotado', { id: $(this).attr("animal-id") }, function () {
+                window.location.reload();
+            });
+        });
+
+    });
 </script>

@@ -1,5 +1,6 @@
-﻿@model IEnumerable<PetDiverse.Data.PessoaDoadora>
-
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@model IEnumerable<PetDiverse.Data.PessoaDoadora>
 @{
     ViewData["Title"] = "Index";
 }
@@ -22,6 +23,9 @@
                 Bairro
             </th>
             <th>
+                Admin
+            </th>
+            <th>
                 Ações
             </th>
         </tr>
@@ -38,17 +42,44 @@
             <td>
                @Html.DisplayFor(modelItem => item.Bairro.Nome)
             </td>
+            <td class="text-center">
+                @{
+                    var usuario = await UserManager.FindByIdAsync(item.IdUsuario);
+                    bool isAdmin = await UserManager.IsInRoleAsync(usuario, "ADMIN");
+                    bool isSelf = item.IdUsuario == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                }
+                @if (isAdmin)
+                {
+                    <span class="text-success">Admin</span>
+                }
+                else
+                {
+                    <span class="text-muted">Não é admin</span>
+                }
+            </td>
             <td>
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_@item.Id">
                         <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
                         <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                        @if (!isSelf)
+                        {
+                            <hr class="dropdown-divider" />
+                            @if (isAdmin)
+                            {
+                                <a class="dropdown-item text-danger" asp-action="RemoverAdmin" asp-route-id="@item.Id">Retirar permissão de admin</a>
+                            }
+                            else
+                            {
+                                <a class="dropdown-item" asp-action="TornarAdmin" asp-route-id="@item.Id">Tornar admin</a>
+                            }
+                        }
                     </div>
                 </div>
             </td>
         </tr>
-}
+}   
     </tbody>
 </table>
 

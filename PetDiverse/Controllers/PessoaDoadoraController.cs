@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
@@ -16,10 +17,12 @@ namespace PetDiverse.Controllers
     public class PessoaDoadoraController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public PessoaDoadoraController(ApplicationDbContext context)
+        public PessoaDoadoraController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: PessoaDoadora
@@ -310,6 +313,28 @@ namespace PetDiverse.Controllers
                 ModelState.Remove(nameof(PessoaDoadoraCadastroViewModel.CPF));
                 ModelState.Remove(nameof(PessoaDoadoraCadastroViewModel.DataNascimento));
             }
+        }
+
+        public async Task<IActionResult> TornarAdmin(int id)
+        {
+            var pessoa = await _context.PessoaDoadora.FindAsync(id);
+            if (pessoa == null) return NotFound();
+
+            var usuario = await _userManager.FindByIdAsync(pessoa.IdUsuario);
+            await _userManager.AddToRoleAsync(usuario, "ADMIN");
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> RemoverAdmin(int id)
+        {
+            var pessoa = await _context.PessoaDoadora.FindAsync(id);
+            if (pessoa == null) return NotFound();
+
+            var usuario = await _userManager.FindByIdAsync(pessoa.IdUsuario);
+            await _userManager.RemoveFromRoleAsync(usuario, "ADMIN");
+
+            return RedirectToAction(nameof(Index));
         }
 
         private bool PessoaDoadoraExists(int id)

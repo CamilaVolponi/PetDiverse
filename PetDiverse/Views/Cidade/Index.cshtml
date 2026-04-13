@@ -46,15 +46,42 @@
     </tbody>
 </table>
 
+<p class="text-center text-muted">
+    Página @ViewBag.CurrentPage de @ViewBag.TotalPages
+</p>
+
 <nav>
     <ul class="pagination pagination-roxo justify-content-center">
 
-        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        <!-- ANTERIOR -->
+        <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+            <a class="page-link"
+               asp-action="Index"
+               asp-route-page="@(ViewBag.CurrentPage - 1)">
+                « Anterior
+            </a>
+        </li>
+
+        @{
+            int startPage = Math.Max(1, ViewBag.CurrentPage - 4);
+            int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 4);
+        }
+
+        @for (int i = startPage; i <= endPage; i++)
         {
             <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
                 <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
             </li>
         }
+
+        <!-- PRÓXIMO -->
+        <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+            <a class="page-link"
+               asp-action="Index"
+               asp-route-page="@(ViewBag.CurrentPage + 1)">
+                Próximo »
+            </a>
+        </li>
 
     </ul>
 </nav>

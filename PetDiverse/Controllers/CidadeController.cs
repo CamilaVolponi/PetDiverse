@@ -27,7 +27,7 @@ namespace PetDiverse.Controllers
         // GET: Cidade
         public async Task<IActionResult> Index(int page = 1)
         {
-            int pageSize = 500;
+            int pageSize = 10;
 
             var query = _context.Cidade
                 .Include(c => c.Estado)

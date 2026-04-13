@@ -25,10 +25,25 @@ namespace PetDiverse.Controllers
 
         [Authorize(Roles = "ADMIN")]
         // GET: Bairro
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var applicationDbContext = _context.Bairro.Include(b => b.Cidade);
-            return View(await applicationDbContext.ToListAsync());
+            int pageSize = 10;
+
+            var query = _context.Bairro
+                .Include(b => b.Cidade)
+                .OrderBy(b => b.Nome);
+
+            var totalItems = await query.CountAsync();
+
+            var bairros = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            return View(bairros);
         }
 
         [Authorize(Roles = "ADMIN")]

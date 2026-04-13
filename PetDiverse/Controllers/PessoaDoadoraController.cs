@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ namespace PetDiverse.Controllers
             _userManager = userManager;
         }
 
+        [Authorize(Roles = "ADMIN")]
         // GET: PessoaDoadora
         public async Task<IActionResult> Index()
         {
@@ -42,11 +44,19 @@ namespace PetDiverse.Controllers
 
             var pessoaDoadora = await _context.PessoaDoadora
                 .Include(p => p.Bairro)
+                    .ThenInclude(b => b.Cidade)
+                        .ThenInclude(c => c.Estado)
+                .Include(p => p.FormasContato)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (pessoaDoadora == null)
             {
                 return NotFound();
             }
+
+            // Busca o email pelo UserManager
+            var usuario = await _userManager.FindByIdAsync(pessoaDoadora.IdUsuario);
+            ViewData["Email"] = usuario?.Email;
 
             return View(pessoaDoadora);
         }

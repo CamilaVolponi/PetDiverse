@@ -7,9 +7,9 @@
 
 <h1 class="text-center">Usuários</h1>
 
-<p>
+@* <p>
     <a asp-action="Create" class="btn btn-roxo">+ Adicionar</a>
-</p>
+</p> *@
 <table class="table">
     <thead>
         <tr>
@@ -17,10 +17,7 @@
                 Nome
             </th>
             <th>
-                Telefone
-            </th>
-            <th>
-                Bairro
+                Tipo
             </th>
             <th>
                 Admin
@@ -37,31 +34,35 @@
                 <a class="link-roxo" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Nome)</a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Telefone)
+                @if (item is PetDiverse.Data.PessoaFisica)
+                {
+                    <span>Pessoa Física</span>
+                }
+                else if (item is PetDiverse.Data.PessoaJuridica)
+                {
+                    <span>Pessoa Jurídica</span>
+                }
             </td>
             <td>
-               @Html.DisplayFor(modelItem => item.Bairro.Nome)
-            </td>
-            <td class="text-center">
                 @{
                     var usuario = await UserManager.FindByIdAsync(item.IdUsuario);
-                    bool isAdmin = await UserManager.IsInRoleAsync(usuario, "ADMIN");
+                    bool isAdmin = usuario != null && await UserManager.IsInRoleAsync(usuario, "ADMIN");
                     bool isSelf = item.IdUsuario == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
                 }
                 @if (isAdmin)
                 {
-                    <span class="text-success">Admin</span>
+                    <span>Admin</span>
                 }
                 else
                 {
-                    <span class="text-muted">Não é admin</span>
+                    <span>Não é admin</span>
                 }
             </td>
             <td>
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_@item.Id">
-                        <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                        <a class="dropdown-item" asp-action="Edit" asp-route-idUsuario="@item.IdUsuario">Editar</a>
                         <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
                         @if (!isSelf)
                         {

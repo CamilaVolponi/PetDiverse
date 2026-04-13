@@ -1,36 +1,81 @@
 ﻿@model PetDiverse.Data.PessoaDoadora
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes do Doador";
+    var pessoaFisica = Model as PetDiverse.Data.PessoaFisica;
+    var pessoaJuridica = Model as PetDiverse.Data.PessoaJuridica;
 }
 
-<h1>Details</h1>
+<h2>Detalhes do Doador</h2>
+<hr />
 
-<div>
-    <h4>PessoaDoadora</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Telefone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Telefone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Bairro)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Bairro.Nome)
-        </dd>
-    </dl>
+<div class="row">
+    <div class="col-md-9">
+        <dl class="row">
+
+            <!-- Nome -->
+            <dt class="col-sm-5">@Html.DisplayNameFor(model => model.Nome)</dt>
+            <dd class="col-sm-7">@Html.DisplayFor(model => model.Nome)</dd>
+
+            <!-- E-mail -->
+            <dt class="col-sm-5">E-mail</dt>
+            <dd class="col-sm-7">@ViewData["Email"]</dd>
+
+            <!-- Telefone -->
+            <dt class="col-sm-5">@Html.DisplayNameFor(model => model.Telefone)</dt>
+            <dd class="col-sm-7">@Html.DisplayFor(model => model.Telefone)</dd>
+
+            <!-- Pessoa Física -->
+            @if (pessoaFisica != null)
+            {
+                <dt class="col-sm-5">@Html.DisplayNameFor(model => pessoaFisica.CPF)</dt>
+                <dd class="col-sm-7">@pessoaFisica.CPF</dd>
+
+                <dt class="col-sm-5">@Html.DisplayNameFor(model => pessoaFisica.DataNascimento)</dt>
+                <dd class="col-sm-7">@pessoaFisica.DataNascimento.ToShortDateString()</dd>
+            }
+
+            <!-- Pessoa Jurídica -->
+            @if (pessoaJuridica != null)
+            {
+                <dt class="col-sm-5">@Html.DisplayNameFor(model => pessoaJuridica.CNPJ)</dt>
+                <dd class="col-sm-7">@pessoaJuridica.CNPJ</dd>
+
+                <dt class="col-sm-5">@Html.DisplayNameFor(model => pessoaJuridica.RedeSocial)</dt>
+                <dd class="col-sm-7">@pessoaJuridica.RedeSocial</dd>
+
+                <dt class="col-sm-5">@Html.DisplayNameFor(model => pessoaJuridica.Site)</dt>
+                <dd class="col-sm-7">@pessoaJuridica.Site</dd>
+            }
+
+            <!-- Localização -->
+            <dt class="col-sm-5">Estado</dt>
+            <dd class="col-sm-7">@Model.Bairro?.Cidade?.Estado?.Nome</dd>
+
+            <dt class="col-sm-5">Cidade</dt>
+            <dd class="col-sm-7">@Model.Bairro?.Cidade?.Nome</dd>
+
+            <dt class="col-sm-5">@Html.DisplayNameFor(model => model.Bairro)</dt>
+            <dd class="col-sm-7">@Model.Bairro?.Nome</dd>
+
+            <!-- Formas de Contato -->
+            <dt class="col-sm-5">Formas de Contato</dt>
+            <dd class="col-sm-7">
+                @if (Model.FormasContato != null && Model.FormasContato.Any())
+                {
+                    @string.Join(", ", Model.FormasContato.Select(f => f.TipoFormaContato.ToString()))
+                }
+                else
+                {
+                    <span class="text-muted">Não informado</span>
+                }
+            </dd>
+
+        </dl>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div class="form-group mt-2">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-roxo">Editar</a>
+    <a asp-action="Index" class="btn btn-cinza">Voltar a lista</a>
 </div>

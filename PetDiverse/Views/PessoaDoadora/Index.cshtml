@@ -14,87 +14,127 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Nome</th>
-            <th>Tipo</th>
-            <th>Admin</th>
-            <th class="col-exclusao" style="display:none">Data de exclusão</th>
-            <th>Ações</th>
+            <th>
+                Nome
+            </th>
+            <th>
+                Tipo
+            </th>
+            <th>
+                Admin
+            </th>
+            <th class="col-exclusao" style="display:none">
+                Data de exclusão
+            </th>
+            <th>
+                Ações
+            </th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        
+        @foreach (var item in Model)
+        {
             var usuario = await UserManager.FindByIdAsync(item.IdUsuario);
             bool isAdmin = usuario != null && await UserManager.IsInRoleAsync(usuario, "ADMIN");
             bool isSelf = item.IdUsuario == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-        
-        <tr data-excluido="@(item.DataExclusao.HasValue ? "true" : "false")">
-            <td>
-                <a class="link-roxo" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Nome)</a>
-            </td>
-            <td>
-                @if (item is PetDiverse.Data.PessoaFisica)
-                {
-                    <span>Pessoa Física</span>
-                }
-                else if (item is PetDiverse.Data.PessoaJuridica)
-                {
-                    <span>Pessoa Jurídica</span>
-                }
-            </td>
-            <td>
-                @if (isAdmin)
-                {
-                    <span>Admin</span>
-                }
-                else
-                {
-                    <span>Não é admin</span>
-                }
-            </td>
-            <td class="data-exclusao" style="display:none">
-                @(item.DataExclusao.HasValue ? item.DataExclusao.Value.ToString("dd/MM/yyyy") : "-")
-            </td>
-            <td>
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_@item.Id">
-                        @if (!isSelf)
-                        {
-                            <a class="dropdown-item" asp-action="Edit" asp-route-idUsuario="@item.IdUsuario">Editar</a>
-                            <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
-                            <hr class="dropdown-divider" />
-                            @if (isAdmin)
+
+            <tr data-excluido="@(item.DataExclusao.HasValue ? "true" : "false")">
+                <td>
+                    <a class="link-roxo" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Nome)</a>
+                </td>
+                <td>
+                    @if (item is PetDiverse.Data.PessoaFisica)
+                    {
+                        <span>Pessoa Física</span>
+                    }
+                    else if (item is PetDiverse.Data.PessoaJuridica)
+                    {
+                        <span>Pessoa Jurídica</span>
+                    }
+                </td>
+                <td>
+                    @if (isAdmin)
+                    {
+                        <span>Admin</span>
+                    }
+                    else
+                    {
+                        <span>Não é admin</span>
+                    }
+                </td>
+                <td class="data-exclusao" style="display:none">
+                    @(item.DataExclusao.HasValue? item.DataExclusao.Value.ToString("dd/MM/yyyy") : "-")
+                </td>
+                <td>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_@item.Id">
+                            @if (isSelf || item.DataExclusao.HasValue)
                             {
-                                <a class="dropdown-item text-danger" asp-action="RemoverAdmin" asp-route-id="@item.Id">Retirar permissão de admin</a>
+                                <p>Não existem ações disponíveis.</p>
                             }
                             else
                             {
-                            <a class="dropdown-item" asp-action="TornarAdmin" asp-route-id="@item.Id">Tornar admin</a>
+                                <a class="dropdown-item" asp-action="Edit" asp-route-idUsuario="@item.IdUsuario">Editar</a>
+                                <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Desativar</a>
+                                <hr class="dropdown-divider" />
+                                @if (isAdmin)
+                                {
+                                    <a class="dropdown-item text-danger" asp-action="RemoverAdmin" asp-route-id="@item.Id">Retirar permissão de admin</a>
+                                }
+                                else
+                                {
+                                    <a class="dropdown-item" asp-action="TornarAdmin" asp-route-id="@item.Id">Tornar admin</a>
+                                }
                             }
-                        }
-                        else
-                        {
-                             <p>Não existem ações disponíveis.</p>
-                        }
                         </div>
-                </div>
-            </td>
-        </tr>
-}
+                    </div>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<!-- PAGINAÇÃO -->
+<p class="text-center">
+    Página @ViewBag.CurrentPage de @ViewBag.TotalPages
+</p>
+<nav>
+    <ul class="pagination pagination-roxo justify-content-center">
+        <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+            <a class="page-link"
+               asp-action="Index"
+               asp-route-page="@(ViewBag.CurrentPage - 1)">
+                « Anterior
+            </a>
+        </li>
+        @{
+            int startPage = Math.Max(1, ViewBag.CurrentPage - 2);
+            int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
+        }
+        @for (int i = startPage; i <= endPage; i++)
+        {
+            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+            </li>
+        }
+        <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+            <a class="page-link"
+               asp-action="Index"
+               asp-route-page="@(ViewBag.CurrentPage + 1)">
+                Próximo »
+            </a>
+        </li>
+    </ul>
+</nav>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
 
 <script>
     $(document).ready(function () {
-
-        // Esconde excluídos por padrão
         $("tr[data-excluido='true']").hide();
 
-        // Checkbox mostra/esconde excluídos e a coluna de data
         $("#mostrarExcluidos").change(function () {
             if ($(this).is(":checked")) {
                 $("tr[data-excluido='true']").show();
@@ -106,6 +146,5 @@
                 $("th.col-exclusao").hide();
             }
         });
-
     });
 </script>

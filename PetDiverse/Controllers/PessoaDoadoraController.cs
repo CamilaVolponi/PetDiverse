@@ -28,11 +28,25 @@ namespace PetDiverse.Controllers
 
         [Authorize(Roles = "ADMIN")]
         // GET: PessoaDoadora
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
+            int pageSize = 10;
+
             var applicationDbContext = _context.PessoaDoadora.Include(p => p.Bairro);
             var pessoas = await _context.PessoaDoadora.IgnoreQueryFilters().ToListAsync();
-            return View(await applicationDbContext.ToListAsync());
+
+            int totalItems = await applicationDbContext.CountAsync();
+            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var paginado = await applicationDbContext
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+
+            return View(paginado);
         }
 
 
@@ -284,6 +298,10 @@ namespace PetDiverse.Controllers
             {
                 return NotFound();
             }
+
+            // Busca o email pelo UserManager
+            var usuario = await _userManager.FindByIdAsync(pessoaDoadora.IdUsuario);
+            ViewData["Email"] = usuario?.Email;
 
             return View(pessoaDoadora);
         }

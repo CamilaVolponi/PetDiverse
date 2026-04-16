@@ -63,8 +63,8 @@
         </li>
 
         @{
-            int startPage = Math.Max(1, ViewBag.CurrentPage - 4);
-            int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 4);
+            int startPage = Math.Max(1, ViewBag.CurrentPage - 2);
+            int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
         }
 
         @for (int i = startPage; i <= endPage; i++)

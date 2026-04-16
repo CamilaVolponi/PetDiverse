@@ -27,19 +27,46 @@ namespace PetDiverse.Controllers
         }
 
         // GET: Animal
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
+            int pageSize = 10;
+
             if (User.IsInRole("ADMIN"))
             {
                 var todosAnimais = _context.Animal
                     .Include(a => a.TipoAnimal)
                     .Include(a => a.Raca);
-                return View(await todosAnimais.ToListAsync());
+
+                int totalItems = await todosAnimais.CountAsync();
+                int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+                var paginado = await todosAnimais
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+                ViewBag.CurrentPage = page;
+                ViewBag.TotalPages = totalPages;
+
+                return View(paginado);
             }
 
             var pessoaDoadora = await _context.PessoaDoadora.FirstAsync(p => p.IdUsuario == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var applicationDbContext = _context.Animal.Where(a => a.IdPessoaDoadora == pessoaDoadora.Id);
-            return View(await applicationDbContext.ToListAsync());
+            var applicationDbContext = _context.Animal
+                .Where(a => a.IdPessoaDoadora == pessoaDoadora.Id);
+
+            int total = await applicationDbContext.CountAsync();
+            int pages = (int)Math.Ceiling(total / (double)pageSize);
+
+            var paginadoDoador = await applicationDbContext
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = pages;
+
+            return View(paginadoDoador);
         }
 
         // GET: Animal/Details/5
@@ -99,7 +126,7 @@ namespace PetDiverse.Controllers
             var animal = _mapper.Map<AnimalViewModel, Animal>(animalViewModel);
             animal.IdPessoaDoadora = pessoaDoadora.Id;
 
-            // ⚠️ Validação ANTES
+            // Validação ANTES
             if (animalViewModel.Foto == null || animalViewModel.Foto.Length == 0)
             {
                 ModelState.AddModelError("Foto", "Campo obrigatório!");

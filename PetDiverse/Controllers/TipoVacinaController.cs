@@ -26,10 +26,25 @@ namespace PetDiverse.Controllers
 
         [Authorize(Roles = "ADMIN")]
         // GET: TipoVacina
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var applicationDbContext = _context.TipoVacina.Include(t => t.TipoAnimal);
-            return View(await applicationDbContext.ToListAsync());
+            int pageSize = 10; // Itens por página
+
+            var query = _context.TipoVacina
+                .Include(t => t.TipoAnimal)
+                .OrderBy(t => t.Descricao);
+
+            var totalItems = await query.CountAsync();
+
+            var tiposVacinas = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            return View(tiposVacinas);
         }
 
         [Authorize(Roles = "ADMIN")]

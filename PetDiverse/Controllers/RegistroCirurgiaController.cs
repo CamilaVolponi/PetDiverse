@@ -23,12 +23,32 @@ namespace PetDiverse.Controllers
         }
 
         // GET: RegistroCirurgia
-        public async Task<IActionResult> Index(int idAnimal)
+        public async Task<IActionResult> Index(int idAnimal, int page = 1)
         {
-            var applicationDbContext = _context.RegistroCirurgia.Where(r => r.IdAnimal == idAnimal);
+            int pageSize = 10;
+
+            // Filtramos primeiro pelo animal
+            var query = _context.RegistroCirurgia
+                .Include(r => r.TipoCirurgia)
+                .Where(r => r.IdAnimal == idAnimal)
+                .OrderByDescending(r => r.DataRegistro); // Geralmente cirurgias são listadas da mais recente para a antiga
+
+            var totalItems = await query.CountAsync();
+
+            var registros = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            // Dados para o cabeçalho e navegação
             ViewData["NomeAnimal"] = _context.Animal.Find(idAnimal)?.Nome;
             ViewData["IdAnimal"] = idAnimal;
-            return View(await applicationDbContext.ToListAsync());
+
+            // Dados de paginação
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            return View(registros);
         }
 
         // GET: RegistroCirurgia/Details/5

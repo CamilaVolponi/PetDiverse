@@ -102,9 +102,7 @@ namespace PetDiverse.Areas.Identity.Pages.Account.Manage
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
+                return NotFound();
 
             if (!ModelState.IsValid)
             {
@@ -112,27 +110,28 @@ namespace PetDiverse.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var email = await _userManager.GetEmailAsync(user);
-            if (Input.NewEmail != email)
+            // Troca o e-mail diretamente, sem confirmação
+            var setEmailResult = await _userManager.SetEmailAsync(user, Input.NewEmail);
+            if (!setEmailResult.Succeeded)
             {
-                var userId = await _userManager.GetUserIdAsync(user);
-                var code = await _userManager.GenerateChangeEmailTokenAsync(user, Input.NewEmail);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page(
-                    "/Account/ConfirmEmailChange",
-                    pageHandler: null,
-                    values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
-                    protocol: Request.Scheme);
-                await _emailSender.SendEmailAsync(
-                    Input.NewEmail,
-                    "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                StatusMessage = "Erro ao alterar o e-mail.";
                 return RedirectToPage();
             }
 
-            StatusMessage = "Your email is unchanged.";
+            // Atualiza o username também (Identity usa e-mail como username por padrão)
+            var setUserNameResult = await _userManager.SetUserNameAsync(user, Input.NewEmail);
+            if (!setUserNameResult.Succeeded)
+            {
+                StatusMessage = "Erro ao alterar o username.";
+                return RedirectToPage();
+            }
+
+            // Marca o e-mail como já confirmado
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            await _userManager.ConfirmEmailAsync(user, token);
+
+            await _signInManager.RefreshSignInAsync(user);
+            StatusMessage = "E-mail alterado com sucesso.";
             return RedirectToPage();
         }
 

@@ -25,10 +25,25 @@ namespace PetDiverse.Controllers
 
         [Authorize(Roles = "ADMIN")]
         // GET: Racas
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            var applicationDbContext = _context.Raca.Include(r => r.TipoAnimal);
-            return View(await applicationDbContext.ToListAsync());
+            int pageSize = 10; // Defina quantos registros quer por página
+
+            var query = _context.Raca
+                .Include(r => r.TipoAnimal)
+                .OrderBy(r => r.Descricao);
+
+            var totalItems = await query.CountAsync();
+
+            var racas = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            return View(racas);
         }
 
         [Authorize(Roles = "ADMIN")]

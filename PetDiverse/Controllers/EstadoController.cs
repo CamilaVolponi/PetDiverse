@@ -21,9 +21,24 @@ namespace PetDiverse.Controllers
 
         [Authorize(Roles = "ADMIN")]
         // GET: Estado
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Estado.ToListAsync());
+            int pageSize = 10; // Quantidade de itens por página
+
+            var query = _context.Estado
+                .OrderBy(b => b.Nome);
+
+            var totalItems = await query.CountAsync();
+
+            var estados = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            return View(estados);
         }
 
         [Authorize(Roles = "ADMIN")]

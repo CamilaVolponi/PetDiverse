@@ -44,6 +44,8 @@ namespace PetDiverse.Models
         [Required(ErrorMessage = "Campo Obrigatório")]
         [DisplayName("Tipo de pessoa")]
         public TipoPessoaCadastro? TipoPessoaCadastro { get; set; }  
+
+        public bool TelaAdmin; 
     }
 
     public enum TipoPessoaCadastro

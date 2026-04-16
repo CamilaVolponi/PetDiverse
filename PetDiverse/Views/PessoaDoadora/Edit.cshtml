@@ -1,7 +1,8 @@
 ﻿@using PetDiverse.Data.Enums
 @model PetDiverse.Models.PessoaDoadoraCadastroViewModel
 
-@{
+@if (!Model.TelaAdmin)
+{
     Layout = null;
     ViewData["Title"] = "Meus dados";
 }
@@ -86,7 +87,16 @@
                 </div>             
             </div>
 
-            <button type="submit" class="w-100 btn btn-lg btn-roxo">Alterar</button>
+
+            @if (Model.TelaAdmin)
+            {
+                <a asp-action="Index" class="btn btn-cinza">Voltar a lista</a>
+                <button type="submit" class="btn btn-lg btn-roxo">Alterar</button>
+            }else
+            {
+                <button type="submit" class="w-100 btn btn-lg btn-roxo">Alterar</button>
+            }
+
         </form>
     </div>
 </div>

@@ -20,6 +20,7 @@ namespace PetDiverse.Data
         public virtual Bairro Bairro { get; set; }
         public string IdUsuario { get; set; } = string.Empty;
         public virtual Usuario Usuario { get; set; }
-        public virtual ICollection<FormaContato> FormasContato { get; set; } 
+        public virtual ICollection<FormaContato> FormasContato { get; set; }
+        public DateTime? DataExclusao { get; set; }
     }
 }

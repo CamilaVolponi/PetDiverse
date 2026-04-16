@@ -34,6 +34,7 @@ namespace PetDiverse.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+
         // GET: PessoaDoadora/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -155,7 +156,8 @@ namespace PetDiverse.Controllers
                 TipoFormaContato = pessoaDoadora.FormasContato.Select(fc => fc.TipoFormaContato).ToList(),
                 Telefone = pessoaDoadora.Telefone,
                 IdEstado = pessoaDoadora.Bairro.Cidade.IdEstado,
-                IdCidade = pessoaDoadora.Bairro.IdCidade
+                IdCidade = pessoaDoadora.Bairro.IdCidade,
+                TelaAdmin = !string.IsNullOrWhiteSpace(Request.Headers["Referer"].ToString()) ? Request.Headers["Referer"].ToString().ToLower().Contains("pessoadoadora") : false,
             };
 
             if (pessoaDoadora is PessoaFisica pessoaDoadoraFisica)
@@ -200,7 +202,8 @@ namespace PetDiverse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, PessoaDoadoraCadastroViewModel pessoaDoadoraCadastroViewModel)
         {
-            if (id != pessoaDoadoraCadastroViewModel.Id)
+            var pessoaDoadora = await _context.PessoaDoadora.FindAsync(id);
+            if (id != pessoaDoadoraCadastroViewModel.Id || (!User.IsInRole("ADMIN") && pessoaDoadora?.IdUsuario != User.FindFirstValue(ClaimTypes.NameIdentifier)))
             {
                 return NotFound();
             }
@@ -210,7 +213,6 @@ namespace PetDiverse.Controllers
             {
                 try
                 {
-                    var pessoaDoadora = await _context.PessoaDoadora.FindAsync(id);
                     if (pessoaDoadoraCadastroViewModel.TipoPessoaCadastro == TipoPessoaCadastro.Fisica)
                     {
                         var pessoaDoadoraFisica = (pessoaDoadora as PessoaFisica);
@@ -293,7 +295,13 @@ namespace PetDiverse.Controllers
             var pessoaDoadora = await _context.PessoaDoadora.FindAsync(id);
             if (pessoaDoadora != null)
             {
-                _context.PessoaDoadora.Remove(pessoaDoadora);
+                pessoaDoadora.DataExclusao = DateTime.Now;
+
+                var user = await _userManager.FindByIdAsync(pessoaDoadora.IdUsuario);
+                await _userManager.SetLockoutEnabledAsync(user, true);
+                await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+
+                _context.Update(pessoaDoadora);
             }
 
             await _context.SaveChangesAsync();

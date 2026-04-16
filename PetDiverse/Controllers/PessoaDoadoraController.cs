@@ -31,6 +31,7 @@ namespace PetDiverse.Controllers
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.PessoaDoadora.Include(p => p.Bairro);
+            var pessoas = await _context.PessoaDoadora.IgnoreQueryFilters().ToListAsync();
             return View(await applicationDbContext.ToListAsync());
         }
 

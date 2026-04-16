@@ -6,12 +6,23 @@
     Layout = null;
     ViewData["Title"] = "Meus dados";
 }
+else
+{
+    ViewData["Title"] = "Dados do usuário";
+}
 
 <head>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PetDiverse.styles.css" asp-append-version="true" />
 </head>
+
+@if (Model.TelaAdmin)
+{
+    <h2>Dados do usuário</h2>
+
+    <hr />
+}
 
 <div class="row">
     <div class="col-md-9">
@@ -91,7 +102,7 @@
             @if (Model.TelaAdmin)
             {
                 <a asp-action="Index" class="btn btn-cinza">Voltar a lista</a>
-                <button type="submit" class="btn btn-lg btn-roxo">Alterar</button>
+                <button type="submit" class="btn btn-roxo">Alterar</button>
             }else
             {
                 <button type="submit" class="w-100 btn btn-lg btn-roxo">Alterar</button>

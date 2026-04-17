@@ -35,7 +35,8 @@ namespace PetDiverse.Controllers
             {
                 var todosAnimais = _context.Animal
                     .Include(a => a.TipoAnimal)
-                    .Include(a => a.Raca);
+                    .Include(a => a.Raca)
+                    .OrderBy(a => a.Nome);
 
                 int totalItems = await todosAnimais.CountAsync();
                 int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
@@ -53,7 +54,8 @@ namespace PetDiverse.Controllers
 
             var pessoaDoadora = await _context.PessoaDoadora.FirstAsync(p => p.IdUsuario == User.FindFirstValue(ClaimTypes.NameIdentifier));
             var applicationDbContext = _context.Animal
-                .Where(a => a.IdPessoaDoadora == pessoaDoadora.Id);
+                .Where(a => a.IdPessoaDoadora == pessoaDoadora.Id)
+                .OrderBy(a => a.Nome);
 
             int total = await applicationDbContext.CountAsync();
             int pages = (int)Math.Ceiling(total / (double)pageSize);

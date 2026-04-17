@@ -43,6 +43,52 @@
             </div>
         }
     </div>
+
+    <p class="text-center mt-3">
+        Página @ViewBag.CurrentPage de @ViewBag.TotalPages
+    </p>
+    <nav>
+        <ul class="pagination pagination-roxo justify-content-center">
+            <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(ViewBag.CurrentPage - 1)"
+                   asp-route-idTipoAnimal="@ViewBag.IdTipoAnimalSelecionado"
+                   asp-route-idEstado="@ViewBag.IdEstadoSelecionado"
+                   asp-route-idCidade="@ViewBag.IdCidadeSelecionado"
+                   asp-route-idBairro="@ViewBag.IdBairroSelecionado">
+                    « Anterior
+                </a>
+            </li>
+            @{
+                int startPage = Math.Max(1, ViewBag.CurrentPage - 2);
+                int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
+            }
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-idTipoAnimal="@ViewBag.IdTipoAnimalSelecionado"
+                       asp-route-idEstado="@ViewBag.IdEstadoSelecionado"
+                       asp-route-idCidade="@ViewBag.IdCidadeSelecionado"
+                       asp-route-idBairro="@ViewBag.IdBairroSelecionado">@i</a>
+                </li>
+            }
+            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(ViewBag.CurrentPage + 1)"
+                   asp-route-idTipoAnimal="@ViewBag.IdTipoAnimalSelecionado"
+                   asp-route-idEstado="@ViewBag.IdEstadoSelecionado"
+                   asp-route-idCidade="@ViewBag.IdCidadeSelecionado"
+                   asp-route-idBairro="@ViewBag.IdBairroSelecionado">
+                    Próximo »
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 @section Scripts {
@@ -55,11 +101,11 @@
             $("#IdEstado").change(function(){
                 var cidadeSelect = $('#IdCidade');
 
-                cidadeSelect.empty(); // limpa as opções anteriores
+                cidadeSelect.empty();
                 cidadeSelect.append('<option value="">Carregando...</option>');
                 if ($(this).val()) {
                     $.get('/Home/RecuperarCidades', { id: $(this).val() }, function (data) {
-                        cidadeSelect.empty(); // limpa novamente
+                        cidadeSelect.empty();
                         cidadeSelect.append('<option>Selecione uma cidade</option>');
                         $.each(data, function (index, item) {
                             cidadeSelect.append($('<option>', {
@@ -77,12 +123,12 @@
             $("#IdCidade").change(function(){
                 var bairroSelect = $('#IdBairro');
 
-                bairroSelect.empty(); // limpa as opções anteriores
+                bairroSelect.empty();
                 bairroSelect.append('<option value="">Carregando...</option>');
 
                 if ($(this).val()) {
                     $.get('/Home/RecuperarBairros', { id: $(this).val() }, function (data) {
-                        bairroSelect.empty(); // limpa novamente
+                        bairroSelect.empty();
                         bairroSelect.append('<option>Selecione um bairro</option>');
                         $.each(data, function (index, item) {
                             bairroSelect.append($('<option>', {

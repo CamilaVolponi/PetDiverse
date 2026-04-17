@@ -31,7 +31,7 @@ namespace PetDiverse.Controllers
             var query = _context.RegistroCirurgia
                 .Include(r => r.TipoCirurgia)
                 .Where(r => r.IdAnimal == idAnimal)
-                .OrderByDescending(r => r.DataRegistro); // Geralmente cirurgias são listadas da mais recente para a antiga
+                .OrderByDescending(r => r.DataRegistro);
 
             var totalItems = await query.CountAsync();
 

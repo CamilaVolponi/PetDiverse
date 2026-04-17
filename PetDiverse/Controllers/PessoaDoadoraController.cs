@@ -32,8 +32,8 @@ namespace PetDiverse.Controllers
         {
             int pageSize = 10;
 
-            var applicationDbContext = _context.PessoaDoadora.Include(p => p.Bairro);
-            var pessoas = await _context.PessoaDoadora.IgnoreQueryFilters().ToListAsync();
+            var applicationDbContext = _context.PessoaDoadora.Include(p => p.Bairro).OrderBy(p => p.Nome);
+            var pessoas = await _context.PessoaDoadora.IgnoreQueryFilters().OrderBy(p => p.Nome).ToListAsync();
 
             int totalItems = await applicationDbContext.CountAsync();
             int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);

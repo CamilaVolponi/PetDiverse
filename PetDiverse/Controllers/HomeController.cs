@@ -65,7 +65,7 @@ namespace PetDiverse.Controllers
                 ViewData["IdCidade"] = new SelectList(new List<Cidade>(), "Id", "Nome");
             }
 
-            if (idCidade != null)
+            if (idBairro != null)
             {
                 animaisAdotados = animaisAdotados.Where(a => a.PessoaDoadora.IdBairro == idBairro);
                 ViewData["IdBairro"] = new SelectList(_context.Bairro.Where(c => c.IdCidade == idCidade).OrderBy(b => b.Nome), "Id", "Nome", idBairro);

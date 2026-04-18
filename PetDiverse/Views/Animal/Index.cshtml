@@ -39,7 +39,9 @@
             </th>
             @if (User.IsInRole("ADMIN"))
             {
-                <th>Doador</th>
+                <th>
+                    Doador
+                </th>
             }
             <th>
                 Adotado
@@ -70,12 +72,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Raca.Descricao)
             </td>
+            @if (User.IsInRole("ADMIN"))
+            {
                 <td>
-                    @if (User.IsInRole("ADMIN"))
-                    {
-                        <a class="link-roxo" asp-controller="PessoaDoadora" asp-action="Details" asp-route-id="@item.PessoaDoadora.Id">@item.PessoaDoadora?.Nome</a>
-                    }
+                    <a class="link-roxo" asp-controller="PessoaDoadora" asp-action="Details" asp-route-id="@item.PessoaDoadora.Id">@item.PessoaDoadora?.Nome</a>
                 </td>
+            }
             <td>
                 @if (item.Adotado)
                 {

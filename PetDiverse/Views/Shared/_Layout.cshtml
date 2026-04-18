@@ -55,11 +55,11 @@
                                         }
                                     }
 
-                                    <a class="nav-link dropdown-toggle text-roxo" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle text-roxo" href="#" id="userDropdownAdmin" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         @(string.IsNullOrEmpty(primeiroNome) ? "Olá!" : $"Olá, {primeiroNome}!")
                                     </a>
 
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdownAdmin">
                                         <li>
                                             <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Minha conta</a>
                                         </li>
@@ -119,11 +119,11 @@
                                         }
                                     }
 
-                                    <a class="nav-link dropdown-toggle text-roxo" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <a class="nav-link dropdown-toggle text-roxo" href="#" id="userDropdownUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         @(string.IsNullOrEmpty(primeiroNome) ? "Olá!" : $"Olá, {primeiroNome}!")
                                     </a>
 
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdownUser">
                                         <li>
                                             <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Minha conta</a>
                                         </li>

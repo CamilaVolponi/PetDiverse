@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 
 namespace PetDiverse.Areas.Identity.Pages.Account.Manage
 {
@@ -86,9 +87,17 @@ namespace PetDiverse.Areas.Identity.Pages.Account.Manage
             IsEmailConfirmed = await _userManager.IsEmailConfirmedAsync(user);
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(string idUsuario)
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = default(IdentityUser);
+            if (string.IsNullOrEmpty(idUsuario))
+            {
+                user = await _userManager.GetUserAsync(User);
+            }
+            else
+            {
+                user = await _userManager.Users.FirstOrDefaultAsync(u=>u.Id == idUsuario);
+            }
             if (user == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");

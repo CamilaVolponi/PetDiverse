@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
 using PetDiverse.Data.Enums;
@@ -27,48 +28,31 @@ namespace PetDiverse.Controllers
         }
 
         // GET: Animal
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 10;
-
             if (User.IsInRole("ADMIN"))
             {
-                var todosAnimais = _context.Animal
+                var todosAnimais = await _context.Animal
                     .Include(a => a.TipoAnimal)
                     .Include(a => a.Raca)
-                    .OrderBy(a => a.Nome);
-
-                int totalItems = await todosAnimais.CountAsync();
-                int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
-
-                var paginado = await todosAnimais
-                    .Skip((page - 1) * pageSize)
-                    .Take(pageSize)
+                    .Include(a => a.PessoaDoadora)
+                    .OrderBy(a => a.Nome)
                     .ToListAsync();
 
-                ViewBag.CurrentPage = page;
-                ViewBag.TotalPages = totalPages;
-
-                return View(paginado);
+                return View(todosAnimais);
             }
 
-            var pessoaDoadora = await _context.PessoaDoadora.FirstAsync(p => p.IdUsuario == User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var applicationDbContext = _context.Animal
+            var pessoaDoadora = await _context.PessoaDoadora
+                .FirstAsync(p => p.IdUsuario == User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var animaisDoador = await _context.Animal
                 .Where(a => a.IdPessoaDoadora == pessoaDoadora.Id)
-                .OrderBy(a => a.Nome);
-
-            int total = await applicationDbContext.CountAsync();
-            int pages = (int)Math.Ceiling(total / (double)pageSize);
-
-            var paginadoDoador = await applicationDbContext
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+                .Include(a => a.TipoAnimal)
+                .Include(a => a.Raca)
+                .OrderBy(a => a.Nome)
                 .ToListAsync();
 
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = pages;
-
-            return View(paginadoDoador);
+            return View(animaisDoador);
         }
 
         // GET: Animal/Details/5
@@ -362,6 +346,12 @@ namespace PetDiverse.Controllers
         private bool AnimalExists(int id)
         {
             return _context.Animal.Any(e => e.Id == id);
+        }
+
+        [EnableQuery] 
+        public IQueryable<Animal> Get()
+        {
+            return _context.Animal;
         }
     }
 }

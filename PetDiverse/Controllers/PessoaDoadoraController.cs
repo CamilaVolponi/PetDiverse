@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
 using PetDiverse.Data.Enums;
@@ -28,25 +29,22 @@ namespace PetDiverse.Controllers
 
         [Authorize(Roles = "ADMIN")]
         // GET: PessoaDoadora
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 10;
+            //int pageSize = 10;
 
             var applicationDbContext = _context.PessoaDoadora.Include(p => p.Bairro).OrderBy(p => p.Nome);
             var pessoas = await _context.PessoaDoadora.IgnoreQueryFilters().OrderBy(p => p.Nome).ToListAsync();
 
-            int totalItems = await applicationDbContext.CountAsync();
-            int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            //int totalItems = await applicationDbContext.CountAsync();
+            //int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
-            var paginado = await applicationDbContext
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            //var paginado = await applicationDbContext
+            //    .Skip((page - 1) * pageSize)
+            //    .Take(pageSize)
+            //    .ToListAsync();
 
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = totalPages;
-
-            return View(paginado);
+            return View(pessoas);
         }
 
 
@@ -166,6 +164,7 @@ namespace PetDiverse.Controllers
             var pessoaDoadoraCadastroViewModel = new PessoaDoadoraCadastroViewModel
             {
                 Id = pessoaDoadora.Id,
+                IdUsuario = pessoaDoadora.IdUsuario,
                 Nome = pessoaDoadora.Nome,
                 IdBairro = pessoaDoadora.IdBairro,
                 TipoFormaContato = pessoaDoadora.FormasContato.Select(fc => fc.TipoFormaContato).ToList(),
@@ -377,6 +376,12 @@ namespace PetDiverse.Controllers
         private bool PessoaDoadoraExists(int id)
         {
             return _context.PessoaDoadora.Any(e => e.Id == id);
+        }
+
+        [EnableQuery]
+        public IQueryable<PessoaDoadora> Get()
+        {
+            return _context.PessoaDoadora;
         }
     }
 }

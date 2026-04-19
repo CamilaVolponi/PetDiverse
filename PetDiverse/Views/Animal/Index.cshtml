@@ -16,7 +16,7 @@
         <label for="mostrarAdotados" class="form-check-label">Mostrar adotados</label>
     </div>
 </div>
-<table class="table">
+<table class="table" id="tabelaAnimais">
     <thead>
         <tr>
             <th>
@@ -108,63 +108,41 @@
     </tbody>
 </table>
 
-<p class="text-center">
-    Página @ViewBag.CurrentPage de @ViewBag.TotalPages
-</p>
-<nav>
-    <ul class="pagination pagination-roxo justify-content-center">
-        <!-- ANTERIOR -->
-        <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-            <a class="page-link"
-               asp-action="Index"
-               asp-route-page="@(ViewBag.CurrentPage - 1)">
-                « Anterior
-            </a>
-        </li>
-        @{
-            int startPage = Math.Max(1, ViewBag.CurrentPage - 2);
-            int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
-        }
-        @for (int i = startPage; i <= endPage; i++)
-        {
-            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
-            </li>
-        }
-        <!-- PRÓXIMO -->
-        <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
-            <a class="page-link"
-               asp-action="Index"
-               asp-route-page="@(ViewBag.CurrentPage + 1)">
-                Próximo »
-            </a>
-        </li>
-    </ul>
-</nav>
+@section Scripts {    
+    <script>
+        $(document).ready(function () {
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
-<script>
-    $(document).ready(function () {
-
-        // Esconde adotados por padrão
-        $(".animal-row[data-adotado='true']").hide();
-
-        // Checkbox mostra/esconde adotados
-        $("#mostrarAdotados").change(function () {
-            if ($(this).is(":checked")) {
-                $(".animal-row[data-adotado='true']").show();
-            } else {
-                $(".animal-row[data-adotado='true']").hide();
-            }
-        });
-
-        // Botão "Foi adotado"
-        $(".btn-adocao").click(function () {
-            $.post('/Animal/Adotado', { id: $(this).attr("animal-id") }, function () {
-                window.location.reload();
+            var table = $("#tabelaAnimais").DataTable({
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
+                },
+                drawCallback: function () {
+                    $(".dt-paging .pagination").addClass("pagination-roxo");
+                },
+                initComplete: function () {
+                    $(".dt-paging .pagination").addClass("pagination-roxo");
+                }
             });
-        });
 
-    });
-</script>
+            // Filtro de adotados
+            $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                var mostrar = $("#mostrarAdotados").is(":checked");
+                var row = table.row(dataIndex).node();
+                var adotado = $(row).data("adotado") === true;
+                return mostrar || !adotado;
+            });
+
+            $("#mostrarAdotados").change(function () {
+                table.draw();
+            });
+
+            // Botão "Foi adotado"
+            $(".btn-adocao").click(function () {
+                $.post('/Animal/Adotado', { id: $(this).attr("animal-id") }, function () {
+                    window.location.reload();
+                });
+            });
+
+        });
+    </script>
+}

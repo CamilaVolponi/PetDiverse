@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OData.Edm;
+using Microsoft.OData.ModelBuilder;
 using PetDiverse.Data;
 using PetDiverse.Models;
 using PetDiverse.Uteis.Middlewares;
@@ -24,7 +27,10 @@ builder.Services.AddControllersWithViews(options =>
         .RequireAuthenticatedUser()
         .Build();
     options.Filters.Add(new AuthorizeFilter(policy)); // Aplica para todas as controllers
-});
+}).AddOData(options =>
+    options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(10)
+           .AddRouteComponents("odata",GetEdmModel())
+            );
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfile));
 
@@ -59,3 +65,11 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+static IEdmModel GetEdmModel()
+{
+    var builder = new ODataConventionModelBuilder();
+    builder.EntitySet<Animal>("Animal");
+    builder.EntitySet<PessoaDoadora>("PessoaDoadora");
+    return builder.GetEdmModel();
+}

@@ -43,7 +43,9 @@ namespace PetDiverse.Models
         public string RedeSocial { get; set; }
         [Required(ErrorMessage = "Campo Obrigatório")]
         [DisplayName("Tipo de pessoa")]
-        public TipoPessoaCadastro? TipoPessoaCadastro { get; set; }  
+        public TipoPessoaCadastro? TipoPessoaCadastro { get; set; }
+
+        public string IdUsuario { get; set; }
 
         public bool TelaAdmin; 
     }

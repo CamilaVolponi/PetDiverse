@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
 using System;
@@ -21,22 +22,11 @@ namespace PetDiverse.Controllers
 
         [Authorize(Roles = "ADMIN")]
         // GET: Estado
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 10; // Quantidade de itens por página
-
             var query = _context.Estado
                 .OrderBy(b => b.Nome);
-
-            var totalItems = await query.CountAsync();
-
-            var estados = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            var estados = await _context.Estado.OrderBy(b => b.Nome).ToListAsync();
 
             return View(estados);
         }
@@ -175,6 +165,12 @@ namespace PetDiverse.Controllers
         private bool EstadoExists(int id)
         {
             return _context.Estado.Any(e => e.Id == id);
+        }
+
+        [EnableQuery]
+        public IQueryable<Estado> Get()
+        {
+            return _context.Estado;
         }
     }
 }

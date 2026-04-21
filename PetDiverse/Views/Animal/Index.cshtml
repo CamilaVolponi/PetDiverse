@@ -1,6 +1,4 @@
-﻿@model IEnumerable<PetDiverse.Data.Animal>
-
-@{
+﻿@{
     ViewData["Title"] = "Index";
     bool isAdmin = User.IsInRole("ADMIN");
 }
@@ -51,67 +49,11 @@
             </th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr class="animal-row" data-adotado="@item.Adotado.ToString().ToLower()">
-            <td>
-                <a class="link-roxo" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Nome)</a>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Idade) @item.ContagemIdade.ToString().ToLower()
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SexoBiologico)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Porte)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TipoAnimal.Descricao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Raca.Descricao)
-            </td>
-            @if (User.IsInRole("ADMIN"))
-            {
-                <td>
-                    <a class="link-roxo" asp-controller="PessoaDoadora" asp-action="Details" asp-route-id="@item.PessoaDoadora.Id">@item.PessoaDoadora?.Nome</a>
-                </td>
-            }
-            <td>
-                @if (item.Adotado)
-                {
-                    <span>Adotado</span>
-                }
-                else
-                {
-                    <span>Ainda não foi adotado</span>
-                }
-            </td>
-            <td>
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_@item.Id">
-                        <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                        <a class="dropdown-item" asp-controller="RegistroVacina" asp-route-idAnimal="@item.Id">Vacinas</a>
-                        <a class="dropdown-item" asp-controller="RegistroCirurgia" asp-route-idAnimal="@item.Id">Cirurgias</a>
-                        @if (!item.Adotado)
-                        {
-                            <button class="dropdown-item btn-adocao" animal-id="@item.Id">Foi adotado</button>
-                        }
-                        <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
-                    </div>
-                </div>
-            </td>
-        </tr>
-}
-    </tbody>
 </table>
 
 @section Scripts {    
     <script>
         $(document).ready(function () {
-
             var table = $("#tabelaAnimais").DataTable({
                 language: {
                     url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
@@ -121,26 +63,126 @@
                 },
                 initComplete: function () {
                     $(".dt-paging .pagination").addClass("pagination-roxo");
+                },
+                // Ativa o processamento no servidor
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    url: "/odata/Animal",
+                    type: "GET",
+                    // OData precisa desse parâmetro para retornar o total de linhas
+                    data: function (d) {
+                        var params = {
+                            "$count": "true",
+                            "$skip": d.start,
+                            "$top": d.length,
+                            "$expand": "TipoAnimal,Raca,PessoaDoadora",
+                        };
+
+                        // Lógica de Filtro Combinada
+                        var filtros = [];
+
+                        filtros.push("Adotado eq "+$('#mostrarAdotados').is(':checked'));
+
+                        // Se o usuário digitou algo na busca do DataTable
+                        if (d.search.value) {
+                            filtros.push("contains(Nome, '" + d.search.value + "')");
+                        }
+
+                        // Une os filtros com 'and' para o OData (ex: "Adotado eq true and contains(...)")
+                        if (filtros.length > 0) {
+                            params["$filter"] = filtros.join(" and ");
+                        }
+
+                        return params;
+                    },
+                    dataSrc: "value",
+                    dataFilter: function (data) {
+                        var json = jQuery.parseJSON(data);
+                        // O @@ escapa o caractere para o Razor não dar erro
+                        json.recordsTotal = json["@@odata.count"];
+                        json.recordsFiltered = json["@@odata.count"];
+                        return JSON.stringify(json);
+                    }
+                },  
+                columns: [
+                    { data: "Nome",
+                        render: function (data, type, row) {
+                            let link = `<a class="link-roxo" href="/Animal/Details?id=${row.Id}">${data}</a>`;
+                            return link;
+                        }
+                    },
+                    { data: "Idade" },
+                    { data: "SexoBiologico" },
+                    { data: "Porte" },
+                    {
+                        data: "TipoAnimal.Descricao", 
+                        defaultContent: "Não informada" 
+                    },
+                    {
+                        data: "Raca.Descricao", 
+                        defaultContent: "Não informada" 
+                    },
+                    @if (User.IsInRole("ADMIN")){
+                        <text>
+                            {
+                                data: "PessoaDoadora.Nome",
+                                render: function (data, type, row) {
+                                    let link = `<a class="link-roxo" href="/PessoaDoadora/Details?id=${row.IdPessoaDoadora}">${data}</a>`;
+                                    return link;
+                                }
+                            },
+                        </text>
+                    }
+                    {
+                        data: "Adotado",
+                        render: function(data) {
+                            return data ? "Sim" : "Não";
+                        }
+                    },
+                    {
+                        data: null, // Não vem de um campo específico, usamos o objeto inteiro
+                        orderable: false,
+                        render: function (data, type, row) {
+                            // 'row' contém todos os dados do animal, inclusive o Id e se está Adotado
+
+                            let dropdown = `
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_${row.Id}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i> </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_${row.Id}">
+                                    <a class="dropdown-item" href="/Animal/Edit/${row.Id}">Editar</a>
+                                    <a class="dropdown-item" href="/RegistroVacina?idAnimal=${row.Id}">Vacinas</a>
+                                    <a class="dropdown-item" href="/RegistroCirurgia?idAnimal=${row.Id}">Cirurgias</a>
+
+                                    ${!row.Adotado ?
+                                        `<button class="dropdown-item btn-adocao" data-id="${row.Id}">Foi adotado</button>` :
+                                        ''
+                                    }
+
+                                    <a class="dropdown-item text-danger" href="/Animal/Delete/${row.Id}">Excluir</a>
+                                </div>
+                            </div>`;
+
+                            return dropdown;
+                        }
+                    }
+                ],
+                // Ajuste opcional para converter os parâmetros do DataTable
+                // para a sintaxe do OData ($skip e $top)
+                preXhr: function (settings, data) {
+                    data.$skip = data.start;
+                    data.$top = data.length;
+                    data.$expand = "TipoAnimal";
+
+                    // Opcional: Adiciona busca se houver texto no campo Search
+                    if (data.search.value) {
+                        data.$filter = "contains(Nome, '" + data.search.value + "')";
+                    }
                 }
             });
-
-            // Filtro de adotados
-            $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-                var mostrar = $("#mostrarAdotados").is(":checked");
-                var row = table.row(dataIndex).node();
-                var adotado = $(row).data("adotado") === true;
-                return mostrar || !adotado;
-            });
-
-            $("#mostrarAdotados").change(function () {
-                table.draw();
-            });
-
-            // Botão "Foi adotado"
-            $(".btn-adocao").click(function () {
-                $.post('/Animal/Adotado', { id: $(this).attr("animal-id") }, function () {
-                    window.location.reload();
-                });
+            $('#mostrarAdotados').on('change', function() {
+                table.ajax.reload(); // Isso faz o DataTables chamar o 'data' acima novamente
             });
 
         });

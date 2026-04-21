@@ -23,32 +23,14 @@ namespace PetDiverse.Controllers
             _mapper = mapper;
         }
         // GET: RegistroVacina
-        public async Task<IActionResult> Index(int idAnimal, int page = 1)
+        public async Task<IActionResult> Index(int idAnimal)
         {
-            int pageSize = 10;
-
-            // Filtramos pelo animal específico e incluímos o relacionamento com o tipo de vacina
             var query = _context.RegistroVacina
                 .Include(r => r.TipoVacina)
                 .Where(r => r.IdAnimal == idAnimal)
                 .OrderByDescending(r => r.DataRegistro);
 
-            var totalItems = await query.CountAsync();
-
-            var registros = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            // Dados de contexto do Animal
-            ViewData["NomeAnimal"] = _context.Animal.Find(idAnimal)?.Nome;
-            ViewData["IdAnimal"] = idAnimal;
-
-            // Dados de paginação
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-            return View(registros);
+            return View(query);
         }
 
         // GET: RegistroVacina/Details/5

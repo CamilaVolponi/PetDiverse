@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
 using PetDiverse.Models;
@@ -25,25 +26,13 @@ namespace PetDiverse.Controllers
 
         [Authorize(Roles = "ADMIN")]
         // GET: Cidade
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 10;
-
             var query = _context.Cidade
                 .Include(c => c.Estado)
                 .OrderBy(c => c.Nome);
 
-            var totalItems = await query.CountAsync();
-
-            var cidades = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-            return View(cidades);
+            return View(query);
         }
 
         [Authorize(Roles = "ADMIN")]
@@ -198,6 +187,12 @@ namespace PetDiverse.Controllers
         private bool CidadeExists(int id)
         {
             return _context.Cidade.Any(e => e.Id == id);
+        }
+
+        [EnableQuery]
+        public IQueryable<Cidade> Get()
+        {
+            return _context.Cidade;
         }
     }
 }

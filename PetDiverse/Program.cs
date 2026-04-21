@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.OData;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 using PetDiverse.Data;
+using PetDiverse.Data.Enuns;
 using PetDiverse.Models;
 using PetDiverse.Uteis.Middlewares;
 
@@ -69,7 +71,12 @@ app.Run();
 static IEdmModel GetEdmModel()
 {
     var builder = new ODataConventionModelBuilder();
+    builder.EnumType<ContagemIdade>();
+    builder.EnumType<SexoBiologico>();
+    builder.EnumType<PorteAnimal>();
     builder.EntitySet<Animal>("Animal");
+    builder.EntitySet<TipoAnimal>("TipoAnimal");
+    builder.EntitySet<Raca>("Raca");
     builder.EntitySet<PessoaDoadora>("PessoaDoadora");
     return builder.GetEdmModel();
 }

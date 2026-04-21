@@ -30,29 +30,7 @@ namespace PetDiverse.Controllers
         // GET: Animal
         public async Task<IActionResult> Index()
         {
-            if (User.IsInRole("ADMIN"))
-            {
-                var todosAnimais = await _context.Animal
-                    .Include(a => a.TipoAnimal)
-                    .Include(a => a.Raca)
-                    .Include(a => a.PessoaDoadora)
-                    .OrderBy(a => a.Nome)
-                    .ToListAsync();
-
-                return View(todosAnimais);
-            }
-
-            var pessoaDoadora = await _context.PessoaDoadora
-                .FirstAsync(p => p.IdUsuario == User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            var animaisDoador = await _context.Animal
-                .Where(a => a.IdPessoaDoadora == pessoaDoadora.Id)
-                .Include(a => a.TipoAnimal)
-                .Include(a => a.Raca)
-                .OrderBy(a => a.Nome)
-                .ToListAsync();
-
-            return View(animaisDoador);
+            return View();
         }
 
         // GET: Animal/Details/5
@@ -351,7 +329,15 @@ namespace PetDiverse.Controllers
         [EnableQuery] 
         public IQueryable<Animal> Get()
         {
-            return _context.Animal;
+            var pessoaDoadora = _context.PessoaDoadora.FirstOrDefault(p => p.IdUsuario == User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if(User.IsInRole("ADMIN")){
+                return _context.Animal;
+            }
+            else
+            {
+                return _context.Animal.Where(a=>a.IdPessoaDoadora==pessoaDoadora.Id);
+            }
+                
         }
     }
 }

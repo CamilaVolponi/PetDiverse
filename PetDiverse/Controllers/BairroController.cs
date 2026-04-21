@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
 using PetDiverse.Models;
@@ -25,25 +26,13 @@ namespace PetDiverse.Controllers
 
         [Authorize(Roles = "ADMIN")]
         // GET: Bairro
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 10;
-
             var query = _context.Bairro
                 .Include(b => b.Cidade)
                 .OrderBy(b => b.Nome);
 
-            var totalItems = await query.CountAsync();
-
-            var bairros = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-            return View(bairros);
+            return View(query);
         }
 
         [Authorize(Roles = "ADMIN")]
@@ -198,6 +187,12 @@ namespace PetDiverse.Controllers
         private bool BairroExists(int id)
         {
             return _context.Bairro.Any(e => e.Id == id);
+        }
+
+        [EnableQuery]
+        public IQueryable<Bairro> Get()
+        {
+            return _context.Bairro;
         }
     }
 }

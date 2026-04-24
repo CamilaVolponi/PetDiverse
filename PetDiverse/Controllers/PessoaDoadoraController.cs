@@ -31,20 +31,7 @@ namespace PetDiverse.Controllers
         // GET: PessoaDoadora
         public async Task<IActionResult> Index()
         {
-            //int pageSize = 10;
-
-            var applicationDbContext = _context.PessoaDoadora.Include(p => p.Bairro).OrderBy(p => p.Nome);
-            var pessoas = await _context.PessoaDoadora.IgnoreQueryFilters().OrderBy(p => p.Nome).ToListAsync();
-
-            //int totalItems = await applicationDbContext.CountAsync();
-            //int totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
-
-            //var paginado = await applicationDbContext
-            //    .Skip((page - 1) * pageSize)
-            //    .Take(pageSize)
-            //    .ToListAsync();
-
-            return View(pessoas);
+            return View();
         }
 
 

@@ -10,77 +10,88 @@
     <a asp-action="Create" class="btn btn-roxo">+ Adicionar</a>
 </p>
 
-<table class="table">
+<table class="table" id="tabelaTipoAnimais">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Descricao)
-            </th>
-            <th>
-                Ações
-            </th>
+            <th>Descrição</th>
+            <th>Ações</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Descricao)
-                </td>
-                <td>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_@item.Id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_@item.Id">
-                            <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                            <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
 </table>
 
-<p class="text-center">
-    Página @ViewBag.CurrentPage de @ViewBag.TotalPages
-</p>
-
-<nav>
-    <ul class="pagination pagination-roxo justify-content-center">
-
-        <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-            <a class="page-link"
-               asp-action="Index"
-               asp-route-page="@(ViewBag.CurrentPage - 1)">
-                « Anterior
-            </a>
-        </li>
-
-        @{
-            int startPage = Math.Max(1, ViewBag.CurrentPage - 2);
-            int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
-        }
-
-        @for (int i = startPage; i <= endPage; i++)
-        {
-            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
-            </li>
-        }
-
-        <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages || ViewBag.TotalPages == 0 ? "disabled" : "")">
-            <a class="page-link"
-               asp-action="Index"
-               asp-route-page="@(ViewBag.CurrentPage + 1)">
-                Próximo »
-            </a>
-        </li>
-
-    </ul>
-</nav>
-
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $("#tabelaTipoAnimais").DataTable({
+                order: [[0, "asc"]],
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
+                },
+                lengthChange: false,
+                pageLength: 10,
+                drawCallback: function () {
+                    $(".dt-paging .pagination").addClass("pagination-roxo");
+                },
+                initComplete: function () {
+                    $(".dt-paging .pagination").addClass("pagination-roxo");
+                },
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    url: "/odata/TipoAnimal",
+                    type: "GET",
+                    data: function (d) {
+                        var params = {
+                            "$count": "true",
+                            "$skip": d.start,
+                            "$top": d.length,
+                        };
+
+                        var colunas = ["Descricao"];
+                        if (d.order && d.order.length > 0) {
+                            var colIdx = d.order[0].column;
+                            var dir = d.order[0].dir;
+                            var colName = colunas[colIdx];
+                            if (colName) {
+                                params["$orderby"] = colName + " " + dir;
+                            }
+                        }
+
+                        if (d.search.value) {
+                            params["$filter"] = "contains(Descricao, '" + d.search.value + "')";
+                        }
+
+                        return params;
+                    },
+                    dataSrc: "value",
+                    dataFilter: function (data) {
+                        var json = jQuery.parseJSON(data);
+                        json.recordsTotal = json["@@odata.count"];
+                        json.recordsFiltered = json["@@odata.count"];
+                        return JSON.stringify(json);
+                    }
+                },
+                columns: [
+                    { data: "Descricao" },
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            let dropdown = `
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_${row.Id}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_${row.Id}">
+                                    <a class="dropdown-item" href="/TipoAnimal/Edit/${row.Id}">Editar</a>
+                                    <a class="dropdown-item text-danger" href="/TipoAnimal/Delete/${row.Id}">Excluir</a>
+                                </div>
+                            </div>`;
+                            return dropdown;
+                        }
+                    }
+                ]
+            });
+        });
+    </script>
 }

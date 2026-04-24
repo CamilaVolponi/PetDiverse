@@ -28,11 +28,7 @@ namespace PetDiverse.Controllers
         // GET: Racas
         public async Task<IActionResult> Index()
         {
-            var query = _context.Raca
-                .Include(r => r.TipoAnimal)
-                .OrderBy(r => r.Descricao);
-
-            return View(query);
+            return View();
         }
 
         [Authorize(Roles = "ADMIN")]

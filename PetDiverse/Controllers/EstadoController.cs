@@ -24,11 +24,7 @@ namespace PetDiverse.Controllers
         // GET: Estado
         public async Task<IActionResult> Index()
         {
-            var query = _context.Estado
-                .OrderBy(b => b.Nome);
-            var estados = await _context.Estado.OrderBy(b => b.Nome).ToListAsync();
-
-            return View(estados);
+            return View();
         }
 
         [Authorize(Roles = "ADMIN")]

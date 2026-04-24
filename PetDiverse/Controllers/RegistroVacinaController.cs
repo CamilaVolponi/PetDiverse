@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
 using PetDiverse.Models;
@@ -25,12 +26,10 @@ namespace PetDiverse.Controllers
         // GET: RegistroVacina
         public async Task<IActionResult> Index(int idAnimal)
         {
-            var query = _context.RegistroVacina
-                .Include(r => r.TipoVacina)
-                .Where(r => r.IdAnimal == idAnimal)
-                .OrderByDescending(r => r.DataRegistro);
-
-            return View(query);
+            var animal = await _context.Animal.FindAsync(idAnimal);
+            ViewData["IdAnimal"] = idAnimal;
+            ViewData["NomeAnimal"] = animal?.Nome;
+            return View();
         }
 
         // GET: RegistroVacina/Details/5
@@ -178,6 +177,12 @@ namespace PetDiverse.Controllers
         private bool RegistroVacinaExists(int id)
         {
             return _context.RegistroVacina.Any(e => e.Id == id);
+        }
+
+        [EnableQuery]
+        public IQueryable<RegistroVacina> Get()
+        {
+            return _context.RegistroVacina;
         }
     }
 }

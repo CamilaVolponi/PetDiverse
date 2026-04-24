@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
 using PetDiverse.Models;
@@ -26,25 +27,9 @@ namespace PetDiverse.Controllers
 
         [Authorize(Roles = "ADMIN")]
         // GET: TipoVacina
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 10; // Itens por página
-
-            var query = _context.TipoVacina
-                .Include(t => t.TipoAnimal)
-                .OrderBy(t => t.Descricao);
-
-            var totalItems = await query.CountAsync();
-
-            var tiposVacinas = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-            return View(tiposVacinas);
+            return View();
         }
 
         [Authorize(Roles = "ADMIN")]
@@ -193,6 +178,12 @@ namespace PetDiverse.Controllers
         private bool TipoVacinaExists(int id)
         {
             return _context.TipoVacina.Any(e => e.Id == id);
+        }
+
+        [EnableQuery]
+        public IQueryable<TipoVacina> Get()
+        {
+            return _context.TipoVacina;
         }
     }
 }

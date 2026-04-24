@@ -26,13 +26,10 @@ namespace PetDiverse.Controllers
         // GET: RegistroCirurgia
         public async Task<IActionResult> Index(int idAnimal)
         {
-            
-            var query = _context.RegistroCirurgia
-                .Include(r => r.TipoCirurgia)
-                .Where(r => r.IdAnimal == idAnimal)
-                .OrderByDescending(r => r.DataRegistro);
-
-            return View(query);
+            var animal = await _context.Animal.FindAsync(idAnimal);
+            ViewData["IdAnimal"] = idAnimal;
+            ViewData["NomeAnimal"] = animal?.Nome;
+            return View();
         }
 
         // GET: RegistroCirurgia/Details/5

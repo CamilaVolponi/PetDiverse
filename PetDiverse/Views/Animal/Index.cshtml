@@ -4,49 +4,31 @@
 }
 <h1 class="text-center">@(isAdmin ? "Todos os animais" : "Meus animais")</h1>
 <div class="row">
-    <div class="col-md-10">
+    <div class="col-md-9">
         <p>
             <a asp-action="Create" class="btn btn-roxo">+ Adicionar</a>
         </p>
     </div>
-    <div class="col-md-2 d-flex align-items-center">
+    <div class="col-md-3 d-flex d-flex align-items-center justify-content-end">
         <input type="checkbox" id="mostrarAdotados" class="form-check-input me-2" />
-        <label for="mostrarAdotados" class="form-check-label">Mostrar adotados</label>
+        <label for="mostrarAdotados" class="form-check-label">Mostrar também os adotados</label>
     </div>
 </div>
 <table class="table" id="tabelaAnimais">
     <thead>
         <tr>
-            <th>
-                Nome
-            </th>
-            <th>
-                Idade
-            </th>
-            <th>
-                Sexo biológico
-            </th>
-            <th>
-                Porte
-            </th>
-            <th>
-                Tipo de animal
-            </th>
-            <th>
-                Raça
-            </th>
+            <th>Nome</th>
+            <th>Idade</th>
+            <th>Sexo biológico</th>
+            <th>Porte</th>
+            <th>Tipo de animal</th>
+            <th>Raça</th>
             @if (User.IsInRole("ADMIN"))
             {
-                <th>
-                    Doador
-                </th>
+                <th>Doador</th>
             }
-            <th>
-                Adotado
-            </th>
-            <th>
-                Ações
-            </th>
+            <th>Adotado</th>
+            <th>Ações</th>
         </tr>
     </thead>
 </table>
@@ -55,9 +37,12 @@
     <script>
         $(document).ready(function () {
             var table = $("#tabelaAnimais").DataTable({
+                order: [[0, "asc"]],
                 language: {
                     url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
                 },
+                lengthChange: false,  // Remove o "Exibir X resultados por página"
+                pageLength: 10,
                 drawCallback: function () {
                     $(".dt-paging .pagination").addClass("pagination-roxo");
                 },
@@ -79,10 +64,23 @@
                             "$expand": "TipoAnimal,Raca,PessoaDoadora",
                         };
 
+                        // Ordenação
+                        var colunas = ["Nome", "Idade", "SexoBiologico", "Porte", "TipoAnimal/Descricao", "Raca/Descricao", "PessoaDoadora/Nome", "Adotado"];
+                        if (d.order && d.order.length > 0) {
+                            var colIdx = d.order[0].column;
+                            var dir = d.order[0].dir;
+                            var colName = colunas[colIdx];
+                            if (colName) {
+                                params["$orderby"] = colName + " " + dir;
+                            }
+                        }
+
                         // Lógica de Filtro Combinada
                         var filtros = [];
-
-                        filtros.push("Adotado eq "+$('#mostrarAdotados').is(':checked'));
+                               
+                        if (!$('#mostrarAdotados').is(':checked')) {
+                            filtros.push("Adotado eq false");
+                        }
 
                         // Se o usuário digitou algo na busca do DataTable
                         if (d.search.value) {
@@ -136,6 +134,7 @@
                     }
                     {
                         data: "Adotado",
+                        visible: false,  // esconde por padrão
                         render: function(data) {
                             return data ? "Sim" : "Não";
                         }
@@ -182,9 +181,14 @@
                 }
             });
             $('#mostrarAdotados').on('change', function() {
-                table.ajax.reload(); // Isso faz o DataTables chamar o 'data' acima novamente
+                table.column(7).visible($(this).is(':checked')); // ajusta o índice se não for admin
+                table.ajax.reload();
             });
-
+            $('#mostrarAdotados').on('change', function() {
+                var colIdx = @(User.IsInRole("ADMIN") ? 7 : 6);
+                table.column(colIdx).visible($(this).is(':checked'));
+                table.ajax.reload();
+            });
         });
     </script>
 }

@@ -14,55 +14,100 @@
 <table class="table" id="tabelaRegistrosVacinas">
     <thead>
         <tr>
-            <th>
-                Data da vacina
-            </th>
-            <th>
-                Vacina
-            </th>
-            <th>
-                Ações
-            </th>
+            <th>Data da vacina</th>
+            <th>Vacina</th>
+            <th>Ações</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @item.DataRegistro.ToString("dd/MM/yyyy")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TipoVacina.Descricao)
-                </td>
-                <td>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_@item.Id" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_@item.Id">
-                            <a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                            <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
 </table>
 
 
 @section Scripts {
     <script>
         $(document).ready(function () {
+            var idAnimal = @idAnimal;
+
             $("#tabelaRegistrosVacinas").DataTable({
+                order: [[0, "desc"]],
                 language: {
                     url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
                 },
+                lengthChange: false,
+                pageLength: 10,
                 drawCallback: function () {
                     $(".dt-paging .pagination").addClass("pagination-roxo");
                 },
                 initComplete: function () {
                     $(".dt-paging .pagination").addClass("pagination-roxo");
-                }
+                },
+                serverSide: true,
+                processing: true,
+                ajax: {
+                    url: "/odata/RegistroVacina",
+                    type: "GET",
+                    data: function (d) {
+                        var params = {
+                            "$count": "true",
+                            "$skip": d.start,
+                            "$top": d.length,
+                            "$expand": "TipoVacina",
+                            "$filter": "IdAnimal eq " + idAnimal,
+                        };
+
+                        var colunas = ["DataRegistro", "TipoVacina/Descricao"];
+                        if (d.order && d.order.length > 0) {
+                            var colIdx = d.order[0].column;
+                            var dir = d.order[0].dir;
+                            var colName = colunas[colIdx];
+                            if (colName) {
+                                params["$orderby"] = colName + " " + dir;
+                            }
+                        }
+
+                        if (d.search.value) {
+                            params["$filter"] += " and contains(TipoVacina/Descricao, '" + d.search.value + "')";
+                        }
+
+                        return params;
+                    },
+                    dataSrc: "value",
+                    dataFilter: function (data) {
+                        var json = jQuery.parseJSON(data);
+                        json.recordsTotal = json["@@odata.count"];
+                        json.recordsFiltered = json["@@odata.count"];
+                        return JSON.stringify(json);
+                    }
+                },
+                columns: [
+                    {
+                        data: "DataRegistro",
+                        render: function (data) {
+                            var date = new Date(data);
+                            return date.toLocaleDateString("pt-BR");
+                        }
+                    },
+                    {
+                        data: "TipoVacina.Descricao",
+                        defaultContent: "Não informado"
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            let dropdown = `
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_${row.Id}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_${row.Id}">
+                                    <a class="dropdown-item" href="/RegistroVacina/Edit/${row.Id}">Editar</a>
+                                    <a class="dropdown-item text-danger" href="/RegistroVacina/Delete/${row.Id}">Excluir</a>
+                                </div>
+                            </div>`;
+                            return dropdown;
+                        }
+                    }
+                ]
             });
         });
     </script>

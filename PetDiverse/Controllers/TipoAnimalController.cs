@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using PetDiverse.Data;
 using System;
@@ -21,24 +22,9 @@ namespace PetDiverse.Controllers
 
         [Authorize(Roles = "ADMIN")]
         // GET: TipoAnimal
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index()
         {
-            int pageSize = 10; // Itens por página
-
-            var query = _context.TipoAnimal
-                .OrderBy(t => t.Descricao);
-
-            var totalItems = await query.CountAsync();
-
-            var tiposAnimais = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-            return View(tiposAnimais);
+            return View();
         }
 
         [Authorize(Roles = "ADMIN")]
@@ -175,6 +161,11 @@ namespace PetDiverse.Controllers
         private bool TipoAnimalExists(int id)
         {
             return _context.TipoAnimal.Any(e => e.Id == id);
+        }
+        [EnableQuery]
+        public IQueryable<TipoAnimal> Get()
+        {
+            return _context.TipoAnimal;
         }
     }
 }

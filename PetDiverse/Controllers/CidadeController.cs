@@ -28,11 +28,7 @@ namespace PetDiverse.Controllers
         // GET: Cidade
         public async Task<IActionResult> Index()
         {
-            var query = _context.Cidade
-                .Include(c => c.Estado)
-                .OrderBy(c => c.Nome);
-
-            return View(query);
+            return View();
         }
 
         [Authorize(Roles = "ADMIN")]

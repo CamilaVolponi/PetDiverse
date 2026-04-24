@@ -75,8 +75,16 @@ static IEdmModel GetEdmModel()
     builder.EnumType<SexoBiologico>();
     builder.EnumType<PorteAnimal>();
     builder.EntitySet<Animal>("Animal");
-    builder.EntitySet<TipoAnimal>("TipoAnimal");
-    builder.EntitySet<Raca>("Raca");
     builder.EntitySet<PessoaDoadora>("PessoaDoadora");
+    builder.EnumType<TipoPessoaCadastro>();
+    builder.EntitySet<Estado>("Estado");
+    builder.EntitySet<Cidade>("Cidade");
+    builder.EntitySet<Bairro>("Bairro");
+    builder.EntitySet<Raca>("Raca");
+    builder.EntitySet<TipoAnimal>("TipoAnimal");
+    builder.EntitySet<TipoCirurgia>("TipoCirurgia");
+    builder.EntitySet<TipoVacina>("TipoVacina");
+    builder.EntitySet<RegistroCirurgia>("RegistroCirurgia");
+    builder.EntitySet<RegistroVacina>("RegistroVacina");
     return builder.GetEdmModel();
 }

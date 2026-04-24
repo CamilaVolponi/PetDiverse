@@ -62,6 +62,39 @@
     </div>
 </div>
 
+@{
+    var animaisNaoAdotados = ViewData["AnimaisNaoAdotados"] as List<PetDiverse.Data.Animal>;
+}
+@if (animaisNaoAdotados != null && animaisNaoAdotados.Any())
+{
+    <div class="alert alert-warning mb-3">
+        <strong>Atenção:</strong> os animais abaixo não foram adotados e serão <strong>excluídos permanentemente</strong> ao desativar este usuário.
+    </div>
+    <table class="table table-sm mb-4">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Raça</th>
+                <th>Porte</th>
+                <th>Sexo biológico</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var animal in animaisNaoAdotados)
+            {
+                <tr>
+                    <td>@animal.Nome</td>
+                    <td>@animal.TipoAnimal?.Descricao</td>
+                    <td>@animal.Raca?.Descricao</td>
+                    <td>@animal.Porte</td>
+                    <td>@animal.SexoBiologico</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 <form asp-action="Delete">
     <input type="hidden" asp-for="Id" />
     <a asp-action="Index" class="btn btn-cinza">Voltar a lista</a>

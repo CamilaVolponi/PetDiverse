@@ -9,7 +9,7 @@
     </div>
     <form method="get" asp-action="Index" asp-controller="" class="row g-2 mb-5 align-items-stretch">
         <div class="col-lg-2 col-md-4 col-sm-6">
-            <select name="IdTipoAnimal" class="form-control" asp-items="ViewBag.IdTipoAnimal"><option value="">Selecione um tipo de animal</option></select>
+            <select id="IdTipoAnimal" name="IdTipoAnimal" class="form-control" asp-items="ViewBag.IdTipoAnimal"><option value="">Selecione um tipo de animal</option></select>
         </div>
         <div class="col-lg-2 col-md-4 col-sm-6">
             <select id="IdEstado" name="IdEstado" class="form-control" asp-items="ViewBag.IdEstado"><option value="">Selecione um estado</option></select>
@@ -92,58 +92,54 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
-        $(document).ready(function(){
-            $("#IdEstado").change(function(){
+        $(document).ready(function () {
+            // cascata independente do Select2
+            function carregarCidades(idEstado) {
                 var cidadeSelect = $('#IdCidade');
-
-                cidadeSelect.empty();
-                cidadeSelect.append('<option value="">Carregando...</option>');
-                if ($(this).val()) {
-                    $.get('/Home/RecuperarCidades', { id: $(this).val() }, function (data) {
-                        cidadeSelect.empty();
-                        cidadeSelect.append('<option>Selecione uma cidade</option>');
-                        $.each(data, function (index, item) {
-                            cidadeSelect.append($('<option>', {
-                                value: item.value,
-                                text: item.text
-                            }));
-                        });
-                    });
-                } else {
-                    cidadeSelect.empty();
-                    cidadeSelect.append('<option>Selecione uma cidade</option>');
-                }
-            })
-
-            $("#IdCidade").change(function(){
                 var bairroSelect = $('#IdBairro');
-
-                bairroSelect.empty();
-                bairroSelect.append('<option value="">Carregando...</option>');
-
-                if ($(this).val()) {
-                    $.get('/Home/RecuperarBairros', { id: $(this).val() }, function (data) {
-                        bairroSelect.empty();
-                        bairroSelect.append('<option>Selecione um bairro</option>');
-                        $.each(data, function (index, item) {
-                            bairroSelect.append($('<option>', {
-                                value: item.value,
-                                text: item.text
-                            }));
+                cidadeSelect.empty().append('<option value="">Selecione uma cidade</option>');
+                bairroSelect.empty().append('<option value="">Selecione um bairro</option>');
+                if (idEstado) {
+                    $.get('/Home/RecuperarCidades', { id: idEstado }, function (data) {
+                        $.each(data, function (i, item) {
+                            cidadeSelect.append(new Option(item.text, item.value));
                         });
+                        if ($.fn.select2) cidadeSelect.trigger('change.select2');
+                    });
+                }
+                if ($.fn.select2) {
+                    cidadeSelect.trigger('change.select2');
+                    bairroSelect.trigger('change.select2');
+                }
+            }
+
+            function carregarBairros(idCidade) {
+                var bairroSelect = $('#IdBairro');
+                bairroSelect.empty().append('<option value="">Selecione um bairro</option>');
+                if (idCidade) {
+                    $.get('/Home/RecuperarBairros', { id: idCidade }, function (data) {
+                        $.each(data, function (i, item) {
+                            bairroSelect.append(new Option(item.text, item.value));
+                        });
+                        if ($.fn.select2) bairroSelect.trigger('change.select2');
                     });
                 } else {
-                    bairroSelect.empty();
-                    bairroSelect.append('<option>Selecione uma bairro</option>');
+                    if ($.fn.select2) bairroSelect.trigger('change.select2');
                 }
-            })
+            }
 
+            // events de cascata usando change (funciona com e sem Select2)
+            $('#IdEstado').on('change', function () { carregarCidades($(this).val()); });
+            $('#IdCidade').on('change', function () { carregarBairros($(this).val()); });
+
+            // inicializa Select2
+            var s2 = { allowClear: true, width: '100%', minimumResultsForSearch: 0 };
+            $('#IdTipoAnimal').select2($.extend({}, s2, { placeholder: 'Tipo de animal' }));
+            $('#IdEstado').select2($.extend({}, s2, { placeholder: 'Estado' }));
+            $('#IdCidade').select2($.extend({}, s2, { placeholder: 'Cidade' }));
+            $('#IdBairro').select2($.extend({}, s2, { placeholder: 'Bairro' }));
         });
     </script>
-
 }

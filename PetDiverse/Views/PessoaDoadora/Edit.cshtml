@@ -15,16 +15,52 @@ else
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PetDiverse.styles.css" asp-append-version="true" />
+    @if (!Model.TelaAdmin)
+    {
+        <style>body { margin: 0; overflow-x: hidden; }</style>
+    }
 </head>
 
 @if (Model.TelaAdmin)
 {
     <div class="d-flex align-items-center gap-2">
         <h2>Dados do usuário</h2>
-        <a href="/Identity/Account/Manage/Email?idUsuario=@Model.IdUsuario" class="btn btn-roxo">Editar e-mail</a>
+        <button type="button" class="btn btn-roxo" data-bs-toggle="modal" data-bs-target="#modalEmail">Editar e-mail</button>
     </div>
 
     <hr />
+
+    @if (TempData["Sucesso"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Sucesso"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+    }
+
+    <div class="modal fade" id="modalEmail" tabindex="-1" aria-labelledby="modalEmailLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalEmailLabel">Alterar e-mail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <iframe id="iframeEmail"
+                            src="/Identity/Account/Manage/Email?idUsuario=@Model.IdUsuario"
+                            style="width:100%; border:none; display:block; min-height:280px;"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (!Model.TelaAdmin)
+{
+    <div id="alertaInline" class="alert alert-dismissible fade show d-none" role="alert">
+        <span id="alertaInlineMsg"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
 }
 
 <div class="row">
@@ -32,7 +68,9 @@ else
         <form asp-action="Edit" id="CreatePessoaDoadora" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="IdUsuario" />
             <input type="hidden" asp-for="TipoPessoaCadastro" />
+            <input type="hidden" asp-for="TelaAdmin" />
 
             <div class="form-floating mb-3">
                 <input asp-for="Nome" class="form-control" placeholder="Nome completo ou ONG" />
@@ -40,25 +78,26 @@ else
             </div>
 
             <!-- Pessoa Física -->
-            <div class="form-floating mb-3 pessoa-fisica">
+            @{ bool isFisica = Model.TipoPessoaCadastro == PetDiverse.Models.TipoPessoaCadastro.Fisica; }
+            <div class="form-floating mb-3 pessoa-fisica" style="@(!isFisica ? "display:none" : "")">
                 <input asp-for="CPF" class="form-control" placeholder="CPF" />
                 <label asp-for="CPF"></label>
             </div>
-            <div class="form-floating mb-3 pessoa-fisica">
+            <div class="form-floating mb-3 pessoa-fisica" style="@(!isFisica ? "display:none" : "")">
                 <input asp-for="DataNascimento" type="date" class="form-control" placeholder="Data de nascimento" />
                 <label asp-for="DataNascimento"></label>
             </div>
 
             <!-- Pessoa Jurídica -->
-            <div class="form-floating mb-3 pessoa-juridica">
+            <div class="form-floating mb-3 pessoa-juridica" style="@(isFisica ? "display:none" : "")">
                 <input asp-for="CNPJ" class="form-control" placeholder="CNPJ" />
                 <label asp-for="CNPJ"></label>
             </div>
-            <div class="form-floating mb-3 pessoa-juridica">
+            <div class="form-floating mb-3 pessoa-juridica" style="@(isFisica ? "display:none" : "")">
                 <input asp-for="RedeSocial" class="form-control" placeholder="Rede social" />
                 <label asp-for="RedeSocial"></label>
             </div>
-            <div class="form-floating mb-3 pessoa-juridica">
+            <div class="form-floating mb-3 pessoa-juridica" style="@(isFisica ? "display:none" : "")">
                 <input asp-for="Site" class="form-control" placeholder="Site" />
                 <label asp-for="Site"></label>
             </div>
@@ -127,6 +166,16 @@ else
 <script>
     $(document).ready(function () {
 
+        // Auto-resize do iframe do e-mail
+        var iframe = document.getElementById('iframeEmail');
+        if (iframe) {
+            iframe.addEventListener('load', function () {
+                try {
+                    this.style.height = this.contentDocument.body.scrollHeight + 20 + 'px';
+                } catch (e) {}
+            });
+        }
+
         // Mascara de telefone
         $('#Telefone').mask('(00) 00000-0000');
 
@@ -194,9 +243,30 @@ else
         });
 
         // executa ao carregar a página
-        const valorInicial = $("input[name='TipoPessoaCadastro']:checked").val() || $("#TipoPessoaCadastro").val();
-        if (valorInicial) {
-            atualizarCamposPessoa(valorInicial);
+        atualizarCamposPessoa('@Model.TipoPessoaCadastro');
+
+        @if (!Model.TelaAdmin)
+        {
+            <text>
+        // Submit via AJAX para evitar navegação dentro do iframe
+        $("#CreatePessoaDoadora").on("submit", function (e) {
+            e.preventDefault();
+            fetch(this.action, {
+                method: "POST",
+                headers: { "X-Requested-With": "XMLHttpRequest" },
+                body: new FormData(this)
+            })
+            .then(r => r.json())
+            .then(data => {
+                const alerta = document.getElementById("alertaInline");
+                const msg = document.getElementById("alertaInlineMsg");
+                alerta.classList.remove("d-none", "alert-success", "alert-danger");
+                alerta.classList.add(data.sucesso ? "alert-success" : "alert-danger");
+                msg.textContent = data.mensagem;
+                window.scrollTo(0, 0);
+            });
+        });
+            </text>
         }
 
         // validações condicionais

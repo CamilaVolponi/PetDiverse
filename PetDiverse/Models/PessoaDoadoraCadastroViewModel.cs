@@ -47,7 +47,7 @@ namespace PetDiverse.Models
 
         public string IdUsuario { get; set; }
 
-        public bool TelaAdmin; 
+        public bool TelaAdmin { get; set; }
     }
 
     public enum TipoPessoaCadastro

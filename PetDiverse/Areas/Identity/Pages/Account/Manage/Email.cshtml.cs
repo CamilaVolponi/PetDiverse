@@ -38,11 +38,10 @@ namespace PetDiverse.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public string Email { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public bool IsEmailConfirmed { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string IdUsuario { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -109,7 +108,9 @@ namespace PetDiverse.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnPostChangeEmailAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var user = string.IsNullOrEmpty(IdUsuario)
+                ? await _userManager.GetUserAsync(User)
+                : await _userManager.Users.FirstOrDefaultAsync(u => u.Id == IdUsuario);
             if (user == null)
                 return NotFound();
 
@@ -141,7 +142,7 @@ namespace PetDiverse.Areas.Identity.Pages.Account.Manage
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "E-mail alterado com sucesso.";
-            return RedirectToPage();
+            return RedirectToPage(new { idUsuario = IdUsuario });
         }
 
         public async Task<IActionResult> OnPostSendVerificationEmailAsync()

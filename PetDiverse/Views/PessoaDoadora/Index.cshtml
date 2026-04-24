@@ -1,6 +1,3 @@
-﻿@using Microsoft.AspNetCore.Identity
-@inject UserManager<IdentityUser> UserManager
-@model IEnumerable<PetDiverse.Data.PessoaDoadora>
 @{
     ViewData["Title"] = "Index";
 }
@@ -8,124 +5,110 @@
 
 <div class="d-flex justify-content-end mb-2">
     <input type="checkbox" id="mostrarExcluidos" class="form-check-input me-2" />
-    <label for="mostrarExcluidos" class="form-check-label">Mostrar excluídos</label>
+    <label for="mostrarExcluidos" class="form-check-label">Mostrar também os excluídos</label>
 </div>
 
 <table class="table" id="tabelaUsuarios">
     <thead>
         <tr>
-            <th>
-                Nome
-            </th>
-            <th>
-                Tipo
-            </th>
-            <th>
-                Admin
-            </th>
-            <th class="col-exclusao">
-                Data de exclusão
-            </th>
-            <th>
-                Ações
-            </th>
+            <th>Nome</th>
+            <th>Tipo</th>
+            <th>Admin</th>
+            <th>Data de exclusão</th>
+            <th>Ações</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            var usuario = await UserManager.FindByIdAsync(item.IdUsuario);
-            bool isAdmin = usuario != null && await UserManager.IsInRoleAsync(usuario, "ADMIN");
-            bool isSelf = item.IdUsuario == User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-
-            <tr data-excluido="@(item.DataExclusao.HasValue ? "true" : "false")">
-                <td>
-                    <a class="link-roxo" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Nome)</a>
-                </td>
-                <td>
-                    @if (item is PetDiverse.Data.PessoaFisica)
-                    {
-                        <span>Pessoa Física</span>
-                    }
-                    else if (item is PetDiverse.Data.PessoaJuridica)
-                    {
-                        <span>Pessoa Jurídica</span>
-                    }
-                </td>
-                <td>
-                    @if (isAdmin)
-                    {
-                        <span>Admin</span>
-                    }
-                    else
-                    {
-                        <span>Não é admin</span>
-                    }
-                </td>
-                <td class="data-exclusao">
-                    @(item.DataExclusao.HasValue? item.DataExclusao.Value.ToString("dd/MM/yyyy") : "-")
-                </td>
-                <td>
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_@item.Id" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_@item.Id">
-                            @if (isSelf || item.DataExclusao.HasValue)
-                            {
-                                <p>Não existem ações disponíveis.</p>
-                            }
-                            else
-                            {
-                                <a class="dropdown-item" asp-action="Edit" asp-route-idUsuario="@item.IdUsuario">Editar</a>
-                                <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">Desativar</a>
-                                <hr class="dropdown-divider" />
-                                @if (isAdmin)
-                                {
-                                    <a class="dropdown-item text-danger" asp-action="RemoverAdmin" asp-route-id="@item.Id">Retirar permissão de admin</a>
-                                }
-                                else
-                                {
-                                    <a class="dropdown-item" asp-action="TornarAdmin" asp-route-id="@item.Id">Tornar admin</a>
-                                }
-                            }
-                        </div>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
 </table>
 
 @section Scripts {
     <script>
         $(document).ready(function () {
             var table = $("#tabelaUsuarios").DataTable({
-                columnDefs: [
-                    { targets: [3], visible: false } // esconde coluna "Data de exclusão"
-                ],
+                order: [[0, "asc"]],
                 language: {
                     url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
                 },
+                lengthChange: false,
+                pageLength: 10,
                 drawCallback: function () {
                     $(".dt-paging .pagination").addClass("pagination-roxo");
                 },
                 initComplete: function () {
                     $(".dt-paging .pagination").addClass("pagination-roxo");
-                }
+                },
+                ajax: {
+                    url: "/PessoaDoadora/GetForTable",
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "nome",
+                        render: function (data, type, row) {
+                            return `<a class="link-roxo" href="/PessoaDoadora/Details?id=${row.id}">${data}</a>`;
+                        }
+                    },
+                    { data: "tipo" },
+                    {
+                        data: "isAdmin",
+                        render: function (data) {
+                            return data ? "Admin" : "Não é admin";
+                        }
+                    },
+                    {
+                        data: "dataExclusao",
+                        visible: false,
+                        render: function (data) {
+                            return data ?? "-";
+                        }
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        render: function (data, type, row) {
+                            if (row.isSelf || row.dataExclusao) {
+                                return `
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-roxo" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <p class="px-3 mb-0">Não existem ações disponíveis.</p>
+                                    </div>
+                                </div>`;
+                            }
+
+                            let adminAction = row.isAdmin
+                                ? `<a class="dropdown-item text-danger" href="/PessoaDoadora/RemoverAdmin/${row.id}">Retirar permissão de admin</a>`
+                                : `<a class="dropdown-item" href="/PessoaDoadora/TornarAdmin/${row.id}">Tornar admin</a>`;
+
+                            return `
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-roxo" type="button" id="dropdownMenuButton_${row.id}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_${row.id}">
+                                    <a class="dropdown-item" href="/PessoaDoadora/Edit?idUsuario=${row.idUsuario}">Editar</a>
+                                    <a class="dropdown-item" href="/PessoaDoadora/Delete/${row.id}">Desativar</a>
+                                    <hr class="dropdown-divider" />
+                                    ${adminAction}
+                                </div>
+                            </div>`;
+                        }
+                    }
+                ]
             });
 
-            // Filtro de excluídos
+            
             $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                if (settings.nTable.id !== "tabelaUsuarios") return true;
                 var mostrar = $("#mostrarExcluidos").is(":checked");
-                var row = table.row(dataIndex).node();
-                var excluido = $(row).data("excluido") === true;
-                return mostrar || !excluido;
+                var row = table.row(dataIndex).data();
+                return mostrar || !row.dataExclusao;
             });
 
             $("#mostrarExcluidos").change(function () {
-                // Mostra/esconde a coluna de data de exclusão
-                var col = table.column(3);
-                col.visible($(this).is(":checked"));
-                table.draw(); // reaplica o filtro
+                table.column(3).visible($(this).is(":checked"));
+                table.draw();
             });
         });
     </script>

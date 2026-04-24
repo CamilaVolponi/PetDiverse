@@ -34,6 +34,30 @@ namespace PetDiverse.Controllers
             return View();
         }
 
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> GetForTable()
+        {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var pessoas = await _context.PessoaDoadora.ToListAsync();
+            var result = new List<object>();
+            foreach (var p in pessoas)
+            {
+                var usuario = await _userManager.FindByIdAsync(p.IdUsuario);
+                bool isAdmin = usuario != null && await _userManager.IsInRoleAsync(usuario, "ADMIN");
+                result.Add(new
+                {
+                    p.Id,
+                    p.Nome,
+                    p.IdUsuario,
+                    DataExclusao = p.DataExclusao.HasValue ? p.DataExclusao.Value.ToString("dd/MM/yyyy") : (string?)null,
+                    Tipo = p is PessoaFisica ? "Pessoa Física" : "Pessoa Jurídica",
+                    IsAdmin = isAdmin,
+                    IsSelf = p.IdUsuario == currentUserId
+                });
+            }
+            return Json(result);
+        }
+
 
         // GET: PessoaDoadora/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -203,9 +227,14 @@ namespace PetDiverse.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, PessoaDoadoraCadastroViewModel pessoaDoadoraCadastroViewModel)
         {
-            var pessoaDoadora = await _context.PessoaDoadora.FindAsync(id);
+            bool isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+
+            var pessoaDoadora = await _context.PessoaDoadora
+                .Include(p => p.FormasContato)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (id != pessoaDoadoraCadastroViewModel.Id || (!User.IsInRole("ADMIN") && pessoaDoadora?.IdUsuario != User.FindFirstValue(ClaimTypes.NameIdentifier)))
             {
+                if (isAjax) return Json(new { sucesso = false, mensagem = "Acesso negado." });
                 return NotFound();
             }
 
@@ -251,8 +280,22 @@ namespace PetDiverse.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                if (pessoaDoadoraCadastroViewModel.TelaAdmin)
+                {
+                    TempData["Sucesso"] = "Dados alterados com sucesso.";
+                    return RedirectToAction(nameof(Edit), new { idUsuario = pessoaDoadoraCadastroViewModel.IdUsuario });
+                }
+                if (isAjax)
+                    return Json(new { sucesso = true, mensagem = "Dados alterados com sucesso." });
+                return Redirect("/Identity/Account/Manage");
             }
+
+            if (isAjax)
+            {
+                var erros = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                return Json(new { sucesso = false, mensagem = string.Join(" ", erros) });
+            }
+
             ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
             ViewData["IdCidade"] = new SelectList(new List<Cidade>());
             ViewData["IdBairro"] = new SelectList(new List<Bairro>());
@@ -289,6 +332,13 @@ namespace PetDiverse.Controllers
             var usuario = await _userManager.FindByIdAsync(pessoaDoadora.IdUsuario);
             ViewData["Email"] = usuario?.Email;
 
+            var animaisNaoAdotados = await _context.Animal
+                .Include(a => a.TipoAnimal)
+                .Include(a => a.Raca)
+                .Where(a => a.IdPessoaDoadora == pessoaDoadora.Id && !a.Adotado)
+                .ToListAsync();
+            ViewData["AnimaisNaoAdotados"] = animaisNaoAdotados;
+
             return View(pessoaDoadora);
         }
 
@@ -307,6 +357,17 @@ namespace PetDiverse.Controllers
                 await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
 
                 _context.Update(pessoaDoadora);
+
+                var animaisNaoAdotados = await _context.Animal
+                    .Where(a => a.IdPessoaDoadora == id && !a.Adotado)
+                    .ToListAsync();
+
+                foreach (var animal in animaisNaoAdotados)
+                {
+                    _context.RegistroCirurgia.RemoveRange(_context.RegistroCirurgia.Where(r => r.IdAnimal == animal.Id));
+                    _context.RegistroVacina.RemoveRange(_context.RegistroVacina.Where(r => r.IdAnimal == animal.Id));
+                    _context.Animal.Remove(animal);
+                }
             }
 
             await _context.SaveChangesAsync();

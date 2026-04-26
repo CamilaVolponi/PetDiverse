@@ -89,7 +89,7 @@ namespace PetDiverse.Controllers
         // GET: PessoaDoadora/Create
         public IActionResult Create()
         {
-            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
+            ViewData["IdEstado"] = new SelectList(_context.Estado.OrderBy(e => e.Nome), "Id", "Nome");
             ViewData["IdCidade"] = new SelectList(new List<Cidade>());
             ViewData["IdBairro"] = new SelectList(new List<Bairro>());
             var listaTipoContato = Enum.GetValues(typeof(TipoFormaContato)).Cast<TipoFormaContato>().Select(e => new{ Valor = e,
@@ -138,9 +138,9 @@ namespace PetDiverse.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index", "Home");
             }
-            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
-            ViewData["IdCidade"] = new SelectList(new List<Cidade>());
-            ViewData["IdBairro"] = new SelectList(new List<Bairro>());
+            ViewData["IdEstado"] = new SelectList(_context.Estado.OrderBy(e => e.Nome), "Id", "Nome", pessoaDoadoraCadastroViewModel.IdEstado);
+            ViewData["IdCidade"] = new SelectList(_context.Cidade.Where(c => c.IdEstado == pessoaDoadoraCadastroViewModel.IdEstado).OrderBy(c => c.Nome), "Id", "Nome", pessoaDoadoraCadastroViewModel.IdCidade);
+            ViewData["IdBairro"] = new SelectList(_context.Bairro.Where(b => b.IdCidade == pessoaDoadoraCadastroViewModel.IdCidade).OrderBy(b => b.Nome), "Id", "Nome", pessoaDoadoraCadastroViewModel.IdBairro);
             var listaTipoContato = Enum.GetValues(typeof(TipoFormaContato)).Cast<TipoFormaContato>().Select(e => new {
                 Valor = e,
                 Nome = e.ToString()
@@ -199,9 +199,9 @@ namespace PetDiverse.Controllers
                 pessoaDoadoraCadastroViewModel.TipoPessoaCadastro = TipoPessoaCadastro.Juridica;
             }
 
-            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome", pessoaDoadoraCadastroViewModel.IdEstado);
-            ViewData["IdCidade"] = new SelectList(_context.Cidade.Where(c => c.IdEstado == pessoaDoadoraCadastroViewModel.IdEstado), "Id", "Nome", pessoaDoadoraCadastroViewModel.IdCidade);
-            ViewData["IdBairro"] = new SelectList(_context.Bairro.Where(b => b.IdCidade == pessoaDoadoraCadastroViewModel.IdCidade), "Id", "Nome", pessoaDoadoraCadastroViewModel.IdBairro);
+            ViewData["IdEstado"] = new SelectList(_context.Estado.OrderBy(e => e.Nome), "Id", "Nome", pessoaDoadoraCadastroViewModel.IdEstado);
+            ViewData["IdCidade"] = new SelectList(_context.Cidade.Where(c => c.IdEstado == pessoaDoadoraCadastroViewModel.IdEstado).OrderBy(c => c.Nome), "Id", "Nome", pessoaDoadoraCadastroViewModel.IdCidade);
+            ViewData["IdBairro"] = new SelectList(_context.Bairro.Where(b => b.IdCidade == pessoaDoadoraCadastroViewModel.IdCidade).OrderBy(b => b.Nome), "Id", "Nome", pessoaDoadoraCadastroViewModel.IdBairro);
 
             var listaTipoContato = Enum.GetValues(typeof(TipoFormaContato))
                 .Cast<TipoFormaContato>()
@@ -296,7 +296,7 @@ namespace PetDiverse.Controllers
                 return Json(new { sucesso = false, mensagem = string.Join(" ", erros) });
             }
 
-            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
+            ViewData["IdEstado"] = new SelectList(_context.Estado.OrderBy(e => e.Nome), "Id", "Nome");
             ViewData["IdCidade"] = new SelectList(new List<Cidade>());
             ViewData["IdBairro"] = new SelectList(new List<Bairro>());
             var listaTipoContato = Enum.GetValues(typeof(TipoFormaContato)).Cast<TipoFormaContato>().Select(e => new {
@@ -376,12 +376,12 @@ namespace PetDiverse.Controllers
 
         public async Task<IActionResult> RecuperarCidades(int? id)
         {
-            return Json(new SelectList(await _context.Cidade.Where(c=>c.IdEstado==id).ToListAsync(), "Id", "Nome")); 
+            return Json(new SelectList(await _context.Cidade.Where(c=>c.IdEstado==id).OrderBy(c => c.Nome).ToListAsync(), "Id", "Nome")); 
         }
 
         public async Task<IActionResult> RecuperarBairros(int? id)
         {
-            return Json(new SelectList(await _context.Bairro.Where(c => c.IdCidade == id).ToListAsync(), "Id", "Nome"));
+            return Json(new SelectList(await _context.Bairro.Where(c => c.IdCidade == id).OrderBy(b => b.Nome).ToListAsync(), "Id", "Nome"));
         }
 
         private void ObrigatoriedadePessoaDoadora(PessoaDoadoraCadastroViewModel pessoaDoadora)

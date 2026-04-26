@@ -181,13 +181,14 @@
                 }
             });
             $('#mostrarAdotados').on('change', function() {
-                table.column(7).visible($(this).is(':checked')); // ajusta o índice se não for admin
-                table.ajax.reload();
-            });
-            $('#mostrarAdotados').on('change', function() {
                 var colIdx = @(User.IsInRole("ADMIN") ? 7 : 6);
                 table.column(colIdx).visible($(this).is(':checked'));
                 table.ajax.reload();
+            });
+
+            $(document).on('click', '.btn-adocao', function() {
+                var id = $(this).data('id');
+                window.location.href = '/Animal/Adotado/' + id;
             });
         });
     </script>

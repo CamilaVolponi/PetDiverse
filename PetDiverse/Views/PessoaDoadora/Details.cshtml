@@ -7,6 +7,12 @@
 }
 
 <h2>Detalhes do Doador</h2>
+@if (Model.DataExclusao.HasValue)
+{
+    <div class="alert alert-warning">
+        Usuário desativado em @Model.DataExclusao.Value.ToString("dd/MM/yyyy").
+    </div>
+}
 <hr />
 
 <div class="row">
@@ -76,6 +82,9 @@
 </div>
 
 <div class="form-group mt-2">
-    <a asp-action="Edit"  asp-route-idUsuario="@Model.IdUsuario"  class="btn btn-roxo">Editar</a>
+    @if (!Model.DataExclusao.HasValue)
+    {
+        <a asp-action="Edit" asp-route-idUsuario="@Model.IdUsuario" class="btn btn-roxo">Editar</a>
+    }
     <a asp-action="Index" class="btn btn-cinza">Voltar a lista</a>
 </div>

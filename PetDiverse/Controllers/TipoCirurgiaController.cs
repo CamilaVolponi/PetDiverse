@@ -55,7 +55,7 @@ namespace PetDiverse.Controllers
         // GET: TipoCirurgia/Create
         public IActionResult Create()
         {
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao");
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>().OrderBy(t => t.Descricao), "Id", "Descricao");
             return View();
         }
 
@@ -74,7 +74,7 @@ namespace PetDiverse.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoCirurgiaViewModel.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>().OrderBy(t => t.Descricao), "Id", "Descricao", tipoCirurgiaViewModel.IdTipoAnimal);
             return View(tipoCirurgiaViewModel);
         }
 
@@ -97,7 +97,7 @@ namespace PetDiverse.Controllers
             tipoCirurgiaViewModel.Id = tipoCirurgia.Id;
             tipoCirurgiaViewModel.IdTipoAnimal = tipoCirurgia.IdTipoAnimal;
             tipoCirurgiaViewModel.Descricao = tipoCirurgia.Descricao;
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoCirurgia.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>().OrderBy(t => t.Descricao), "Id", "Descricao", tipoCirurgia.IdTipoAnimal);
             return View(tipoCirurgiaViewModel);
         }
 
@@ -135,7 +135,7 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoCirurgiaViewModel.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>().OrderBy(t => t.Descricao), "Id", "Descricao", tipoCirurgiaViewModel.IdTipoAnimal);
             return View(tipoCirurgiaViewModel);
         }
 

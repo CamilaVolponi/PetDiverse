@@ -216,6 +216,33 @@ else
         }
 
 
+        // Cascata Estado → Cidade → Bairro
+        $("#IdEstado").change(function () {
+            var cidadeSelect = $('#IdCidade');
+            var bairroSelect = $('#IdBairro');
+            cidadeSelect.empty().append('<option value="">Selecione uma cidade</option>');
+            bairroSelect.empty().append('<option value="">Selecione um bairro</option>');
+            if ($(this).val()) {
+                $.get('/PessoaDoadora/RecuperarCidades', { id: $(this).val() }, function (data) {
+                    $.each(data, function (index, item) {
+                        cidadeSelect.append($('<option>', { value: item.value, text: item.text }));
+                    });
+                });
+            }
+        });
+
+        $("#IdCidade").change(function () {
+            var bairroSelect = $('#IdBairro');
+            bairroSelect.empty().append('<option value="">Selecione um bairro</option>');
+            if ($(this).val()) {
+                $.get('/PessoaDoadora/RecuperarBairros', { id: $(this).val() }, function (data) {
+                    $.each(data, function (index, item) {
+                        bairroSelect.append($('<option>', { value: item.value, text: item.text }));
+                    });
+                });
+            }
+        });
+
         // Exibir ou esconder os campos conforme o tipo
         function atualizarCamposPessoa(tipo) {
             if (tipo === "Fisica") {

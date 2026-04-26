@@ -56,7 +56,7 @@ namespace PetDiverse.Controllers
         // GET: TipoVacina/Create
         public IActionResult Create()
         {
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao");
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>().OrderBy(t => t.Descricao), "Id", "Descricao");
             return View();
         }
 
@@ -75,7 +75,7 @@ namespace PetDiverse.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoVacinaViewModel.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>().OrderBy(t => t.Descricao), "Id", "Descricao", tipoVacinaViewModel.IdTipoAnimal);
             return View(tipoVacinaViewModel);
         }
 
@@ -97,7 +97,7 @@ namespace PetDiverse.Controllers
             tipoVacinaViewModel.Id = tipoVacina.Id;
             tipoVacinaViewModel.IdTipoAnimal = tipoVacina.IdTipoAnimal;
             tipoVacinaViewModel.Descricao = tipoVacina.Descricao;
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoVacina.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>().OrderBy(t => t.Descricao), "Id", "Descricao", tipoVacina.IdTipoAnimal);
             return View(tipoVacinaViewModel);
         }
 
@@ -135,7 +135,7 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>(), "Id", "Descricao", tipoVacinaViewModel.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.Set<TipoAnimal>().OrderBy(t => t.Descricao), "Id", "Descricao", tipoVacinaViewModel.IdTipoAnimal);
             return View(tipoVacinaViewModel);
         }
 

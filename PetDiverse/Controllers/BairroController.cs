@@ -56,7 +56,7 @@ namespace PetDiverse.Controllers
         // GET: Bairro/Create
         public IActionResult Create()
         {
-            ViewData["IdCidade"] = new SelectList(_context.Cidade, "Id", "Nome");
+            ViewData["IdCidade"] = new SelectList(_context.Cidade.OrderBy(c => c.Nome), "Id", "Nome");
             return View();
         }
 
@@ -78,7 +78,7 @@ namespace PetDiverse.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCidade"] = new SelectList(_context.Cidade, "Id", "Nome", bairroViewModel.IdCidade);
+            ViewData["IdCidade"] = new SelectList(_context.Cidade.OrderBy(c => c.Nome), "Id", "Nome", bairroViewModel.IdCidade);
             return View(bairroViewModel);
         }
 
@@ -100,7 +100,7 @@ namespace PetDiverse.Controllers
             bairroViewModel.Id = bairro.Id;
             bairroViewModel.Nome = bairro.Nome;
             bairroViewModel.IdCidade = bairro.IdCidade;
-            ViewData["IdCidade"] = new SelectList(_context.Set<Cidade>(), "Id", "Nome", bairro.IdCidade);
+            ViewData["IdCidade"] = new SelectList(_context.Set<Cidade>().OrderBy(c => c.Nome), "Id", "Nome", bairro.IdCidade);
             return View(bairroViewModel);
         }
 
@@ -141,7 +141,7 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdCidade"] = new SelectList(_context.Cidade, "Id", "Nome", bairroViewModel.IdCidade);
+            ViewData["IdCidade"] = new SelectList(_context.Cidade.OrderBy(c => c.Nome), "Id", "Nome", bairroViewModel.IdCidade);
             return View(bairroViewModel);
         }
 

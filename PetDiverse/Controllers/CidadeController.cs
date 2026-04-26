@@ -55,7 +55,7 @@ namespace PetDiverse.Controllers
         // GET: Cidade/Create
         public IActionResult Create()
         {
-            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome");
+            ViewData["IdEstado"] = new SelectList(_context.Estado.OrderBy(e => e.Nome), "Id", "Nome");
             return View();
         }
 
@@ -77,7 +77,7 @@ namespace PetDiverse.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome", cidadeViewModel.IdEstado);
+            ViewData["IdEstado"] = new SelectList(_context.Estado.OrderBy(e => e.Nome), "Id", "Nome", cidadeViewModel.IdEstado);
             return View(cidadeViewModel);
         }
 
@@ -99,7 +99,7 @@ namespace PetDiverse.Controllers
             cidadeViewModel.Id = cidade.Id;
             cidadeViewModel.Nome = cidade.Nome;
             cidadeViewModel.IdEstado = cidade.IdEstado;
-            ViewData["IdEstado"] = new SelectList(_context.Set<Estado>(), "Id", "Nome", cidade.IdEstado);
+            ViewData["IdEstado"] = new SelectList(_context.Set<Estado>().OrderBy(e => e.Nome), "Id", "Nome", cidade.IdEstado);
             return View(cidadeViewModel);
         }
 
@@ -140,7 +140,7 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdEstado"] = new SelectList(_context.Estado, "Id", "Nome", cidadeViewModel.IdEstado);
+            ViewData["IdEstado"] = new SelectList(_context.Estado.OrderBy(e => e.Nome), "Id", "Nome", cidadeViewModel.IdEstado);
             return View(cidadeViewModel);
         }
 

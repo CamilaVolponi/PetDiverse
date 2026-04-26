@@ -55,7 +55,7 @@ namespace PetDiverse.Controllers
         // GET: Racas/Create
         public IActionResult Create()
         {
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao");
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal.OrderBy(t => t.Descricao), "Id", "Descricao");
             return View();
         }
 
@@ -77,7 +77,7 @@ namespace PetDiverse.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", racaViewModel.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal.OrderBy(t => t.Descricao), "Id", "Descricao", racaViewModel.IdTipoAnimal);
             return View(racaViewModel);
         }
 
@@ -99,7 +99,7 @@ namespace PetDiverse.Controllers
             racaViewModel.Id = raca.Id;
             racaViewModel.IdTipoAnimal = raca.IdTipoAnimal;
             racaViewModel.Descricao = raca.Descricao;
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", raca.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal.OrderBy(t => t.Descricao), "Id", "Descricao", raca.IdTipoAnimal);
             return View(racaViewModel);
         }
 
@@ -140,7 +140,7 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", racaViewModel.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal.OrderBy(t => t.Descricao), "Id", "Descricao", racaViewModel.IdTipoAnimal);
             return View(racaViewModel);
         }
 

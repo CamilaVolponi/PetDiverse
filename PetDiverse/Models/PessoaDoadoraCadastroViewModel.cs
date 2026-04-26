@@ -45,7 +45,7 @@ namespace PetDiverse.Models
         [DisplayName("Tipo de pessoa")]
         public TipoPessoaCadastro? TipoPessoaCadastro { get; set; }
 
-        public string IdUsuario { get; set; }
+        public string? IdUsuario { get; set; }
 
         public bool TelaAdmin { get; set; }
     }

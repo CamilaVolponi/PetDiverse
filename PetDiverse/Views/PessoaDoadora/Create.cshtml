@@ -10,7 +10,7 @@
 <div class="row">
     <div class="col-md-12">
         <form asp-action="Create" id="CreatePessoaDoadora">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger"></div>
 
             <!-- Tipo de pessoa -->
             <div class="row mb-2">
@@ -177,7 +177,8 @@
                             }
                             @foreach (var opcao in ViewBag.TiposFormaContato)
                             {
-                                <input type="checkbox" name="TipoFormaContato"value="@opcao.Value" class="form-check-input" @(first ? "data-val='true' data-val-required='Selecione pelo menos uma forma de contato'" : "") />
+                                var isChecked = Model?.TipoFormaContato?.Any(t => t.ToString() == opcao.Value) == true;
+                                <input type="checkbox" name="TipoFormaContato" value="@opcao.Value" class="form-check-input" @(isChecked ? "checked" : "") @(first ? "data-val='true' data-val-required='Selecione pelo menos uma forma de contato'" : "") />
                                 <label class="form-check-label">@opcao.Text</label>
                                 first = false;
                             }
@@ -198,10 +199,21 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
     <script>
         $(document).ready(function(){
             $(".pessoa-fisica,.pessoa-juridica").hide();
+
+            // Restaura estado visual se a view re-renderizou após erro de validação
+            var tipoPessoa = '@(Model?.TipoPessoaCadastro?.ToString() ?? "")';
+            if (tipoPessoa === 'Fisica') {
+                $(".pessoa-fisica").show();
+                $(".pessoa-juridica").hide();
+                $("label[for='Nome']").text("Nome completo");
+            } else if (tipoPessoa === 'Juridica') {
+                $(".pessoa-juridica").show();
+                $(".pessoa-fisica").hide();
+                $("label[for='Nome']").text("Nome da Organização");
+            }
             $("#IdEstado").change(function(){
                 var cidadeSelect = $('#IdCidade');
 
@@ -260,39 +272,7 @@
                 validator.resetForm(); // limpa tudo
             })
             $("#CreatePessoaDoadora").validate({
-                rules: {
-                DataNascimento: {
-                    requiredIf: {
-                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "Fisica"       // Valor que ativa a obrigatoriedade
-                    }
-                },
-                CPF: {
-                    requiredIf: {
-                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "Fisica"       // Valor que ativa a obrigatoriedade
-                    }
-                },
-                CNPJ: {
-                    requiredIf: {
-                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "Juridica"       // Valor que ativa a obrigatoriedade
-                    }
-                },
-                Site: {
-                    requiredIf: {
-                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "Juridica"       // Valor que ativa a obrigatoriedade
-                    }
-                },
-                RedeSocial: {
-                    requiredIf: {
-                    valueName: "TipoPessoaCadastro",        // Nome do grupo de radio
-                    expectedValue: "Juridica"       // Valor que ativa a obrigatoriedade
-                    }
-                }
-
-                }
+                ignore: ':hidden'
             });
             $("input[name='TipoFormaContato']").first().rules("add", {
                 required: true,
@@ -308,9 +288,8 @@
                 }
             });
 
-            $('#CPF').mask('000.000.000-00', { reverse: true });
-            
-            $('#CNPJ').mask('00.000.000/0000-00', { reverse: true });
+            $('#CPF').mask('000.000.000-00');
+            $('#CNPJ').mask('00.000.000/0000-00');
         });
     </script>
 

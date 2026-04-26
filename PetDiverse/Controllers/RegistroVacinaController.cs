@@ -58,7 +58,7 @@ namespace PetDiverse.Controllers
             var registroVacinaViewModel = new RegistroVacinaViewModel();
             var animal = _context.Animal.Find(idAnimal);
             registroVacinaViewModel.IdAnimal = idAnimal;
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao");
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal).OrderBy(t => t.Descricao), "Id", "Descricao");
             return View(registroVacinaViewModel);
         }
 
@@ -77,7 +77,7 @@ namespace PetDiverse.Controllers
                 return RedirectToAction(nameof(Index),new {registroVacina.IdAnimal });
             }
             var animal = _context.Animal.Find(registroVacinaViewModel.IdAnimal);
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", registroVacinaViewModel.IdTipoVacina);
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal).OrderBy(t => t.Descricao), "Id", "Descricao", registroVacinaViewModel.IdTipoVacina);
             return View(registroVacinaViewModel);
         }
 
@@ -96,7 +96,7 @@ namespace PetDiverse.Controllers
             }
             var registroVacinaViewModel = _mapper.Map<RegistroVacinaViewModel>(registroVacina);
             var animal = _context.Animal.Find(registroVacinaViewModel.IdAnimal);
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", registroVacina.IdTipoVacina);
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal).OrderBy(t => t.Descricao), "Id", "Descricao", registroVacina.IdTipoVacina);
 
             return View(registroVacinaViewModel);
         }
@@ -135,7 +135,7 @@ namespace PetDiverse.Controllers
                 return RedirectToAction(nameof(Index), new { registroVacinaViewModel.IdAnimal });
             }
             var animal = _context.Animal.Find(registroVacinaViewModel.IdAnimal);
-            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", registroVacinaViewModel.IdTipoVacina);
+            ViewData["IdTipoVacina"] = new SelectList(_context.TipoVacina.Where(a => a.IdTipoAnimal == animal.IdTipoAnimal).OrderBy(t => t.Descricao), "Id", "Descricao", registroVacinaViewModel.IdTipoVacina);
             return View(registroVacinaViewModel);
         }
 

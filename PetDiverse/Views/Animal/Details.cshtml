@@ -8,6 +8,12 @@
 
 <div>
     <h2>@Html.DisplayFor(model => model.Nome)</h2>
+    @if (Model.Adotado)
+    {
+        <div class="alert alert-secondary">
+            Este animal já foi adotado.
+        </div>
+    }
     <hr />
 
     <div class="row">

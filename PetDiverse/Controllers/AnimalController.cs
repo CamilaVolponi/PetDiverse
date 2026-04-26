@@ -58,7 +58,7 @@ namespace PetDiverse.Controllers
         public IActionResult Create()
         {
             
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao");
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal.OrderBy(t => t.Descricao), "Id", "Descricao");
             var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
                 Valor = e,
                 Nome = e.ToString()
@@ -113,7 +113,7 @@ namespace PetDiverse.Controllers
             }
 
             // Repopula selects se falhar a validação
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", animalViewModel.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal.OrderBy(t => t.Descricao), "Id", "Descricao", animalViewModel.IdTipoAnimal);
             var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
                 Valor = e,
                 Nome = e.ToString()
@@ -165,7 +165,7 @@ namespace PetDiverse.Controllers
                 Nome = e.ToString()
             });
             ViewData["SexoBiologico"] = new SelectList(listaSexoBiologico, "Valor", "Nome");
-            ViewData["IdRaca"] = new SelectList(_context.Raca.Where(r => r.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", animal.IdRaca);
+            ViewData["IdRaca"] = new SelectList(_context.Raca.Where(r => r.IdTipoAnimal == animal.IdTipoAnimal).OrderBy(r => r.Descricao), "Id", "Descricao", animal.IdRaca);
 
             animalViewModel.Id = animal.Id;
             animalViewModel.Nome = animal.Nome;
@@ -242,7 +242,7 @@ namespace PetDiverse.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal, "Id", "Descricao", animalViewModel.IdTipoAnimal);
+            ViewData["IdTipoAnimal"] = new SelectList(_context.TipoAnimal.OrderBy(t => t.Descricao), "Id", "Descricao", animalViewModel.IdTipoAnimal);
             var listaContagemIdade = Enum.GetValues(typeof(ContagemIdade)).Cast<ContagemIdade>().Select(e => new {
                 Valor = e,
                 Nome = e.ToString()
@@ -258,7 +258,7 @@ namespace PetDiverse.Controllers
                 Nome = e.ToString()
             });
             ViewData["SexoBiologico"] = new SelectList(listaSexoBiologico, "Valor", "Nome");
-            ViewData["IdRaca"] = new SelectList(_context.Raca.Where(r => r.IdTipoAnimal == animal.IdTipoAnimal), "Id", "Descricao", animal.IdRaca);
+            ViewData["IdRaca"] = new SelectList(_context.Raca.Where(r => r.IdTipoAnimal == animal.IdTipoAnimal).OrderBy(r => r.Descricao), "Id", "Descricao", animal.IdRaca);
             return View(animalViewModel);
         }
 
@@ -318,7 +318,7 @@ namespace PetDiverse.Controllers
 
         public async Task<IActionResult> RecuperarRaca(int? id)
         {
-            return Json(new SelectList(await _context.Raca.Where(c => c.IdTipoAnimal == id).ToListAsync(), "Id", "Descricao"));
+            return Json(new SelectList(await _context.Raca.Where(c => c.IdTipoAnimal == id).OrderBy(r => r.Descricao).ToListAsync(), "Id", "Descricao"));
         }
 
         private bool AnimalExists(int id)

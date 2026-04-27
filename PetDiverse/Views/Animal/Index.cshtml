@@ -110,7 +110,21 @@
                             return link;
                         }
                     },
-                    { data: "Idade" },
+                    {
+                        data: "Idade",
+                        render: function (data, type, row) {
+                            var c = row.ContagemIdade;
+                            var isDias  = c === "Dias"  || c === 1;
+                            var isMeses = c === "Meses" || c === 2;
+                            var unidade;
+                            if (data === 1) {
+                                unidade = isDias ? "dia" : isMeses ? "mês" : "ano";
+                            } else {
+                                unidade = isDias ? "dias" : isMeses ? "meses" : "anos";
+                            }
+                            return data + " " + unidade;
+                        }
+                    },
                     { data: "SexoBiologico" },
                     { data: "Porte" },
                     {

@@ -101,11 +101,13 @@ namespace PetDiverse.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> RecuperarCidades(int? id)
         {
             return Json(new SelectList(await _context.Cidade.Where(c => c.IdEstado == id).OrderBy(c => c.Nome).ToListAsync(), "Id", "Nome"));
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> RecuperarBairros(int? id)
         {
             return Json(new SelectList(await _context.Bairro.Where(c => c.IdCidade == id).OrderBy(c => c.Nome).ToListAsync(), "Id", "Nome"));

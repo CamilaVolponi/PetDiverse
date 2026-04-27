@@ -1,9 +1,20 @@
 ﻿@model PetDiverse.Data.Animal
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
 @inject UserManager<IdentityUser> UserManager
+@inject PetDiverse.Data.ApplicationDbContext _db
 
 @{
     ViewData["Title"] = "Mais informações";
+    var ehPessoaFisica = await _db.PessoaFisica.AnyAsync(p => p.Id == Model.IdPessoaDoadora);
+    var nomeDoador = ehPessoaFisica
+        ? Model.PessoaDoadora.Nome.Split(' ')[0]
+        : Model.PessoaDoadora.Nome;
+    var unidadeIdade = Model.Idade == 1
+        ? (Model.ContagemIdade == PetDiverse.Data.Enuns.ContagemIdade.Dias ? "dia"
+           : Model.ContagemIdade == PetDiverse.Data.Enuns.ContagemIdade.Meses ? "mês"
+           : "ano")
+        : Model.ContagemIdade.ToString().ToLower();
 }
 
 <div>
@@ -18,7 +29,7 @@
 
     <div class="row">
         <div class="col-md-8">
-            <p><strong>Idade:</strong> @Html.DisplayFor(model => model.Idade) @Model.ContagemIdade.ToString().ToLower()</p>
+            <p><strong>Idade:</strong> @Model.Idade @unidadeIdade</p>
             <p><strong>Raça:</strong> @Model.Raca.Descricao</p>
             <p><strong>Sexo Biológico:</strong> @Html.DisplayFor(model => model.SexoBiologico)</p>
             <p><strong>Porte:</strong> @Html.DisplayFor(model => model.Porte)</p>
@@ -55,7 +66,7 @@
                 </ul>
             }
 
-            <p><strong>Cadastrado por:</strong> @Model.PessoaDoadora.Nome</p>
+            <p><strong>Cadastrado por:</strong> @nomeDoador</p>
             <p><strong>Endereço:</strong> @Model.PessoaDoadora.Bairro.Nome, @Model.PessoaDoadora.Bairro.Cidade.Nome, @Model.PessoaDoadora.Bairro.Cidade.Estado.Nome</p>
 
             @if (Model.PessoaDoadora is PetDiverse.Data.PessoaJuridica pessoaJuridica)
@@ -92,7 +103,7 @@
 
                 <div class="text-start">
                     <p>
-                        Este animal está sendo anunciado pelo(a) @Model.PessoaDoadora.Nome. Para mais informações, entre em contato através:
+                        Este animal está sendo anunciado pelo(a) @nomeDoador. Para mais informações, entre em contato através:
                     </p>
 
                     <ul>
@@ -118,9 +129,14 @@
                         @if (temTelefone && temWhatsapp)
                         {
                             <li><strong>Telefone:</strong> @Model.PessoaDoadora.Telefone (este telefone possui WhatsApp)</li>
-                        } else if (temTelefone && !temWhatsapp)
+                        }
+                        else if (temTelefone)
                         {
                             <li><strong>Telefone:</strong> @Model.PessoaDoadora.Telefone (este telefone não possui WhatsApp)</li>
+                        }
+                        else if (temWhatsapp)
+                        {
+                            <li><strong>WhatsApp:</strong> @Model.PessoaDoadora.Telefone</li>
                         }
                     </ul>
 

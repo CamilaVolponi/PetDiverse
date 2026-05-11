@@ -126,7 +126,7 @@ namespace PetDiverse.Controllers
                     var pessoaDoadoraJuridica = new PessoaJuridica();
                     pessoaDoadoraJuridica.CNPJ = pessoaDoadoraCadastroViewModel.CNPJ;
                     pessoaDoadoraJuridica.Site = pessoaDoadoraCadastroViewModel.Site;
-                    pessoaDoadoraJuridica.RedeSocial = pessoaDoadoraCadastroViewModel.Site;
+                    pessoaDoadoraJuridica.RedeSocial = pessoaDoadoraCadastroViewModel.RedeSocial;
                     pessoaDoadora = pessoaDoadoraJuridica;
                 }
                 pessoaDoadora.Nome = pessoaDoadoraCadastroViewModel.Nome;
@@ -255,7 +255,7 @@ namespace PetDiverse.Controllers
                         var pessoaDoadoraJuridica = (pessoaDoadora as PessoaJuridica);
                         pessoaDoadoraJuridica.CNPJ = pessoaDoadoraCadastroViewModel.CNPJ;
                         pessoaDoadoraJuridica.Site = pessoaDoadoraCadastroViewModel.Site;
-                        pessoaDoadoraJuridica.RedeSocial = pessoaDoadoraCadastroViewModel.Site;
+                        pessoaDoadoraJuridica.RedeSocial = pessoaDoadoraCadastroViewModel.RedeSocial;
                         pessoaDoadora = pessoaDoadoraJuridica;
                     }
                     pessoaDoadora.Nome = pessoaDoadoraCadastroViewModel.Nome;
